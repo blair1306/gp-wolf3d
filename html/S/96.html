@@ -1,0 +1,238 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<title>WOLFSRC/GFXV_WL6.H</title>
+<meta name='robots' content='noindex,nofollow' />
+<meta name='generator' content='GLOBAL-6.5.7' />
+<meta http-equiv='Content-Style-Type' content='text/css' />
+<link rel='stylesheet' type='text/css' href='../style.css' />
+</head>
+<body>
+<a id='TOP' name='TOP'></a><h2 class='header'><a href='../mains.html'>root</a>/<a href='../files/100.html'>WOLFSRC</a>/GFXV_WL6.H</h2>
+<em class='comment'>/* <img class='icon' src='../icons/n_left.png' alt='[previous]' /><img class='icon' src='../icons/n_right.png' alt='[next]' /><img class='icon' src='../icons/n_first.png' alt='[first]' /><img class='icon' src='../icons/n_last.png' alt='[last]' /><img class='icon' src='../icons/n_top.png' alt='[top]' /><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<hr />
+<h2 class='header'><a href='20.html#L39' title='Included from 39 in WOLFSRC/ID_HEADS.H.'>INCLUDED FROM</a></h2>
+<hr />
+<pre>
+<a id='L1' name='L1'></a><em class='comment'>//////////////////////////////////////</em>
+<a id='L2' name='L2'></a><em class='comment'>//</em>
+<a id='L3' name='L3'></a><em class='comment'>// Graphics .H file for .WL6</em>
+<a id='L4' name='L4'></a><em class='comment'>// IGRAB-ed on Wed Apr 13 06:58:44 1994</em>
+<a id='L5' name='L5'></a><em class='comment'>//</em>
+<a id='L6' name='L6'></a><em class='comment'>//////////////////////////////////////</em>
+<a id='L7' name='L7'></a>
+<a id='L8' name='L8'></a><strong class='reserved'>typedef</strong> <strong class='reserved'>enum</strong> <em class='brace'>{</em>
+<a id='L9' name='L9'></a>                <em class='comment'>// Lump Start</em>
+<a id='L10' name='L10'></a>                H_BJPIC=3,
+<a id='L11' name='L11'></a>                H_CASTLEPIC,                         <em class='comment'>// 4</em>
+<a id='L12' name='L12'></a>                H_BLAZEPIC,                          <em class='comment'>// 5</em>
+<a id='L13' name='L13'></a>                <a href='../cgi-bin/global.cgi?pattern=H_TOPWINDOWPIC&amp;type=reference' title='Multiple referred from 2 places.'>H_TOPWINDOWPIC</a>,                      <em class='comment'>// 6</em>
+<a id='L14' name='L14'></a>                <a href='../cgi-bin/global.cgi?pattern=H_LEFTWINDOWPIC&amp;type=reference' title='Multiple referred from 2 places.'>H_LEFTWINDOWPIC</a>,                     <em class='comment'>// 7</em>
+<a id='L15' name='L15'></a>                <a href='../cgi-bin/global.cgi?pattern=H_RIGHTWINDOWPIC&amp;type=reference' title='Multiple referred from 2 places.'>H_RIGHTWINDOWPIC</a>,                    <em class='comment'>// 8</em>
+<a id='L16' name='L16'></a>                <a href='../cgi-bin/global.cgi?pattern=H_BOTTOMINFOPIC&amp;type=reference' title='Multiple referred from 2 places.'>H_BOTTOMINFOPIC</a>,                     <em class='comment'>// 9</em>
+<a id='L17' name='L17'></a>                <em class='comment'>// Lump Start</em>
+<a id='L18' name='L18'></a>                <a href='../S/77.html#L548' title='Referred from 548 in WOLFSRC/WL_MENU.C.'>C_OPTIONSPIC</a>,                        <em class='comment'>// 10</em>
+<a id='L19' name='L19'></a>                <a href='../cgi-bin/global.cgi?pattern=C_CURSOR1PIC&amp;type=reference' title='Multiple referred from 13 places.'>C_CURSOR1PIC</a>,                        <em class='comment'>// 11</em>
+<a id='L20' name='L20'></a>                <a href='../cgi-bin/global.cgi?pattern=C_CURSOR2PIC&amp;type=reference' title='Multiple referred from 5 places.'>C_CURSOR2PIC</a>,                        <em class='comment'>// 12</em>
+<a id='L21' name='L21'></a>                <a href='../cgi-bin/global.cgi?pattern=C_NOTSELECTEDPIC&amp;type=reference' title='Multiple referred from 5 places.'>C_NOTSELECTEDPIC</a>,                    <em class='comment'>// 13</em>
+<a id='L22' name='L22'></a>                <a href='../cgi-bin/global.cgi?pattern=C_SELECTEDPIC&amp;type=reference' title='Multiple referred from 5 places.'>C_SELECTEDPIC</a>,                       <em class='comment'>// 14</em>
+<a id='L23' name='L23'></a>                <a href='../S/77.html#L1290' title='Referred from 1290 in WOLFSRC/WL_MENU.C.'>C_FXTITLEPIC</a>,                        <em class='comment'>// 15</em>
+<a id='L24' name='L24'></a>                <a href='../S/77.html#L1291' title='Referred from 1291 in WOLFSRC/WL_MENU.C.'>C_DIGITITLEPIC</a>,                      <em class='comment'>// 16</em>
+<a id='L25' name='L25'></a>                <a href='../S/77.html#L1292' title='Referred from 1292 in WOLFSRC/WL_MENU.C.'>C_MUSICTITLEPIC</a>,                     <em class='comment'>// 17</em>
+<a id='L26' name='L26'></a>                <a href='../cgi-bin/global.cgi?pattern=C_MOUSELBACKPIC&amp;type=reference' title='Multiple referred from 13 places.'>C_MOUSELBACKPIC</a>,                     <em class='comment'>// 18</em>
+<a id='L27' name='L27'></a>                <a href='../S/77.html#L1126' title='Referred from 1126 in WOLFSRC/WL_MENU.C.'>C_BABYMODEPIC</a>,                       <em class='comment'>// 19</em>
+<a id='L28' name='L28'></a>                C_EASYPIC,                           <em class='comment'>// 20</em>
+<a id='L29' name='L29'></a>                C_NORMALPIC,                         <em class='comment'>// 21</em>
+<a id='L30' name='L30'></a>                C_HARDPIC,                           <em class='comment'>// 22</em>
+<a id='L31' name='L31'></a>                C_LOADSAVEDISKPIC,                   <em class='comment'>// 23</em>
+<a id='L32' name='L32'></a>                <a href='../cgi-bin/global.cgi?pattern=C_DISKLOADING1PIC&amp;type=reference' title='Multiple referred from 6 places.'>C_DISKLOADING1PIC</a>,                   <em class='comment'>// 24</em>
+<a id='L33' name='L33'></a>                <a href='../cgi-bin/global.cgi?pattern=C_DISKLOADING2PIC&amp;type=reference' title='Multiple referred from 4 places.'>C_DISKLOADING2PIC</a>,                   <em class='comment'>// 25</em>
+<a id='L34' name='L34'></a>                <a href='../S/77.html#L1972' title='Referred from 1972 in WOLFSRC/WL_MENU.C.'>C_CONTROLPIC</a>,                        <em class='comment'>// 26</em>
+<a id='L35' name='L35'></a>                <a href='../S/77.html#L2455' title='Referred from 2455 in WOLFSRC/WL_MENU.C.'>C_CUSTOMIZEPIC</a>,                      <em class='comment'>// 27</em>
+<a id='L36' name='L36'></a>                <a href='../cgi-bin/global.cgi?pattern=C_LOADGAMEPIC&amp;type=reference' title='Multiple referred from 3 places.'>C_LOADGAMEPIC</a>,                       <em class='comment'>// 28</em>
+<a id='L37' name='L37'></a>                <a href='../cgi-bin/global.cgi?pattern=C_SAVEGAMEPIC&amp;type=reference' title='Multiple referred from 3 places.'>C_SAVEGAMEPIC</a>,                       <em class='comment'>// 29</em>
+<a id='L38' name='L38'></a>                <a href='../S/77.html#L1075' title='Referred from 1075 in WOLFSRC/WL_MENU.C.'>C_EPISODE1PIC</a>,                       <em class='comment'>// 30</em>
+<a id='L39' name='L39'></a>                C_EPISODE2PIC,                       <em class='comment'>// 31</em>
+<a id='L40' name='L40'></a>                C_EPISODE3PIC,                       <em class='comment'>// 32</em>
+<a id='L41' name='L41'></a>                C_EPISODE4PIC,                       <em class='comment'>// 33</em>
+<a id='L42' name='L42'></a>                C_EPISODE5PIC,                       <em class='comment'>// 34</em>
+<a id='L43' name='L43'></a>                C_EPISODE6PIC,                       <em class='comment'>// 35</em>
+<a id='L44' name='L44'></a>                C_CODEPIC,                           <em class='comment'>// 36</em>
+<a id='L45' name='L45'></a>                <a href='../cgi-bin/global.cgi?pattern=C_TIMECODEPIC&amp;type=reference' title='Multiple referred from 3 places.'>C_TIMECODEPIC</a>,                       <em class='comment'>// 37</em>
+<a id='L46' name='L46'></a>                <a href='../cgi-bin/global.cgi?pattern=C_LEVELPIC&amp;type=reference' title='Multiple referred from 2 places.'>C_LEVELPIC</a>,                          <em class='comment'>// 38</em>
+<a id='L47' name='L47'></a>                <a href='../cgi-bin/global.cgi?pattern=C_NAMEPIC&amp;type=reference' title='Multiple referred from 2 places.'>C_NAMEPIC</a>,                           <em class='comment'>// 39</em>
+<a id='L48' name='L48'></a>                <a href='../cgi-bin/global.cgi?pattern=C_SCOREPIC&amp;type=reference' title='Multiple referred from 2 places.'>C_SCOREPIC</a>,                          <em class='comment'>// 40</em>
+<a id='L49' name='L49'></a>                <a href='../cgi-bin/global.cgi?pattern=C_JOY1PIC&amp;type=reference' title='Multiple referred from 2 places.'>C_JOY1PIC</a>,                           <em class='comment'>// 41</em>
+<a id='L50' name='L50'></a>                <a href='../S/77.html#L1720' title='Referred from 1720 in WOLFSRC/WL_MENU.C.'>C_JOY2PIC</a>,                           <em class='comment'>// 42</em>
+<a id='L51' name='L51'></a>                <em class='comment'>// Lump Start</em>
+<a id='L52' name='L52'></a>                <a href='../cgi-bin/global.cgi?pattern=L_GUYPIC&amp;type=reference' title='Multiple referred from 2 places.'>L_GUYPIC</a>,                            <em class='comment'>// 43</em>
+<a id='L53' name='L53'></a>                <a href='../cgi-bin/global.cgi?pattern=L_COLONPIC&amp;type=reference' title='Multiple referred from 2 places.'>L_COLONPIC</a>,                          <em class='comment'>// 44</em>
+<a id='L54' name='L54'></a>                <a href='../cgi-bin/global.cgi?pattern=L_NUM0PIC&amp;type=reference' title='Multiple referred from 9 places.'>L_NUM0PIC</a>,                           <em class='comment'>// 45</em>
+<a id='L55' name='L55'></a>                <a href='../S/75.html#L333' title='Referred from 333 in WOLFSRC/WL_INTER.C.'>L_NUM1PIC</a>,                           <em class='comment'>// 46</em>
+<a id='L56' name='L56'></a>                <a href='../S/75.html#L333' title='Referred from 333 in WOLFSRC/WL_INTER.C.'>L_NUM2PIC</a>,                           <em class='comment'>// 47</em>
+<a id='L57' name='L57'></a>                <a href='../S/75.html#L333' title='Referred from 333 in WOLFSRC/WL_INTER.C.'>L_NUM3PIC</a>,                           <em class='comment'>// 48</em>
+<a id='L58' name='L58'></a>                <a href='../S/75.html#L333' title='Referred from 333 in WOLFSRC/WL_INTER.C.'>L_NUM4PIC</a>,                           <em class='comment'>// 49</em>
+<a id='L59' name='L59'></a>                <a href='../S/75.html#L333' title='Referred from 333 in WOLFSRC/WL_INTER.C.'>L_NUM5PIC</a>,                           <em class='comment'>// 50</em>
+<a id='L60' name='L60'></a>                <a href='../S/75.html#L334' title='Referred from 334 in WOLFSRC/WL_INTER.C.'>L_NUM6PIC</a>,                           <em class='comment'>// 51</em>
+<a id='L61' name='L61'></a>                <a href='../S/75.html#L334' title='Referred from 334 in WOLFSRC/WL_INTER.C.'>L_NUM7PIC</a>,                           <em class='comment'>// 52</em>
+<a id='L62' name='L62'></a>                <a href='../S/75.html#L334' title='Referred from 334 in WOLFSRC/WL_INTER.C.'>L_NUM8PIC</a>,                           <em class='comment'>// 53</em>
+<a id='L63' name='L63'></a>                <a href='../S/75.html#L334' title='Referred from 334 in WOLFSRC/WL_INTER.C.'>L_NUM9PIC</a>,                           <em class='comment'>// 54</em>
+<a id='L64' name='L64'></a>                <a href='../S/75.html#L378' title='Referred from 378 in WOLFSRC/WL_INTER.C.'>L_PERCENTPIC</a>,                        <em class='comment'>// 55</em>
+<a id='L65' name='L65'></a>                <a href='../S/75.html#L334' title='Referred from 334 in WOLFSRC/WL_INTER.C.'>L_APIC</a>,                              <em class='comment'>// 56</em>
+<a id='L66' name='L66'></a>                <a href='../S/75.html#L334' title='Referred from 334 in WOLFSRC/WL_INTER.C.'>L_BPIC</a>,                              <em class='comment'>// 57</em>
+<a id='L67' name='L67'></a>                <a href='../S/75.html#L335' title='Referred from 335 in WOLFSRC/WL_INTER.C.'>L_CPIC</a>,                              <em class='comment'>// 58</em>
+<a id='L68' name='L68'></a>                <a href='../S/75.html#L335' title='Referred from 335 in WOLFSRC/WL_INTER.C.'>L_DPIC</a>,                              <em class='comment'>// 59</em>
+<a id='L69' name='L69'></a>                <a href='../S/75.html#L335' title='Referred from 335 in WOLFSRC/WL_INTER.C.'>L_EPIC</a>,                              <em class='comment'>// 60</em>
+<a id='L70' name='L70'></a>                <a href='../S/75.html#L335' title='Referred from 335 in WOLFSRC/WL_INTER.C.'>L_FPIC</a>,                              <em class='comment'>// 61</em>
+<a id='L71' name='L71'></a>                <a href='../S/75.html#L335' title='Referred from 335 in WOLFSRC/WL_INTER.C.'>L_GPIC</a>,                              <em class='comment'>// 62</em>
+<a id='L72' name='L72'></a>                <a href='../S/75.html#L335' title='Referred from 335 in WOLFSRC/WL_INTER.C.'>L_HPIC</a>,                              <em class='comment'>// 63</em>
+<a id='L73' name='L73'></a>                <a href='../S/75.html#L335' title='Referred from 335 in WOLFSRC/WL_INTER.C.'>L_IPIC</a>,                              <em class='comment'>// 64</em>
+<a id='L74' name='L74'></a>                <a href='../S/75.html#L335' title='Referred from 335 in WOLFSRC/WL_INTER.C.'>L_JPIC</a>,                              <em class='comment'>// 65</em>
+<a id='L75' name='L75'></a>                <a href='../S/75.html#L335' title='Referred from 335 in WOLFSRC/WL_INTER.C.'>L_KPIC</a>,                              <em class='comment'>// 66</em>
+<a id='L76' name='L76'></a>                <a href='../S/75.html#L336' title='Referred from 336 in WOLFSRC/WL_INTER.C.'>L_LPIC</a>,                              <em class='comment'>// 67</em>
+<a id='L77' name='L77'></a>                <a href='../S/75.html#L336' title='Referred from 336 in WOLFSRC/WL_INTER.C.'>L_MPIC</a>,                              <em class='comment'>// 68</em>
+<a id='L78' name='L78'></a>                <a href='../S/75.html#L336' title='Referred from 336 in WOLFSRC/WL_INTER.C.'>L_NPIC</a>,                              <em class='comment'>// 69</em>
+<a id='L79' name='L79'></a>                <a href='../S/75.html#L336' title='Referred from 336 in WOLFSRC/WL_INTER.C.'>L_OPIC</a>,                              <em class='comment'>// 70</em>
+<a id='L80' name='L80'></a>                <a href='../S/75.html#L336' title='Referred from 336 in WOLFSRC/WL_INTER.C.'>L_PPIC</a>,                              <em class='comment'>// 71</em>
+<a id='L81' name='L81'></a>                <a href='../S/75.html#L336' title='Referred from 336 in WOLFSRC/WL_INTER.C.'>L_QPIC</a>,                              <em class='comment'>// 72</em>
+<a id='L82' name='L82'></a>                <a href='../S/75.html#L336' title='Referred from 336 in WOLFSRC/WL_INTER.C.'>L_RPIC</a>,                              <em class='comment'>// 73</em>
+<a id='L83' name='L83'></a>                <a href='../S/75.html#L336' title='Referred from 336 in WOLFSRC/WL_INTER.C.'>L_SPIC</a>,                              <em class='comment'>// 74</em>
+<a id='L84' name='L84'></a>                <a href='../S/75.html#L336' title='Referred from 336 in WOLFSRC/WL_INTER.C.'>L_TPIC</a>,                              <em class='comment'>// 75</em>
+<a id='L85' name='L85'></a>                <a href='../S/75.html#L337' title='Referred from 337 in WOLFSRC/WL_INTER.C.'>L_UPIC</a>,                              <em class='comment'>// 76</em>
+<a id='L86' name='L86'></a>                <a href='../S/75.html#L337' title='Referred from 337 in WOLFSRC/WL_INTER.C.'>L_VPIC</a>,                              <em class='comment'>// 77</em>
+<a id='L87' name='L87'></a>                <a href='../S/75.html#L337' title='Referred from 337 in WOLFSRC/WL_INTER.C.'>L_WPIC</a>,                              <em class='comment'>// 78</em>
+<a id='L88' name='L88'></a>                <a href='../S/75.html#L337' title='Referred from 337 in WOLFSRC/WL_INTER.C.'>L_XPIC</a>,                              <em class='comment'>// 79</em>
+<a id='L89' name='L89'></a>                <a href='../S/75.html#L337' title='Referred from 337 in WOLFSRC/WL_INTER.C.'>L_YPIC</a>,                              <em class='comment'>// 80</em>
+<a id='L90' name='L90'></a>                <a href='../S/75.html#L337' title='Referred from 337 in WOLFSRC/WL_INTER.C.'>L_ZPIC</a>,                              <em class='comment'>// 81</em>
+<a id='L91' name='L91'></a>                <a href='../S/75.html#L361' title='Referred from 361 in WOLFSRC/WL_INTER.C.'>L_EXPOINTPIC</a>,                        <em class='comment'>// 82</em>
+<a id='L92' name='L92'></a>                <a href='../S/75.html#L366' title='Referred from 366 in WOLFSRC/WL_INTER.C.'>L_APOSTROPHEPIC</a>,                     <em class='comment'>// 83</em>
+<a id='L93' name='L93'></a>                <a href='../S/75.html#L395' title='Referred from 395 in WOLFSRC/WL_INTER.C.'>L_GUY2PIC</a>,                           <em class='comment'>// 84</em>
+<a id='L94' name='L94'></a>                <a href='../S/75.html#L188' title='Referred from 188 in WOLFSRC/WL_INTER.C.'>L_BJWINSPIC</a>,                         <em class='comment'>// 85</em>
+<a id='L95' name='L95'></a>                <a href='../cgi-bin/global.cgi?pattern=STATUSBARPIC&amp;type=reference' title='Multiple referred from 3 places.'>STATUSBARPIC</a>,                        <em class='comment'>// 86</em>
+<a id='L96' name='L96'></a>                <a href='../S/32.html#L1511' title='Referred from 1511 in WOLFSRC/WL_MAIN.C.'>TITLEPIC</a>,                            <em class='comment'>// 87</em>
+<a id='L97' name='L97'></a>                <a href='../cgi-bin/global.cgi?pattern=PG13PIC&amp;type=reference' title='Multiple referred from 3 places.'>PG13PIC</a>,                             <em class='comment'>// 88</em>
+<a id='L98' name='L98'></a>                <a href='../S/32.html#L1521' title='Referred from 1521 in WOLFSRC/WL_MAIN.C.'>CREDITSPIC</a>,                          <em class='comment'>// 89</em>
+<a id='L99' name='L99'></a>                <a href='../cgi-bin/global.cgi?pattern=HIGHSCORESPIC&amp;type=reference' title='Multiple referred from 4 places.'>HIGHSCORESPIC</a>,                       <em class='comment'>// 90</em>
+<a id='L100' name='L100'></a>                <em class='comment'>// Lump Start</em>
+<a id='L101' name='L101'></a>                <a href='../S/27.html#L546' title='Referred from 546 in WOLFSRC/WL_AGENT.C.'>KNIFEPIC</a>,                            <em class='comment'>// 91</em>
+<a id='L102' name='L102'></a>                GUNPIC,                              <em class='comment'>// 92</em>
+<a id='L103' name='L103'></a>                MACHINEGUNPIC,                       <em class='comment'>// 93</em>
+<a id='L104' name='L104'></a>                GATLINGGUNPIC,                       <em class='comment'>// 94</em>
+<a id='L105' name='L105'></a>                <a href='../cgi-bin/global.cgi?pattern=NOKEYPIC&amp;type=reference' title='Multiple referred from 2 places.'>NOKEYPIC</a>,                            <em class='comment'>// 95</em>
+<a id='L106' name='L106'></a>                <a href='../S/27.html#L561' title='Referred from 561 in WOLFSRC/WL_AGENT.C.'>GOLDKEYPIC</a>,                          <em class='comment'>// 96</em>
+<a id='L107' name='L107'></a>                <a href='../S/27.html#L566' title='Referred from 566 in WOLFSRC/WL_AGENT.C.'>SILVERKEYPIC</a>,                        <em class='comment'>// 97</em>
+<a id='L108' name='L108'></a>                <a href='../S/27.html#L348' title='Referred from 348 in WOLFSRC/WL_AGENT.C.'>N_BLANKPIC</a>,                          <em class='comment'>// 98</em>
+<a id='L109' name='L109'></a>                <a href='../S/27.html#L357' title='Referred from 357 in WOLFSRC/WL_AGENT.C.'>N_0PIC</a>,                              <em class='comment'>// 99</em>
+<a id='L110' name='L110'></a>                N_1PIC,                              <em class='comment'>// 100</em>
+<a id='L111' name='L111'></a>                N_2PIC,                              <em class='comment'>// 101</em>
+<a id='L112' name='L112'></a>                N_3PIC,                              <em class='comment'>// 102</em>
+<a id='L113' name='L113'></a>                N_4PIC,                              <em class='comment'>// 103</em>
+<a id='L114' name='L114'></a>                N_5PIC,                              <em class='comment'>// 104</em>
+<a id='L115' name='L115'></a>                N_6PIC,                              <em class='comment'>// 105</em>
+<a id='L116' name='L116'></a>                N_7PIC,                              <em class='comment'>// 106</em>
+<a id='L117' name='L117'></a>                N_8PIC,                              <em class='comment'>// 107</em>
+<a id='L118' name='L118'></a>                N_9PIC,                              <em class='comment'>// 108</em>
+<a id='L119' name='L119'></a>                <a href='../S/27.html#L279' title='Referred from 279 in WOLFSRC/WL_AGENT.C.'>FACE1APIC</a>,                           <em class='comment'>// 109</em>
+<a id='L120' name='L120'></a>                FACE1BPIC,                           <em class='comment'>// 110</em>
+<a id='L121' name='L121'></a>                FACE1CPIC,                           <em class='comment'>// 111</em>
+<a id='L122' name='L122'></a>                FACE2APIC,                           <em class='comment'>// 112</em>
+<a id='L123' name='L123'></a>                FACE2BPIC,                           <em class='comment'>// 113</em>
+<a id='L124' name='L124'></a>                FACE2CPIC,                           <em class='comment'>// 114</em>
+<a id='L125' name='L125'></a>                FACE3APIC,                           <em class='comment'>// 115</em>
+<a id='L126' name='L126'></a>                FACE3BPIC,                           <em class='comment'>// 116</em>
+<a id='L127' name='L127'></a>                FACE3CPIC,                           <em class='comment'>// 117</em>
+<a id='L128' name='L128'></a>                FACE4APIC,                           <em class='comment'>// 118</em>
+<a id='L129' name='L129'></a>                FACE4BPIC,                           <em class='comment'>// 119</em>
+<a id='L130' name='L130'></a>                FACE4CPIC,                           <em class='comment'>// 120</em>
+<a id='L131' name='L131'></a>                FACE5APIC,                           <em class='comment'>// 121</em>
+<a id='L132' name='L132'></a>                FACE5BPIC,                           <em class='comment'>// 122</em>
+<a id='L133' name='L133'></a>                FACE5CPIC,                           <em class='comment'>// 123</em>
+<a id='L134' name='L134'></a>                FACE6APIC,                           <em class='comment'>// 124</em>
+<a id='L135' name='L135'></a>                FACE6BPIC,                           <em class='comment'>// 125</em>
+<a id='L136' name='L136'></a>                FACE6CPIC,                           <em class='comment'>// 126</em>
+<a id='L137' name='L137'></a>                FACE7APIC,                           <em class='comment'>// 127</em>
+<a id='L138' name='L138'></a>                FACE7BPIC,                           <em class='comment'>// 128</em>
+<a id='L139' name='L139'></a>                FACE7CPIC,                           <em class='comment'>// 129</em>
+<a id='L140' name='L140'></a>                <a href='../S/27.html#L288' title='Referred from 288 in WOLFSRC/WL_AGENT.C.'>FACE8APIC</a>,                           <em class='comment'>// 130</em>
+<a id='L141' name='L141'></a>                <a href='../S/27.html#L741' title='Referred from 741 in WOLFSRC/WL_AGENT.C.'>GOTGATLINGPIC</a>,                       <em class='comment'>// 131</em>
+<a id='L142' name='L142'></a>                <a href='../S/27.html#L285' title='Referred from 285 in WOLFSRC/WL_AGENT.C.'>MUTANTBJPIC</a>,                         <em class='comment'>// 132</em>
+<a id='L143' name='L143'></a>                <a href='../S/67.html#L756' title='Referred from 756 in WOLFSRC/WL_PLAY.C.'>PAUSEDPIC</a>,                           <em class='comment'>// 133</em>
+<a id='L144' name='L144'></a>                <a href='../S/75.html#L1002' title='Referred from 1002 in WOLFSRC/WL_INTER.C.'>GETPSYCHEDPIC</a>,                       <em class='comment'>// 134</em>
+<a id='L145' name='L145'></a>
+<a id='L146' name='L146'></a>
+<a id='L147' name='L147'></a>
+<a id='L148' name='L148'></a>                <a href='../cgi-bin/global.cgi?pattern=ORDERSCREEN&amp;type=reference' title='Multiple referred from 2 places.'>ORDERSCREEN</a>=136,
+<a id='L149' name='L149'></a>                <a href='../cgi-bin/global.cgi?pattern=ERRORSCREEN&amp;type=reference' title='Multiple referred from 4 places.'>ERRORSCREEN</a>,                         <em class='comment'>// 137</em>
+<a id='L150' name='L150'></a>                <a href='../S/72.html#L732' title='Referred from 732 in WOLFSRC/WL_TEXT.C.'>T_HELPART</a>,                           <em class='comment'>// 138</em>
+<a id='L151' name='L151'></a>                <a href='../cgi-bin/global.cgi?pattern=T_DEMO0&amp;type=reference' title='Multiple referred from 2 places.'>T_DEMO0</a>,                             <em class='comment'>// 139</em>
+<a id='L152' name='L152'></a>                <a href='../S/40.html#L1051' title='Referred from 1051 in WOLFSRC/WL_GAME.C.'>T_DEMO1</a>,                             <em class='comment'>// 140</em>
+<a id='L153' name='L153'></a>                <a href='../S/40.html#L1051' title='Referred from 1051 in WOLFSRC/WL_GAME.C.'>T_DEMO2</a>,                             <em class='comment'>// 141</em>
+<a id='L154' name='L154'></a>                <a href='../S/40.html#L1051' title='Referred from 1051 in WOLFSRC/WL_GAME.C.'>T_DEMO3</a>,                             <em class='comment'>// 142</em>
+<a id='L155' name='L155'></a>                <a href='../S/72.html#L730' title='Referred from 730 in WOLFSRC/WL_TEXT.C.'>T_ENDART1</a>,                           <em class='comment'>// 143</em>
+<a id='L156' name='L156'></a>                T_ENDART2,                           <em class='comment'>// 144</em>
+<a id='L157' name='L157'></a>                T_ENDART3,                           <em class='comment'>// 145</em>
+<a id='L158' name='L158'></a>                T_ENDART4,                           <em class='comment'>// 146</em>
+<a id='L159' name='L159'></a>                T_ENDART5,                           <em class='comment'>// 147</em>
+<a id='L160' name='L160'></a>                T_ENDART6,                           <em class='comment'>// 148</em>
+<a id='L161' name='L161'></a>                ENUMEND
+<a id='L162' name='L162'></a>             <em class='brace'>}</em> graphicnums;
+<a id='L163' name='L163'></a>
+<a id='L164' name='L164'></a><em class='comment'>//</em>
+<a id='L165' name='L165'></a><em class='comment'>// Data LUMPs</em>
+<a id='L166' name='L166'></a><em class='comment'>//</em>
+<a id='L167' name='L167'></a><em class='sharp'>#define</em> README_LUMP_START               3
+<a id='L168' name='L168'></a><em class='sharp'>#define</em> README_LUMP_END                 9
+<a id='L169' name='L169'></a>
+<a id='L170' name='L170'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=CONTROLS_LUMP_START&amp;type=reference' title='Multiple referred from 4 places.'>CONTROLS_LUMP_START</a>             10
+<a id='L171' name='L171'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=CONTROLS_LUMP_END&amp;type=reference' title='Multiple referred from 4 places.'>CONTROLS_LUMP_END</a>               42
+<a id='L172' name='L172'></a>
+<a id='L173' name='L173'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=LEVELEND_LUMP_START&amp;type=reference' title='Multiple referred from 5 places.'>LEVELEND_LUMP_START</a>             43
+<a id='L174' name='L174'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=LEVELEND_LUMP_END&amp;type=reference' title='Multiple referred from 5 places.'>LEVELEND_LUMP_END</a>               85
+<a id='L175' name='L175'></a>
+<a id='L176' name='L176'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=LATCHPICS_LUMP_START&amp;type=reference' title='Multiple referred from 2 places.'>LATCHPICS_LUMP_START</a>            91
+<a id='L177' name='L177'></a><em class='sharp'>#define</em> <a href='../S/94.html#L441' title='Referred from 441 in WOLFSRC/ID_VH.C.'>LATCHPICS_LUMP_END</a>              134
+<a id='L178' name='L178'></a>
+<a id='L179' name='L179'></a>
+<a id='L180' name='L180'></a><em class='comment'>//</em>
+<a id='L181' name='L181'></a><em class='comment'>// Amount of each data item</em>
+<a id='L182' name='L182'></a><em class='comment'>//</em>
+<a id='L183' name='L183'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=NUMCHUNKS&amp;type=reference' title='Multiple referred from 15 places.'>NUMCHUNKS</a>    149
+<a id='L184' name='L184'></a><em class='sharp'>#define</em> NUMFONT      2
+<a id='L185' name='L185'></a><em class='sharp'>#define</em> NUMFONTM     0
+<a id='L186' name='L186'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=NUMPICS&amp;type=reference' title='Multiple referred from 2 places.'>NUMPICS</a>      132
+<a id='L187' name='L187'></a><em class='sharp'>#define</em> NUMPICM      0
+<a id='L188' name='L188'></a><em class='sharp'>#define</em> NUMSPRITES   0
+<a id='L189' name='L189'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=NUMTILE8&amp;type=reference' title='Multiple referred from 2 places.'>NUMTILE8</a>     72
+<a id='L190' name='L190'></a><em class='sharp'>#define</em> <a href='../S/71.html#L1278' title='Referred from 1278 in WOLFSRC/ID_CA.C.'>NUMTILE8M</a>    0
+<a id='L191' name='L191'></a><em class='sharp'>#define</em> <a href='../S/94.html#L426' title='Referred from 426 in WOLFSRC/ID_VH.C.'>NUMTILE16</a>    0
+<a id='L192' name='L192'></a><em class='sharp'>#define</em> NUMTILE16M   0
+<a id='L193' name='L193'></a><em class='sharp'>#define</em> NUMTILE32    0
+<a id='L194' name='L194'></a><em class='sharp'>#define</em> NUMTILE32M   0
+<a id='L195' name='L195'></a><em class='sharp'>#define</em> NUMEXTERNS   13
+<a id='L196' name='L196'></a><em class='comment'>//</em>
+<a id='L197' name='L197'></a><em class='comment'>// File offsets for data items</em>
+<a id='L198' name='L198'></a><em class='comment'>//</em>
+<a id='L199' name='L199'></a><em class='sharp'>#define</em> <a href='../S/71.html#L924' title='Referred from 924 in WOLFSRC/ID_CA.C.'>STRUCTPIC</a>    0
+<a id='L200' name='L200'></a>
+<a id='L201' name='L201'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=STARTFONT&amp;type=reference' title='Multiple referred from 34 places.'>STARTFONT</a>    1
+<a id='L202' name='L202'></a><em class='sharp'>#define</em> <a href='../S/94.html#L221' title='Referred from 221 in WOLFSRC/ID_VH.C.'>STARTFONTM</a>   3
+<a id='L203' name='L203'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=STARTPICS&amp;type=reference' title='Multiple referred from 7 places.'>STARTPICS</a>    3
+<a id='L204' name='L204'></a><em class='sharp'>#define</em> STARTPICM    135
+<a id='L205' name='L205'></a><em class='sharp'>#define</em> STARTSPRITES 135
+<a id='L206' name='L206'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=STARTTILE8&amp;type=reference' title='Multiple referred from 4 places.'>STARTTILE8</a>   135
+<a id='L207' name='L207'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=STARTTILE8M&amp;type=reference' title='Multiple referred from 2 places.'>STARTTILE8M</a>  136
+<a id='L208' name='L208'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=STARTTILE16&amp;type=reference' title='Multiple referred from 5 places.'>STARTTILE16</a>  136
+<a id='L209' name='L209'></a><em class='sharp'>#define</em> <a href='../S/71.html#L1279' title='Referred from 1279 in WOLFSRC/ID_CA.C.'>STARTTILE16M</a> 136
+<a id='L210' name='L210'></a><em class='sharp'>#define</em> <a href='../S/71.html#L1281' title='Referred from 1281 in WOLFSRC/ID_CA.C.'>STARTTILE32</a>  136
+<a id='L211' name='L211'></a><em class='sharp'>#define</em> <a href='../S/71.html#L1283' title='Referred from 1283 in WOLFSRC/ID_CA.C.'>STARTTILE32M</a> 136
+<a id='L212' name='L212'></a><em class='sharp'>#define</em> <a href='../S/71.html#L1266' title='Referred from 1266 in WOLFSRC/ID_CA.C.'>STARTEXTERNS</a> 136
+<a id='L213' name='L213'></a>
+<a id='L214' name='L214'></a><em class='comment'>//</em>
+<a id='L215' name='L215'></a><em class='comment'>// Thank you for using IGRAB!</em>
+<a id='L216' name='L216'></a><em class='comment'>//</em>
+</pre>
+<hr />
+<a id='BOTTOM' name='BOTTOM'></a>
+<em class='comment'>/* <img class='icon' src='../icons/n_left.png' alt='[previous]' /><img class='icon' src='../icons/n_right.png' alt='[next]' /><img class='icon' src='../icons/n_first.png' alt='[first]' /><img class='icon' src='../icons/n_last.png' alt='[last]' /><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><img class='icon' src='../icons/n_bottom.png' alt='[bottom]' /><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+</body>
+</html>

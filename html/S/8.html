@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<title>WOLFSRC/ID_VH_A.ASM</title>
+<meta name='robots' content='noindex,nofollow' />
+<meta name='generator' content='GLOBAL-6.5.7' />
+<meta http-equiv='Content-Style-Type' content='text/css' />
+<link rel='stylesheet' type='text/css' href='../style.css' />
+</head>
+<body>
+<a id='TOP' name='TOP'></a><h2 class='header'><a href='../mains.html'>root</a>/<a href='../files/100.html'>WOLFSRC</a>/ID_VH_A.ASM</h2>
+<em class='comment'>/* <img class='icon' src='../icons/n_left.png' alt='[previous]' /><img class='icon' src='../icons/n_right.png' alt='[next]' /><img class='icon' src='../icons/n_first.png' alt='[first]' /><img class='icon' src='../icons/n_last.png' alt='[last]' /><img class='icon' src='../icons/n_top.png' alt='[top]' /><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<hr />
+<pre>
+<a id='L1' name='L1'></a>; ID_VL.ASM
+<a id='L2' name='L2'></a>
+<a id='L3' name='L3'></a>        IDEAL
+<a id='L4' name='L4'></a>        MODEL   MEDIUM,C
+<a id='L5' name='L5'></a>
+<a id='L6' name='L6'></a>        INCLUDE 'ID_VL.EQU'
+<a id='L7' name='L7'></a>
+<a id='L8' name='L8'></a>SCREENSEG       =       0a000h
+<a id='L9' name='L9'></a>
+<a id='L10' name='L10'></a>UPDATEWIDE      =       20
+<a id='L11' name='L11'></a>UPDATEHIGH      =       13
+<a id='L12' name='L12'></a>
+<a id='L13' name='L13'></a>        DATASEG
+<a id='L14' name='L14'></a>
+<a id='L15' name='L15'></a>
+<a id='L16' name='L16'></a>EXTRN   bufferofs                       :WORD
+<a id='L17' name='L17'></a>EXTRN   displayofs                      :WORD
+<a id='L18' name='L18'></a>EXTRN   ylookup                         :WORD
+<a id='L19' name='L19'></a>EXTRN   linewidth                       :WORD
+<a id='L20' name='L20'></a>EXTRN   blockstarts                     :WORD   ;offsets from drawofs for each update block
+<a id='L21' name='L21'></a>
+<a id='L22' name='L22'></a>EXTRN   update                          :BYTE
+<a id='L23' name='L23'></a>
+<a id='L24' name='L24'></a>        CODESEG
+<a id='L25' name='L25'></a>
+<a id='L26' name='L26'></a>
+<a id='L27' name='L27'></a>;=================
+<a id='L28' name='L28'></a>;
+<a id='L29' name='L29'></a>; VH_UpdateScreen
+<a id='L30' name='L30'></a>;
+<a id='L31' name='L31'></a>;=================
+<a id='L32' name='L32'></a>
+<a id='L33' name='L33'></a>PROC    VH_UpdateScreen
+<a id='L34' name='L34'></a>PUBLIC  VH_UpdateScreen
+<a id='L35' name='L35'></a>USES    si,di
+<a id='L36' name='L36'></a>
+<a id='L37' name='L37'></a>        mov     dx,SC_INDEX
+<a id='L38' name='L38'></a>        mov     ax,SC_MAPMASK+15*256
+<a id='L39' name='L39'></a>        out     dx,ax
+<a id='L40' name='L40'></a>
+<a id='L41' name='L41'></a>        mov dx,GC_INDEX
+<a id='L42' name='L42'></a>        mov al,GC_MODE
+<a id='L43' name='L43'></a>        out dx,al
+<a id='L44' name='L44'></a>
+<a id='L45' name='L45'></a>        inc dx
+<a id='L46' name='L46'></a>        in      al,dx
+<a id='L47' name='L47'></a>        and al,252
+<a id='L48' name='L48'></a>        or      al,1
+<a id='L49' name='L49'></a>        out dx,al
+<a id='L50' name='L50'></a>
+<a id='L51' name='L51'></a>        mov     bx,UPDATEWIDE*UPDATEHIGH-1              ; bx is the tile number
+<a id='L52' name='L52'></a>        mov     dx,[linewidth]
+<a id='L53' name='L53'></a>
+<a id='L54' name='L54'></a>;
+<a id='L55' name='L55'></a>; see if the tile needs to be copied
+<a id='L56' name='L56'></a>;
+<a id='L57' name='L57'></a>@@checktile:
+<a id='L58' name='L58'></a>        test    [update+bx],1
+<a id='L59' name='L59'></a>        jnz     @@copytile
+<a id='L60' name='L60'></a>@@next:
+<a id='L61' name='L61'></a>        dec     bx
+<a id='L62' name='L62'></a>        jns     @@checktile
+<a id='L63' name='L63'></a>
+<a id='L64' name='L64'></a>;
+<a id='L65' name='L65'></a>; done
+<a id='L66' name='L66'></a>;
+<a id='L67' name='L67'></a>        mov dx,GC_INDEX+1
+<a id='L68' name='L68'></a>        in      al,dx
+<a id='L69' name='L69'></a>        and al,NOT 3
+<a id='L70' name='L70'></a>        or      al,0
+<a id='L71' name='L71'></a>        out dx,al
+<a id='L72' name='L72'></a>        ret
+<a id='L73' name='L73'></a>
+<a id='L74' name='L74'></a>;
+<a id='L75' name='L75'></a>; copy a tile
+<a id='L76' name='L76'></a>;
+<a id='L77' name='L77'></a>@@copytile:
+<a id='L78' name='L78'></a>        mov     [update+bx],0
+<a id='L79' name='L79'></a>        shl     bx,1
+<a id='L80' name='L80'></a>        mov     si,[blockstarts+bx]
+<a id='L81' name='L81'></a>        shr     bx,1
+<a id='L82' name='L82'></a>        mov     di,si
+<a id='L83' name='L83'></a>        add     si,[bufferofs]
+<a id='L84' name='L84'></a>        add     di,[displayofs]
+<a id='L85' name='L85'></a>
+<a id='L86' name='L86'></a>        mov     ax,SCREENSEG
+<a id='L87' name='L87'></a>        mov     ds,ax
+<a id='L88' name='L88'></a>
+<a id='L89' name='L89'></a>REPT    16
+<a id='L90' name='L90'></a>        mov     al,[si]
+<a id='L91' name='L91'></a>        mov     [di],al
+<a id='L92' name='L92'></a>        mov     al,[si+1]
+<a id='L93' name='L93'></a>        mov     [di+1],al
+<a id='L94' name='L94'></a>        mov     al,[si+2]
+<a id='L95' name='L95'></a>        mov     [di+2],al
+<a id='L96' name='L96'></a>        mov     al,[si+3]
+<a id='L97' name='L97'></a>        mov     [di+3],al
+<a id='L98' name='L98'></a>        add     si,dx
+<a id='L99' name='L99'></a>        add     di,dx
+<a id='L100' name='L100'></a>ENDM
+<a id='L101' name='L101'></a>
+<a id='L102' name='L102'></a>        mov     ax,ss
+<a id='L103' name='L103'></a>        mov     ds,ax
+<a id='L104' name='L104'></a>        jmp     @@next
+<a id='L105' name='L105'></a>
+<a id='L106' name='L106'></a>ENDP
+<a id='L107' name='L107'></a>
+<a id='L108' name='L108'></a>
+<a id='L109' name='L109'></a>        END
+<a id='L110' name='L110'></a>
+</pre>
+<hr />
+<a id='BOTTOM' name='BOTTOM'></a>
+<em class='comment'>/* <img class='icon' src='../icons/n_left.png' alt='[previous]' /><img class='icon' src='../icons/n_right.png' alt='[next]' /><img class='icon' src='../icons/n_first.png' alt='[first]' /><img class='icon' src='../icons/n_last.png' alt='[last]' /><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><img class='icon' src='../icons/n_bottom.png' alt='[bottom]' /><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+</body>
+</html>

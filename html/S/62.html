@@ -1,0 +1,1075 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<title>WOLFSRC/ID_IN.C</title>
+<meta name='robots' content='noindex,nofollow' />
+<meta name='generator' content='GLOBAL-6.5.7' />
+<meta http-equiv='Content-Style-Type' content='text/css' />
+<link rel='stylesheet' type='text/css' href='../style.css' />
+</head>
+<body>
+<a id='TOP' name='TOP'></a><h2 class='header'><a href='../mains.html'>root</a>/<a href='../files/100.html'>WOLFSRC</a>/ID_IN.C</h2>
+<em class='comment'>/* <img class='icon' src='../icons/n_left.png' alt='[previous]' /><img class='icon' src='../icons/n_right.png' alt='[next]' /><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><img class='icon' src='../icons/n_top.png' alt='[top]' /><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<hr />
+<h2 class='header'>DEFINITIONS</h2>
+This source file includes following definitions.
+<ol>
+<li><a href='#L143' title='Defined at 143.'>INL_KeyService</a></li>
+<li><a href='#L218' title='Defined at 218.'>INL_GetMouseDelta</a></li>
+<li><a href='#L232' title='Defined at 232.'>INL_GetMouseButtons</a></li>
+<li><a href='#L247' title='Defined at 247.'>IN_GetJoyAbs</a></li>
+<li><a href='#L324' title='Defined at 324.'>INL_GetJoyDelta</a></li>
+<li><a href='#L390' title='Defined at 390.'>INL_GetJoyButtons</a></li>
+<li><a href='#L408' title='Defined at 408.'>IN_GetJoyButtonsDB</a></li>
+<li><a href='#L430' title='Defined at 430.'>INL_StartKbd</a></li>
+<li><a href='#L446' title='Defined at 446.'>INL_ShutKbd</a></li>
+<li><a href='#L459' title='Defined at 459.'>INL_StartMouse</a></li>
+<li><a href='#L490' title='Defined at 490.'>INL_ShutMouse</a></li>
+<li><a href='#L498' title='Defined at 498.'>INL_SetJoyScale</a></li>
+<li><a href='#L516' title='Defined at 516.'>IN_SetupJoy</a></li>
+<li><a href='#L547' title='Defined at 547.'>INL_StartJoy</a></li>
+<li><a href='#L572' title='Defined at 572.'>INL_ShutJoy</a></li>
+<li><a href='#L584' title='Defined at 584.'>IN_Startup</a></li>
+<li><a href='#L622' title='Defined at 622.'>IN_Default</a></li>
+<li><a href='#L641' title='Defined at 641.'>IN_Shutdown</a></li>
+<li><a href='#L663' title='Defined at 663.'>IN_SetKeyHook</a></li>
+<li><a href='#L674' title='Defined at 674.'>IN_ClearKeysDown</a></li>
+<li><a href='#L691' title='Defined at 691.'>IN_ReadControl</a></li>
+<li><a href='#L822' title='Defined at 822.'>IN_SetControlType</a></li>
+<li><a href='#L835' title='Defined at 835.'>IN_WaitForKey</a></li>
+<li><a href='#L852' title='Defined at 852.'>IN_WaitForASCII</a></li>
+<li><a href='#L871' title='Defined at 871.'>IN_StartAck</a></li>
+<li><a href='#L891' title='Defined at 891.'>IN_CheckAck</a></li>
+<li><a href='#L918' title='Defined at 918.'>IN_Ack</a></li>
+<li><a href='#L935' title='Defined at 935.'>IN_UserInput</a></li>
+<li><a href='#L959' title='Defined at 959.'>IN_MouseButtons</a></li>
+<li><a href='#L979' title='Defined at 979.'>IN_JoyButtons</a></li>
+</ol>
+<hr />
+<pre>
+<a id='L1' name='L1'></a><em class='comment'>//</em>
+<a id='L2' name='L2'></a><em class='comment'>//      ID Engine</em>
+<a id='L3' name='L3'></a><em class='comment'>//      ID_IN.c - Input Manager</em>
+<a id='L4' name='L4'></a><em class='comment'>//      v1.0d1</em>
+<a id='L5' name='L5'></a><em class='comment'>//      By Jason Blochowiak</em>
+<a id='L6' name='L6'></a><em class='comment'>//</em>
+<a id='L7' name='L7'></a>
+<a id='L8' name='L8'></a><em class='comment'>//</em>
+<a id='L9' name='L9'></a><em class='comment'>//      This module handles dealing with the various input devices</em>
+<a id='L10' name='L10'></a><em class='comment'>//</em>
+<a id='L11' name='L11'></a><em class='comment'>//      Depends on: Memory Mgr (for demo recording), Sound Mgr (for timing stuff),</em>
+<a id='L12' name='L12'></a><em class='comment'>//                              User Mgr (for command line parms)</em>
+<a id='L13' name='L13'></a><em class='comment'>//</em>
+<a id='L14' name='L14'></a><em class='comment'>//      Globals:</em>
+<a id='L15' name='L15'></a><em class='comment'>//              LastScan - The keyboard scan code of the last key pressed</em>
+<a id='L16' name='L16'></a><em class='comment'>//              LastASCII - The ASCII value of the last key pressed</em>
+<a id='L17' name='L17'></a><em class='comment'>//      DEBUG - there are more globals</em>
+<a id='L18' name='L18'></a><em class='comment'>//</em>
+<a id='L19' name='L19'></a>
+<a id='L20' name='L20'></a><em class='sharp'>#include</em> "<a href='20.html'>ID_HEADS.H</a>"
+<a id='L21' name='L21'></a><em class='sharp'>#pragma</em> hdrstop
+<a id='L22' name='L22'></a>
+<a id='L23' name='L23'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=KeyInt&amp;type=reference' title='Multiple referred from 3 places.'>KeyInt</a>          9       <em class='comment'>// The keyboard ISR number</em>
+<a id='L24' name='L24'></a>
+<a id='L25' name='L25'></a><em class='comment'>//</em>
+<a id='L26' name='L26'></a><em class='comment'>// mouse constants</em>
+<a id='L27' name='L27'></a><em class='comment'>//</em>
+<a id='L28' name='L28'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=MReset&amp;type=reference' title='Multiple referred from 2 places.'>MReset</a>          0
+<a id='L29' name='L29'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=MButtons&amp;type=reference' title='Multiple referred from 2 places.'>MButtons</a>        3
+<a id='L30' name='L30'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=MDelta&amp;type=reference' title='Multiple referred from 10 places.'>MDelta</a>          11
+<a id='L31' name='L31'></a>
+<a id='L32' name='L32'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=MouseInt&amp;type=reference' title='Multiple referred from 3 places.'>MouseInt</a>        0x33
+<a id='L33' name='L33'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=Mouse&amp;type=reference' title='Multiple referred from 22 places.'>Mouse</a>(<a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a>)        <a href='../cgi-bin/global.cgi?pattern=_AX&amp;type=symbol' title='Multiple used in 15 places.'>_AX</a> = <a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a>,<a href='../cgi-bin/global.cgi?pattern=geninterrupt&amp;type=symbol' title='Multiple used in 16 places.'>geninterrupt</a>(<a href='../cgi-bin/global.cgi?pattern=MouseInt&amp;type=definitions' title='Multiple defined in 2 places.'>MouseInt</a>)
+<a id='L34' name='L34'></a>
+<a id='L35' name='L35'></a><em class='comment'>//</em>
+<a id='L36' name='L36'></a><em class='comment'>// joystick constants</em>
+<a id='L37' name='L37'></a><em class='comment'>//</em>
+<a id='L38' name='L38'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=JoyScaleMax&amp;type=reference' title='Multiple referred from 4 places.'>JoyScaleMax</a>             32768
+<a id='L39' name='L39'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=JoyScaleShift&amp;type=reference' title='Multiple referred from 4 places.'>JoyScaleShift</a>   8
+<a id='L40' name='L40'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=MaxJoyValue&amp;type=reference' title='Multiple referred from 3 places.'>MaxJoyValue</a>             5000
+<a id='L41' name='L41'></a>
+<a id='L42' name='L42'></a><em class='comment'>/*</em>
+<a id='L43' name='L43'></a><em class='comment'>=============================================================================</em>
+<a id='L44' name='L44'></a><em class='comment'></em>
+<a id='L45' name='L45'></a><em class='comment'>                                        GLOBAL VARIABLES</em>
+<a id='L46' name='L46'></a><em class='comment'></em>
+<a id='L47' name='L47'></a><em class='comment'>=============================================================================</em>
+<a id='L48' name='L48'></a><em class='comment'>*/</em>
+<a id='L49' name='L49'></a>
+<a id='L50' name='L50'></a><em class='comment'>//</em>
+<a id='L51' name='L51'></a><em class='comment'>// configuration variables</em>
+<a id='L52' name='L52'></a><em class='comment'>//</em>
+<a id='L53' name='L53'></a><a href='../cgi-bin/global.cgi?pattern=boolean&amp;type=definitions' title='Multiple defined in 2 places.'>boolean</a>                 <a href='../cgi-bin/global.cgi?pattern=MousePresent&amp;type=symbol' title='Multiple used in 19 places.'>MousePresent</a>;
+<a id='L54' name='L54'></a><a href='../cgi-bin/global.cgi?pattern=boolean&amp;type=definitions' title='Multiple defined in 2 places.'>boolean</a>                 <a href='../cgi-bin/global.cgi?pattern=JoysPresent&amp;type=symbol' title='Multiple used in 9 places.'>JoysPresent</a>[<a href='../S/91.html#L17' title='Defined at 17 in WOLFSRC/ID_IN.H.'>MaxJoys</a>];
+<a id='L55' name='L55'></a><a href='../cgi-bin/global.cgi?pattern=boolean&amp;type=definitions' title='Multiple defined in 2 places.'>boolean</a>                 JoyPadPresent;
+<a id='L56' name='L56'></a>
+<a id='L57' name='L57'></a>
+<a id='L58' name='L58'></a><em class='comment'>//      Global variables</em>
+<a id='L59' name='L59'></a>                <a href='../cgi-bin/global.cgi?pattern=boolean&amp;type=definitions' title='Multiple defined in 2 places.'>boolean</a>         <a href='../cgi-bin/global.cgi?pattern=Keyboard&amp;type=symbol' title='Multiple used in 106 places.'>Keyboard</a>[<a href='../S/91.html#L18' title='Defined at 18 in WOLFSRC/ID_IN.H.'>NumCodes</a>];
+<a id='L60' name='L60'></a>                <a href='../cgi-bin/global.cgi?pattern=boolean&amp;type=definitions' title='Multiple defined in 2 places.'>boolean</a>         <a href='../cgi-bin/global.cgi?pattern=Paused&amp;type=symbol' title='Multiple used in 7 places.'>Paused</a>;
+<a id='L61' name='L61'></a>                <strong class='reserved'>char</strong>            <a href='../cgi-bin/global.cgi?pattern=LastASCII&amp;type=symbol' title='Multiple used in 10 places.'>LastASCII</a>;
+<a id='L62' name='L62'></a>                <a href='../S/91.html#L20' title='Defined at 20 in WOLFSRC/ID_IN.H.'>ScanCode</a>        <a href='../cgi-bin/global.cgi?pattern=LastScan&amp;type=symbol' title='Multiple used in 25 places.'>LastScan</a>;
+<a id='L63' name='L63'></a>
+<a id='L64' name='L64'></a>                <a href='../S/91.html#L146' title='Defined at 146 in WOLFSRC/ID_IN.H.'>KeyboardDef</a>     <a href='../cgi-bin/global.cgi?pattern=KbdDefs&amp;type=symbol' title='Multiple used in 3 places.'>KbdDefs</a> = <em class='brace'>{</em>0x1d,0x38,0x47,0x48,0x49,0x4b,0x4d,0x4f,0x50,0x51<em class='brace'>}</em>;
+<a id='L65' name='L65'></a>                <a href='../S/91.html#L154' title='Defined at 154 in WOLFSRC/ID_IN.H.'>JoystickDef</a>     <a href='../cgi-bin/global.cgi?pattern=JoyDefs&amp;type=symbol' title='Multiple used in 5 places.'>JoyDefs</a>[<a href='../S/91.html#L17' title='Defined at 17 in WOLFSRC/ID_IN.H.'>MaxJoys</a>];
+<a id='L66' name='L66'></a>                <a href='../S/91.html#L121' title='Defined at 121 in WOLFSRC/ID_IN.H.'>ControlType</a>     <a href='../cgi-bin/global.cgi?pattern=Controls&amp;type=symbol' title='Multiple used in 4 places.'>Controls</a>[<a href='../S/91.html#L15' title='Defined at 15 in WOLFSRC/ID_IN.H.'>MaxPlayers</a>];
+<a id='L67' name='L67'></a>
+<a id='L68' name='L68'></a>                <a href='../cgi-bin/global.cgi?pattern=longword&amp;type=definitions' title='Multiple defined in 2 places.'>longword</a>        MouseDownCount;
+<a id='L69' name='L69'></a>
+<a id='L70' name='L70'></a>                <a href='../S/91.html#L114' title='Defined at 114 in WOLFSRC/ID_IN.H.'>Demo</a>            <a href='../cgi-bin/global.cgi?pattern=DemoMode&amp;type=symbol' title='Multiple used in 6 places.'>DemoMode</a> = <a href='../S/91.html#L113' title='Defined at 113 in WOLFSRC/ID_IN.H.'>demo_Off</a>;
+<a id='L71' name='L71'></a>                <a href='../cgi-bin/global.cgi?pattern=byte&amp;type=definitions' title='Multiple defined in 2 places.'>byte</a> <a href='../cgi-bin/global.cgi?pattern=_seg&amp;type=symbol' title='Multiple used in 65 places.'>_seg</a>       *<a href='../cgi-bin/global.cgi?pattern=DemoBuffer&amp;type=symbol' title='Multiple used in 10 places.'>DemoBuffer</a>;
+<a id='L72' name='L72'></a>                <a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a>            <a href='../cgi-bin/global.cgi?pattern=DemoOffset&amp;type=symbol' title='Multiple used in 14 places.'>DemoOffset</a>,<a href='../cgi-bin/global.cgi?pattern=DemoSize&amp;type=symbol' title='Multiple used in 4 places.'>DemoSize</a>;
+<a id='L73' name='L73'></a>
+<a id='L74' name='L74'></a><em class='comment'>/*</em>
+<a id='L75' name='L75'></a><em class='comment'>=============================================================================</em>
+<a id='L76' name='L76'></a><em class='comment'></em>
+<a id='L77' name='L77'></a><em class='comment'>                                        LOCAL VARIABLES</em>
+<a id='L78' name='L78'></a><em class='comment'></em>
+<a id='L79' name='L79'></a><em class='comment'>=============================================================================</em>
+<a id='L80' name='L80'></a><em class='comment'>*/</em>
+<a id='L81' name='L81'></a><strong class='reserved'>static</strong>  <a href='../cgi-bin/global.cgi?pattern=byte&amp;type=definitions' title='Multiple defined in 2 places.'>byte</a>        <a href='../cgi-bin/global.cgi?pattern=far&amp;type=symbol' title='Multiple used in 394 places.'>far</a> <a href='../cgi-bin/global.cgi?pattern=ASCIINames&amp;type=symbol' title='Multiple used in 2 places.'>ASCIINames</a>[] =          <em class='comment'>// Unshifted ASCII for scan codes</em>
+<a id='L82' name='L82'></a>                                        <em class='brace'>{</em>
+<a id='L83' name='L83'></a><em class='comment'>//       0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F</em>
+<a id='L84' name='L84'></a>        0  ,27 ,'1','2','3','4','5','6','7','8','9','0','-','=',8  ,9  ,        <em class='comment'>// 0</em>
+<a id='L85' name='L85'></a>        'q','w','e','r','t','y','u','i','o','p','[',']',13 ,0  ,'a','s',        <em class='comment'>// 1</em>
+<a id='L86' name='L86'></a>        'd','f','g','h','j','k','l',';',39 ,'`',0  ,92 ,'z','x','c','v',        <em class='comment'>// 2</em>
+<a id='L87' name='L87'></a>        'b','n','m',',','.','/',0  ,'*',0  ,' ',0  ,0  ,0  ,0  ,0  ,0  ,        <em class='comment'>// 3</em>
+<a id='L88' name='L88'></a>        0  ,0  ,0  ,0  ,0  ,0  ,0  ,'7','8','9','-','4','5','6','+','1',        <em class='comment'>// 4</em>
+<a id='L89' name='L89'></a>        '2','3','0',127,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,        <em class='comment'>// 5</em>
+<a id='L90' name='L90'></a>        0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,        <em class='comment'>// 6</em>
+<a id='L91' name='L91'></a>        0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0           <em class='comment'>// 7</em>
+<a id='L92' name='L92'></a>                                        <em class='brace'>}</em>,
+<a id='L93' name='L93'></a>                                        <a href='../cgi-bin/global.cgi?pattern=far&amp;type=symbol' title='Multiple used in 394 places.'>far</a> <a href='../cgi-bin/global.cgi?pattern=ShiftNames&amp;type=symbol' title='Multiple used in 2 places.'>ShiftNames</a>[] =              <em class='comment'>// Shifted ASCII for scan codes</em>
+<a id='L94' name='L94'></a>                                        <em class='brace'>{</em>
+<a id='L95' name='L95'></a><em class='comment'>//       0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F</em>
+<a id='L96' name='L96'></a>        0  ,27 ,'!','@','#','$','%','^','&amp;','*','(',')','_','+',8  ,9  ,        <em class='comment'>// 0</em>
+<a id='L97' name='L97'></a>        'Q','W','E','R','T','Y','U','I','O','P','{','}',13 ,0  ,'A','S',        <em class='comment'>// 1</em>
+<a id='L98' name='L98'></a>        'D','F','G','H','J','K','L',':',34 ,'~',0  ,'|','Z','X','C','V',        <em class='comment'>// 2</em>
+<a id='L99' name='L99'></a>        'B','N','M','&lt;','&gt;','?',0  ,'*',0  ,' ',0  ,0  ,0  ,0  ,0  ,0  ,        <em class='comment'>// 3</em>
+<a id='L100' name='L100'></a>        0  ,0  ,0  ,0  ,0  ,0  ,0  ,'7','8','9','-','4','5','6','+','1',        <em class='comment'>// 4</em>
+<a id='L101' name='L101'></a>        '2','3','0',127,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,        <em class='comment'>// 5</em>
+<a id='L102' name='L102'></a>        0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,        <em class='comment'>// 6</em>
+<a id='L103' name='L103'></a>        0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0           <em class='comment'>// 7</em>
+<a id='L104' name='L104'></a>                                        <em class='brace'>}</em>,
+<a id='L105' name='L105'></a>                                        <a href='../cgi-bin/global.cgi?pattern=far&amp;type=symbol' title='Multiple used in 394 places.'>far</a> <a href='../cgi-bin/global.cgi?pattern=SpecialNames&amp;type=symbol' title='Multiple used in 2 places.'>SpecialNames</a>[] =    <em class='comment'>// ASCII for 0xe0 prefixed codes</em>
+<a id='L106' name='L106'></a>                                        <em class='brace'>{</em>
+<a id='L107' name='L107'></a><em class='comment'>//       0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F</em>
+<a id='L108' name='L108'></a>        0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,        <em class='comment'>// 0</em>
+<a id='L109' name='L109'></a>        0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,13 ,0  ,0  ,0  ,        <em class='comment'>// 1</em>
+<a id='L110' name='L110'></a>        0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,        <em class='comment'>// 2</em>
+<a id='L111' name='L111'></a>        0  ,0  ,0  ,0  ,0  ,'/',0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,        <em class='comment'>// 3</em>
+<a id='L112' name='L112'></a>        0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,        <em class='comment'>// 4</em>
+<a id='L113' name='L113'></a>        0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,        <em class='comment'>// 5</em>
+<a id='L114' name='L114'></a>        0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,        <em class='comment'>// 6</em>
+<a id='L115' name='L115'></a>        0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0           <em class='comment'>// 7</em>
+<a id='L116' name='L116'></a>                                        <em class='brace'>}</em>;
+<a id='L117' name='L117'></a>
+<a id='L118' name='L118'></a>
+<a id='L119' name='L119'></a><strong class='reserved'>static</strong>  <a href='../cgi-bin/global.cgi?pattern=boolean&amp;type=definitions' title='Multiple defined in 2 places.'>boolean</a>         <a href='../cgi-bin/global.cgi?pattern=IN_Started&amp;type=symbol' title='Multiple used in 5 places.'>IN_Started</a>;
+<a id='L120' name='L120'></a><strong class='reserved'>static</strong>  <a href='../cgi-bin/global.cgi?pattern=boolean&amp;type=definitions' title='Multiple defined in 2 places.'>boolean</a>         <a href='../cgi-bin/global.cgi?pattern=CapsLock&amp;type=symbol' title='Multiple used in 4 places.'>CapsLock</a>;
+<a id='L121' name='L121'></a><strong class='reserved'>static</strong>  <a href='../S/91.html#L20' title='Defined at 20 in WOLFSRC/ID_IN.H.'>ScanCode</a>        <a href='../cgi-bin/global.cgi?pattern=CurCode&amp;type=symbol' title='Multiple used in 3 places.'>CurCode</a>,<a href='../cgi-bin/global.cgi?pattern=LastCode&amp;type=symbol' title='Multiple used in 2 places.'>LastCode</a>;
+<a id='L122' name='L122'></a>
+<a id='L123' name='L123'></a><strong class='reserved'>static</strong>  <a href='../S/91.html#L133' title='Defined at 133 in WOLFSRC/ID_IN.H.'>Direction</a>       <a href='../cgi-bin/global.cgi?pattern=DirTable&amp;type=symbol' title='Multiple used in 2 places.'>DirTable</a>[] =            <em class='comment'>// Quick lookup for total direction</em>
+<a id='L124' name='L124'></a>                                        <em class='brace'>{</em>
+<a id='L125' name='L125'></a>                                                <a href='../S/91.html#L131' title='Defined at 131 in WOLFSRC/ID_IN.H.'>dir_NorthWest</a>,  <a href='../S/91.html#L128' title='Defined at 128 in WOLFSRC/ID_IN.H.'>dir_North</a>,      <a href='../S/91.html#L128' title='Defined at 128 in WOLFSRC/ID_IN.H.'>dir_NorthEast</a>,
+<a id='L126' name='L126'></a>                                                <a href='../S/91.html#L131' title='Defined at 131 in WOLFSRC/ID_IN.H.'>dir_West</a>,               <a href='../S/91.html#L132' title='Defined at 132 in WOLFSRC/ID_IN.H.'>dir_None</a>,       <a href='../S/91.html#L129' title='Defined at 129 in WOLFSRC/ID_IN.H.'>dir_East</a>,
+<a id='L127' name='L127'></a>                                                <a href='../S/91.html#L130' title='Defined at 130 in WOLFSRC/ID_IN.H.'>dir_SouthWest</a>,  <a href='../S/91.html#L130' title='Defined at 130 in WOLFSRC/ID_IN.H.'>dir_South</a>,      <a href='../S/91.html#L129' title='Defined at 129 in WOLFSRC/ID_IN.H.'>dir_SouthEast</a>
+<a id='L128' name='L128'></a>                                        <em class='brace'>}</em>;
+<a id='L129' name='L129'></a>
+<a id='L130' name='L130'></a><strong class='reserved'>static</strong>  <strong class='reserved'>void</strong>                    (*<a href='../cgi-bin/global.cgi?pattern=INL_KeyHook&amp;type=symbol' title='Multiple used in 5 places.'>INL_KeyHook</a>)(<strong class='reserved'>void</strong>);
+<a id='L131' name='L131'></a><strong class='reserved'>static</strong>  <strong class='reserved'>void</strong> <a href='../cgi-bin/global.cgi?pattern=interrupt&amp;type=symbol' title='Multiple used in 8 places.'>interrupt</a>  (*<a href='../cgi-bin/global.cgi?pattern=OldKeyVect&amp;type=symbol' title='Multiple used in 3 places.'>OldKeyVect</a>)(<strong class='reserved'>void</strong>);
+<a id='L132' name='L132'></a>
+<a id='L133' name='L133'></a><strong class='reserved'>static</strong>  <strong class='reserved'>char</strong>                    *<a href='../cgi-bin/global.cgi?pattern=ParmStrings&amp;type=symbol' title='Multiple used in 13 places.'>ParmStrings</a>[] = <em class='brace'>{</em>"nojoys","nomouse",<a href='../cgi-bin/global.cgi?pattern=nil&amp;type=definitions' title='Multiple defined in 3 places.'>nil</a><em class='brace'>}</em>;
+<a id='L134' name='L134'></a>
+<a id='L135' name='L135'></a><em class='comment'>//      Internal routines</em>
+<a id='L136' name='L136'></a>
+<a id='L137' name='L137'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L138' name='L138'></a><em class='comment'>//</em>
+<a id='L139' name='L139'></a><em class='comment'>//      INL_KeyService() - Handles a keyboard interrupt (key up/down)</em>
+<a id='L140' name='L140'></a><em class='comment'>//</em>
+<a id='L141' name='L141'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L142' name='L142'></a><strong class='reserved'>static</strong> <strong class='reserved'>void</strong> <a href='../cgi-bin/global.cgi?pattern=interrupt&amp;type=symbol' title='Multiple used in 8 places.'>interrupt</a>
+<a id='L143' name='L143'></a><a href='../S/62.html#L437' title='Referred from 437 in WOLFSRC/ID_IN.C.'>INL_KeyService</a>(<strong class='reserved'>void</strong>)
+<em class='comment'>/* <img class='icon' src='../icons/n_left.png' alt='[previous]' /><a href='#L218'><img class='icon' src='../icons/right.png' alt='[next]' /></a><img class='icon' src='../icons/n_first.png' alt='[first]' /><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L144' name='L144'></a><em class='brace'>{</em>
+<a id='L145' name='L145'></a><strong class='reserved'>static</strong>  <a href='../cgi-bin/global.cgi?pattern=boolean&amp;type=definitions' title='Multiple defined in 2 places.'>boolean</a> <a href='../cgi-bin/global.cgi?pattern=special&amp;type=symbol' title='Multiple used in 5 places.'>special</a>;
+<a id='L146' name='L146'></a>                <a href='../cgi-bin/global.cgi?pattern=byte&amp;type=definitions' title='Multiple defined in 2 places.'>byte</a>    <a href='../cgi-bin/global.cgi?pattern=k&amp;type=symbol' title='Multiple used in 19 places.'>k</a>,<a href='../cgi-bin/global.cgi?pattern=c&amp;type=symbol' title='Multiple used in 64 places.'>c</a>,
+<a id='L147' name='L147'></a>                                <a href='../cgi-bin/global.cgi?pattern=temp&amp;type=symbol' title='Multiple used in 86 places.'>temp</a>;
+<a id='L148' name='L148'></a>                <strong class='reserved'>int</strong>             <a href='../cgi-bin/global.cgi?pattern=i&amp;type=symbol' title='Multiple used in 602 places.'>i</a>;
+<a id='L149' name='L149'></a>
+<a id='L150' name='L150'></a>        <a href='../cgi-bin/global.cgi?pattern=k&amp;type=symbol' title='Multiple used in 19 places.'>k</a> = <a href='../cgi-bin/global.cgi?pattern=inportb&amp;type=symbol' title='Multiple used in 18 places.'>inportb</a>(0x60);      <em class='comment'>// Get the scan code</em>
+<a id='L151' name='L151'></a>
+<a id='L152' name='L152'></a>        <em class='comment'>// Tell the XT keyboard controller to clear the key</em>
+<a id='L153' name='L153'></a>        <a href='../cgi-bin/global.cgi?pattern=outportb&amp;type=symbol' title='Multiple used in 53 places.'>outportb</a>(0x61,(<a href='../cgi-bin/global.cgi?pattern=temp&amp;type=symbol' title='Multiple used in 86 places.'>temp</a> = <a href='../cgi-bin/global.cgi?pattern=inportb&amp;type=symbol' title='Multiple used in 18 places.'>inportb</a>(0x61)) | 0x80);
+<a id='L154' name='L154'></a>        <a href='../cgi-bin/global.cgi?pattern=outportb&amp;type=symbol' title='Multiple used in 53 places.'>outportb</a>(0x61,<a href='../cgi-bin/global.cgi?pattern=temp&amp;type=symbol' title='Multiple used in 86 places.'>temp</a>);
+<a id='L155' name='L155'></a>
+<a id='L156' name='L156'></a>        <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=k&amp;type=symbol' title='Multiple used in 19 places.'>k</a> == 0xe0)          <em class='comment'>// Special key prefix</em>
+<a id='L157' name='L157'></a>                <a href='../cgi-bin/global.cgi?pattern=special&amp;type=symbol' title='Multiple used in 5 places.'>special</a> = <strong class='reserved'>true</strong>;
+<a id='L158' name='L158'></a>        <strong class='reserved'>else</strong> <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=k&amp;type=symbol' title='Multiple used in 19 places.'>k</a> == 0xe1)     <em class='comment'>// Handle Pause key</em>
+<a id='L159' name='L159'></a>                <a href='../cgi-bin/global.cgi?pattern=Paused&amp;type=symbol' title='Multiple used in 7 places.'>Paused</a> = <strong class='reserved'>true</strong>;
+<a id='L160' name='L160'></a>        <strong class='reserved'>else</strong>
+<a id='L161' name='L161'></a>        <em class='brace'>{</em>
+<a id='L162' name='L162'></a>                <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=k&amp;type=symbol' title='Multiple used in 19 places.'>k</a> &amp; 0x80)   <em class='comment'>// Break code</em>
+<a id='L163' name='L163'></a>                <em class='brace'>{</em>
+<a id='L164' name='L164'></a>                        <a href='../cgi-bin/global.cgi?pattern=k&amp;type=symbol' title='Multiple used in 19 places.'>k</a> &amp;= 0x7f;
+<a id='L165' name='L165'></a>
+<a id='L166' name='L166'></a><em class='comment'>// DEBUG - handle special keys: ctl-alt-delete, print scrn</em>
+<a id='L167' name='L167'></a>
+<a id='L168' name='L168'></a>                        <a href='../cgi-bin/global.cgi?pattern=Keyboard&amp;type=symbol' title='Multiple used in 106 places.'>Keyboard</a>[<a href='../cgi-bin/global.cgi?pattern=k&amp;type=symbol' title='Multiple used in 19 places.'>k</a>] = <strong class='reserved'>false</strong>;
+<a id='L169' name='L169'></a>                <em class='brace'>}</em>
+<a id='L170' name='L170'></a>                <strong class='reserved'>else</strong>                    <em class='comment'>// Make code</em>
+<a id='L171' name='L171'></a>                <em class='brace'>{</em>
+<a id='L172' name='L172'></a>                        <a href='../cgi-bin/global.cgi?pattern=LastCode&amp;type=symbol' title='Multiple used in 2 places.'>LastCode</a> = <a href='../cgi-bin/global.cgi?pattern=CurCode&amp;type=symbol' title='Multiple used in 3 places.'>CurCode</a>;
+<a id='L173' name='L173'></a>                        <a href='../cgi-bin/global.cgi?pattern=CurCode&amp;type=symbol' title='Multiple used in 3 places.'>CurCode</a> = <a href='../cgi-bin/global.cgi?pattern=LastScan&amp;type=symbol' title='Multiple used in 25 places.'>LastScan</a> = <a href='../cgi-bin/global.cgi?pattern=k&amp;type=symbol' title='Multiple used in 19 places.'>k</a>;
+<a id='L174' name='L174'></a>                        <a href='../cgi-bin/global.cgi?pattern=Keyboard&amp;type=symbol' title='Multiple used in 106 places.'>Keyboard</a>[<a href='../cgi-bin/global.cgi?pattern=k&amp;type=symbol' title='Multiple used in 19 places.'>k</a>] = <strong class='reserved'>true</strong>;
+<a id='L175' name='L175'></a>
+<a id='L176' name='L176'></a>                        <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=special&amp;type=symbol' title='Multiple used in 5 places.'>special</a>)
+<a id='L177' name='L177'></a>                                <a href='../cgi-bin/global.cgi?pattern=c&amp;type=symbol' title='Multiple used in 64 places.'>c</a> = <a href='../cgi-bin/global.cgi?pattern=SpecialNames&amp;type=symbol' title='Multiple used in 2 places.'>SpecialNames</a>[<a href='../cgi-bin/global.cgi?pattern=k&amp;type=symbol' title='Multiple used in 19 places.'>k</a>];
+<a id='L178' name='L178'></a>                        <strong class='reserved'>else</strong>
+<a id='L179' name='L179'></a>                        <em class='brace'>{</em>
+<a id='L180' name='L180'></a>                                <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=k&amp;type=symbol' title='Multiple used in 19 places.'>k</a> == <a href='../S/91.html#L31' title='Defined at 31 in WOLFSRC/ID_IN.H.'>sc_CapsLock</a>)
+<a id='L181' name='L181'></a>                                <em class='brace'>{</em>
+<a id='L182' name='L182'></a>                                        <a href='../cgi-bin/global.cgi?pattern=CapsLock&amp;type=symbol' title='Multiple used in 4 places.'>CapsLock</a> ^= <strong class='reserved'>true</strong>;
+<a id='L183' name='L183'></a>                                        <em class='comment'>// DEBUG - make caps lock light work</em>
+<a id='L184' name='L184'></a>                                <em class='brace'>}</em>
+<a id='L185' name='L185'></a>
+<a id='L186' name='L186'></a>                                <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=Keyboard&amp;type=symbol' title='Multiple used in 106 places.'>Keyboard</a>[<a href='../S/91.html#L32' title='Defined at 32 in WOLFSRC/ID_IN.H.'>sc_LShift</a>] || <a href='../cgi-bin/global.cgi?pattern=Keyboard&amp;type=symbol' title='Multiple used in 106 places.'>Keyboard</a>[<a href='../S/91.html#L33' title='Defined at 33 in WOLFSRC/ID_IN.H.'>sc_RShift</a>]) <em class='comment'>// If shifted</em>
+<a id='L187' name='L187'></a>                                <em class='brace'>{</em>
+<a id='L188' name='L188'></a>                                        <a href='../cgi-bin/global.cgi?pattern=c&amp;type=symbol' title='Multiple used in 64 places.'>c</a> = <a href='../cgi-bin/global.cgi?pattern=ShiftNames&amp;type=symbol' title='Multiple used in 2 places.'>ShiftNames</a>[<a href='../cgi-bin/global.cgi?pattern=k&amp;type=symbol' title='Multiple used in 19 places.'>k</a>];
+<a id='L189' name='L189'></a>                                        <strong class='reserved'>if</strong> ((<a href='../cgi-bin/global.cgi?pattern=c&amp;type=symbol' title='Multiple used in 64 places.'>c</a> &gt;= 'A') &amp;&amp; (<a href='../cgi-bin/global.cgi?pattern=c&amp;type=symbol' title='Multiple used in 64 places.'>c</a> &lt;= 'Z') &amp;&amp; <a href='../cgi-bin/global.cgi?pattern=CapsLock&amp;type=symbol' title='Multiple used in 4 places.'>CapsLock</a>)
+<a id='L190' name='L190'></a>                                                <a href='../cgi-bin/global.cgi?pattern=c&amp;type=symbol' title='Multiple used in 64 places.'>c</a> += 'a' - 'A';
+<a id='L191' name='L191'></a>                                <em class='brace'>}</em>
+<a id='L192' name='L192'></a>                                <strong class='reserved'>else</strong>
+<a id='L193' name='L193'></a>                                <em class='brace'>{</em>
+<a id='L194' name='L194'></a>                                        <a href='../cgi-bin/global.cgi?pattern=c&amp;type=symbol' title='Multiple used in 64 places.'>c</a> = <a href='../cgi-bin/global.cgi?pattern=ASCIINames&amp;type=symbol' title='Multiple used in 2 places.'>ASCIINames</a>[<a href='../cgi-bin/global.cgi?pattern=k&amp;type=symbol' title='Multiple used in 19 places.'>k</a>];
+<a id='L195' name='L195'></a>                                        <strong class='reserved'>if</strong> ((<a href='../cgi-bin/global.cgi?pattern=c&amp;type=symbol' title='Multiple used in 64 places.'>c</a> &gt;= 'a') &amp;&amp; (<a href='../cgi-bin/global.cgi?pattern=c&amp;type=symbol' title='Multiple used in 64 places.'>c</a> &lt;= 'z') &amp;&amp; <a href='../cgi-bin/global.cgi?pattern=CapsLock&amp;type=symbol' title='Multiple used in 4 places.'>CapsLock</a>)
+<a id='L196' name='L196'></a>                                                <a href='../cgi-bin/global.cgi?pattern=c&amp;type=symbol' title='Multiple used in 64 places.'>c</a> -= 'a' - 'A';
+<a id='L197' name='L197'></a>                                <em class='brace'>}</em>
+<a id='L198' name='L198'></a>                        <em class='brace'>}</em>
+<a id='L199' name='L199'></a>                        <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=c&amp;type=symbol' title='Multiple used in 64 places.'>c</a>)
+<a id='L200' name='L200'></a>                                <a href='../cgi-bin/global.cgi?pattern=LastASCII&amp;type=symbol' title='Multiple used in 10 places.'>LastASCII</a> = <a href='../cgi-bin/global.cgi?pattern=c&amp;type=symbol' title='Multiple used in 64 places.'>c</a>;
+<a id='L201' name='L201'></a>                <em class='brace'>}</em>
+<a id='L202' name='L202'></a>
+<a id='L203' name='L203'></a>                <a href='../cgi-bin/global.cgi?pattern=special&amp;type=symbol' title='Multiple used in 5 places.'>special</a> = <strong class='reserved'>false</strong>;
+<a id='L204' name='L204'></a>        <em class='brace'>}</em>
+<a id='L205' name='L205'></a>
+<a id='L206' name='L206'></a>        <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=INL_KeyHook&amp;type=symbol' title='Multiple used in 5 places.'>INL_KeyHook</a> &amp;&amp; !<a href='../cgi-bin/global.cgi?pattern=special&amp;type=symbol' title='Multiple used in 5 places.'>special</a>)
+<a id='L207' name='L207'></a>                <a href='../cgi-bin/global.cgi?pattern=INL_KeyHook&amp;type=symbol' title='Multiple used in 5 places.'>INL_KeyHook</a>();
+<a id='L208' name='L208'></a>        <a href='../cgi-bin/global.cgi?pattern=outportb&amp;type=symbol' title='Multiple used in 53 places.'>outportb</a>(0x20,0x20);
+<a id='L209' name='L209'></a><em class='brace'>}</em>
+<a id='L210' name='L210'></a>
+<a id='L211' name='L211'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L212' name='L212'></a><em class='comment'>//</em>
+<a id='L213' name='L213'></a><em class='comment'>//      INL_GetMouseDelta() - Gets the amount that the mouse has moved from the</em>
+<a id='L214' name='L214'></a><em class='comment'>//              mouse driver</em>
+<a id='L215' name='L215'></a><em class='comment'>//</em>
+<a id='L216' name='L216'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L217' name='L217'></a><strong class='reserved'>static</strong> <strong class='reserved'>void</strong>
+<a id='L218' name='L218'></a><a href='../S/62.html#L762' title='Referred from 762 in WOLFSRC/ID_IN.C.'>INL_GetMouseDelta</a>(<strong class='reserved'>int</strong> *<a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a>,<strong class='reserved'>int</strong> *<a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a>)
+<em class='comment'>/* <a href='#L143'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><a href='#L232'><img class='icon' src='../icons/right.png' alt='[next]' /></a><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L219' name='L219'></a><em class='brace'>{</em>
+<a id='L220' name='L220'></a>        <a href='../cgi-bin/global.cgi?pattern=Mouse&amp;type=definitions' title='Multiple defined in 2 places.'>Mouse</a>(<a href='../cgi-bin/global.cgi?pattern=MDelta&amp;type=definitions' title='Multiple defined in 2 places.'>MDelta</a>);
+<a id='L221' name='L221'></a>        *<a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a> = <a href='../cgi-bin/global.cgi?pattern=_CX&amp;type=symbol' title='Multiple used in 9 places.'>_CX</a>;
+<a id='L222' name='L222'></a>        *<a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a> = <a href='../cgi-bin/global.cgi?pattern=_DX&amp;type=symbol' title='Multiple used in 16 places.'>_DX</a>;
+<a id='L223' name='L223'></a><em class='brace'>}</em>
+<a id='L224' name='L224'></a>
+<a id='L225' name='L225'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L226' name='L226'></a><em class='comment'>//</em>
+<a id='L227' name='L227'></a><em class='comment'>//      INL_GetMouseButtons() - Gets the status of the mouse buttons from the</em>
+<a id='L228' name='L228'></a><em class='comment'>//              mouse driver</em>
+<a id='L229' name='L229'></a><em class='comment'>//</em>
+<a id='L230' name='L230'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L231' name='L231'></a><strong class='reserved'>static</strong> <a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a>
+<a id='L232' name='L232'></a><a href='../S/62.html#L763' title='Referred from 763 in WOLFSRC/ID_IN.C.'>INL_GetMouseButtons</a>(<strong class='reserved'>void</strong>)
+<em class='comment'>/* <a href='#L218'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><a href='#L247'><img class='icon' src='../icons/right.png' alt='[next]' /></a><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L233' name='L233'></a><em class='brace'>{</em>
+<a id='L234' name='L234'></a>        <a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a>    <a href='../cgi-bin/global.cgi?pattern=buttons&amp;type=symbol' title='Multiple used in 39 places.'>buttons</a>;
+<a id='L235' name='L235'></a>
+<a id='L236' name='L236'></a>        <a href='../cgi-bin/global.cgi?pattern=Mouse&amp;type=definitions' title='Multiple defined in 2 places.'>Mouse</a>(<a href='../cgi-bin/global.cgi?pattern=MButtons&amp;type=definitions' title='Multiple defined in 2 places.'>MButtons</a>);
+<a id='L237' name='L237'></a>        <a href='../cgi-bin/global.cgi?pattern=buttons&amp;type=symbol' title='Multiple used in 39 places.'>buttons</a> = <a href='../cgi-bin/global.cgi?pattern=_BX&amp;type=symbol' title='Multiple used in 9 places.'>_BX</a>;
+<a id='L238' name='L238'></a>        <strong class='reserved'>return</strong>(<a href='../cgi-bin/global.cgi?pattern=buttons&amp;type=symbol' title='Multiple used in 39 places.'>buttons</a>);
+<a id='L239' name='L239'></a><em class='brace'>}</em>
+<a id='L240' name='L240'></a>
+<a id='L241' name='L241'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L242' name='L242'></a><em class='comment'>//</em>
+<a id='L243' name='L243'></a><em class='comment'>//      IN_GetJoyAbs() - Reads the absolute position of the specified joystick</em>
+<a id='L244' name='L244'></a><em class='comment'>//</em>
+<a id='L245' name='L245'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L246' name='L246'></a><strong class='reserved'>void</strong>
+<a id='L247' name='L247'></a><a href='../cgi-bin/global.cgi?pattern=IN_GetJoyAbs&amp;type=reference' title='Multiple referred from 5 places.'>IN_GetJoyAbs</a>(<a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a> <a href='../cgi-bin/global.cgi?pattern=joy&amp;type=symbol' title='Multiple used in 25 places.'>joy</a>,<a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a> *<a href='../cgi-bin/global.cgi?pattern=xp&amp;type=symbol' title='Multiple used in 3 places.'>xp</a>,<a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a> *<a href='../cgi-bin/global.cgi?pattern=yp&amp;type=symbol' title='Multiple used in 3 places.'>yp</a>)
+<em class='comment'>/* <a href='#L232'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><a href='#L324'><img class='icon' src='../icons/right.png' alt='[next]' /></a><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L248' name='L248'></a><em class='brace'>{</em>
+<a id='L249' name='L249'></a>        <a href='../cgi-bin/global.cgi?pattern=byte&amp;type=definitions' title='Multiple defined in 2 places.'>byte</a>    <a href='../cgi-bin/global.cgi?pattern=xb&amp;type=symbol' title='Multiple used in 3 places.'>xb</a>,<a href='../cgi-bin/global.cgi?pattern=yb&amp;type=symbol' title='Multiple used in 3 places.'>yb</a>,
+<a id='L250' name='L250'></a>                        <a href='../cgi-bin/global.cgi?pattern=xs&amp;type=symbol' title='Multiple used in 4 places.'>xs</a>,<a href='../cgi-bin/global.cgi?pattern=ys&amp;type=symbol' title='Multiple used in 4 places.'>ys</a>;
+<a id='L251' name='L251'></a>        <a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a>    <a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a>,<a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a>;
+<a id='L252' name='L252'></a>
+<a id='L253' name='L253'></a>        <a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a> = <a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a> = 0;
+<a id='L254' name='L254'></a>        <a href='../cgi-bin/global.cgi?pattern=xs&amp;type=symbol' title='Multiple used in 4 places.'>xs</a> = <a href='../cgi-bin/global.cgi?pattern=joy&amp;type=symbol' title='Multiple used in 25 places.'>joy</a>? 2 : 0;                <em class='comment'>// Find shift value for x axis</em>
+<a id='L255' name='L255'></a>        <a href='../cgi-bin/global.cgi?pattern=xb&amp;type=symbol' title='Multiple used in 3 places.'>xb</a> = 1 &lt;&lt; <a href='../cgi-bin/global.cgi?pattern=xs&amp;type=symbol' title='Multiple used in 4 places.'>xs</a>;                   <em class='comment'>// Use shift value to get x bit mask</em>
+<a id='L256' name='L256'></a>        <a href='../cgi-bin/global.cgi?pattern=ys&amp;type=symbol' title='Multiple used in 4 places.'>ys</a> = <a href='../cgi-bin/global.cgi?pattern=joy&amp;type=symbol' title='Multiple used in 25 places.'>joy</a>? 3 : 1;                <em class='comment'>// Do the same for y axis</em>
+<a id='L257' name='L257'></a>        <a href='../cgi-bin/global.cgi?pattern=yb&amp;type=symbol' title='Multiple used in 3 places.'>yb</a> = 1 &lt;&lt; <a href='../cgi-bin/global.cgi?pattern=ys&amp;type=symbol' title='Multiple used in 4 places.'>ys</a>;
+<a id='L258' name='L258'></a>
+<a id='L259' name='L259'></a><em class='comment'>// Read the absolute joystick values</em>
+<a id='L260' name='L260'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=pushf&amp;type=symbol' title='Multiple used in 24 places.'>pushf</a>                           <em class='comment'>// Save some registers</em>
+<a id='L261' name='L261'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=push&amp;type=symbol' title='Multiple used in 12 places.'>push</a>    <a href='../cgi-bin/global.cgi?pattern=si&amp;type=symbol' title='Multiple used in 64 places.'>si</a>
+<a id='L262' name='L262'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=push&amp;type=symbol' title='Multiple used in 12 places.'>push</a>    <a href='../cgi-bin/global.cgi?pattern=di&amp;type=symbol' title='Multiple used in 102 places.'>di</a>
+<a id='L263' name='L263'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=cli&amp;type=symbol' title='Multiple used in 28 places.'>cli</a>                                     <em class='comment'>// Make sure an interrupt doesn't screw the timings</em>
+<a id='L264' name='L264'></a>
+<a id='L265' name='L265'></a>
+<a id='L266' name='L266'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=mov&amp;type=symbol' title='Multiple used in 505 places.'>mov</a>             <a href='../cgi-bin/global.cgi?pattern=dx&amp;type=symbol' title='Multiple used in 306 places.'>dx</a>,0x201
+<a id='L267' name='L267'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=in&amp;type=symbol' title='Multiple used in 88 places.'>in</a>              <a href='../cgi-bin/global.cgi?pattern=al&amp;type=symbol' title='Multiple used in 264 places.'>al</a>,<a href='../cgi-bin/global.cgi?pattern=dx&amp;type=symbol' title='Multiple used in 306 places.'>dx</a>
+<a id='L268' name='L268'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=out&amp;type=symbol' title='Multiple used in 75 places.'>out</a>             <a href='../cgi-bin/global.cgi?pattern=dx&amp;type=symbol' title='Multiple used in 306 places.'>dx</a>,<a href='../cgi-bin/global.cgi?pattern=al&amp;type=symbol' title='Multiple used in 264 places.'>al</a>           <em class='comment'>// Clear the resistors</em>
+<a id='L269' name='L269'></a>
+<a id='L270' name='L270'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=mov&amp;type=symbol' title='Multiple used in 505 places.'>mov</a>             <a href='../cgi-bin/global.cgi?pattern=ah&amp;type=symbol' title='Multiple used in 19 places.'>ah</a>,[<a href='../cgi-bin/global.cgi?pattern=xb&amp;type=symbol' title='Multiple used in 3 places.'>xb</a>]         <em class='comment'>// Get masks into registers</em>
+<a id='L271' name='L271'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=mov&amp;type=symbol' title='Multiple used in 505 places.'>mov</a>             <a href='../cgi-bin/global.cgi?pattern=ch&amp;type=symbol' title='Multiple used in 54 places.'>ch</a>,[<a href='../cgi-bin/global.cgi?pattern=yb&amp;type=symbol' title='Multiple used in 3 places.'>yb</a>]
+<a id='L272' name='L272'></a>
+<a id='L273' name='L273'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=xor&amp;type=symbol' title='Multiple used in 10 places.'>xor</a>             <a href='../cgi-bin/global.cgi?pattern=si&amp;type=symbol' title='Multiple used in 64 places.'>si</a>,<a href='../cgi-bin/global.cgi?pattern=si&amp;type=symbol' title='Multiple used in 64 places.'>si</a>           <em class='comment'>// Clear count registers</em>
+<a id='L274' name='L274'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=xor&amp;type=symbol' title='Multiple used in 10 places.'>xor</a>             <a href='../cgi-bin/global.cgi?pattern=di&amp;type=symbol' title='Multiple used in 102 places.'>di</a>,<a href='../cgi-bin/global.cgi?pattern=di&amp;type=symbol' title='Multiple used in 102 places.'>di</a>
+<a id='L275' name='L275'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=xor&amp;type=symbol' title='Multiple used in 10 places.'>xor</a>             <a href='../cgi-bin/global.cgi?pattern=bh&amp;type=symbol' title='Multiple used in 14 places.'>bh</a>,<a href='../cgi-bin/global.cgi?pattern=bh&amp;type=symbol' title='Multiple used in 14 places.'>bh</a>           <em class='comment'>// Clear high byte of bx for later</em>
+<a id='L276' name='L276'></a>
+<a id='L277' name='L277'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=push&amp;type=symbol' title='Multiple used in 12 places.'>push</a>    <a href='../cgi-bin/global.cgi?pattern=bp&amp;type=symbol' title='Multiple used in 53 places.'>bp</a>                      <em class='comment'>// Don't mess up stack frame</em>
+<a id='L278' name='L278'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=mov&amp;type=symbol' title='Multiple used in 505 places.'>mov</a>             <a href='../cgi-bin/global.cgi?pattern=bp&amp;type=symbol' title='Multiple used in 53 places.'>bp</a>,<a href='../S/62.html#L40' title='Defined at 40 in WOLFSRC/ID_IN.C.'>MaxJoyValue</a>
+<a id='L279' name='L279'></a>
+<a id='L280' name='L280'></a><a href='../cgi-bin/global.cgi?pattern=loop&amp;type=symbol' title='Multiple used in 9 places.'>loop</a>:
+<a id='L281' name='L281'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=in&amp;type=symbol' title='Multiple used in 88 places.'>in</a>              <a href='../cgi-bin/global.cgi?pattern=al&amp;type=symbol' title='Multiple used in 264 places.'>al</a>,<a href='../cgi-bin/global.cgi?pattern=dx&amp;type=symbol' title='Multiple used in 306 places.'>dx</a>           <em class='comment'>// Get bits indicating whether all are finished</em>
+<a id='L282' name='L282'></a>
+<a id='L283' name='L283'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=dec&amp;type=symbol' title='Multiple used in 19 places.'>dec</a>             <a href='../cgi-bin/global.cgi?pattern=bp&amp;type=symbol' title='Multiple used in 53 places.'>bp</a>                      <em class='comment'>// Check bounding register</em>
+<a id='L284' name='L284'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=jz&amp;type=symbol' title='Multiple used in 22 places.'>jz</a>              <a href='../cgi-bin/global.cgi?pattern=done&amp;type=symbol' title='Multiple used in 28 places.'>done</a>            <em class='comment'>// We have a silly value - abort</em>
+<a id='L285' name='L285'></a>
+<a id='L286' name='L286'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=mov&amp;type=symbol' title='Multiple used in 505 places.'>mov</a>             <a href='../cgi-bin/global.cgi?pattern=bl&amp;type=symbol' title='Multiple used in 14 places.'>bl</a>,<a href='../cgi-bin/global.cgi?pattern=al&amp;type=symbol' title='Multiple used in 264 places.'>al</a>           <em class='comment'>// Duplicate the bits</em>
+<a id='L287' name='L287'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=and&amp;type=symbol' title='Multiple used in 16 places.'>and</a>             <a href='../cgi-bin/global.cgi?pattern=bl&amp;type=symbol' title='Multiple used in 14 places.'>bl</a>,<a href='../cgi-bin/global.cgi?pattern=ah&amp;type=symbol' title='Multiple used in 19 places.'>ah</a>           <em class='comment'>// Mask off useless bits (in [xb])</em>
+<a id='L288' name='L288'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=add&amp;type=symbol' title='Multiple used in 47 places.'>add</a>             <a href='../cgi-bin/global.cgi?pattern=si&amp;type=symbol' title='Multiple used in 64 places.'>si</a>,<a href='../cgi-bin/global.cgi?pattern=bx&amp;type=symbol' title='Multiple used in 138 places.'>bx</a>           <em class='comment'>// Possibly increment count register</em>
+<a id='L289' name='L289'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=mov&amp;type=symbol' title='Multiple used in 505 places.'>mov</a>             <a href='../cgi-bin/global.cgi?pattern=cl&amp;type=symbol' title='Multiple used in 31 places.'>cl</a>,<a href='../cgi-bin/global.cgi?pattern=bl&amp;type=symbol' title='Multiple used in 14 places.'>bl</a>           <em class='comment'>// Save for testing later</em>
+<a id='L290' name='L290'></a>
+<a id='L291' name='L291'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=mov&amp;type=symbol' title='Multiple used in 505 places.'>mov</a>             <a href='../cgi-bin/global.cgi?pattern=bl&amp;type=symbol' title='Multiple used in 14 places.'>bl</a>,<a href='../cgi-bin/global.cgi?pattern=al&amp;type=symbol' title='Multiple used in 264 places.'>al</a>
+<a id='L292' name='L292'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=and&amp;type=symbol' title='Multiple used in 16 places.'>and</a>             <a href='../cgi-bin/global.cgi?pattern=bl&amp;type=symbol' title='Multiple used in 14 places.'>bl</a>,<a href='../cgi-bin/global.cgi?pattern=ch&amp;type=symbol' title='Multiple used in 54 places.'>ch</a>           <em class='comment'>// [yb]</em>
+<a id='L293' name='L293'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=add&amp;type=symbol' title='Multiple used in 47 places.'>add</a>             <a href='../cgi-bin/global.cgi?pattern=di&amp;type=symbol' title='Multiple used in 102 places.'>di</a>,<a href='../cgi-bin/global.cgi?pattern=bx&amp;type=symbol' title='Multiple used in 138 places.'>bx</a>
+<a id='L294' name='L294'></a>
+<a id='L295' name='L295'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=add&amp;type=symbol' title='Multiple used in 47 places.'>add</a>             <a href='../cgi-bin/global.cgi?pattern=cl&amp;type=symbol' title='Multiple used in 31 places.'>cl</a>,<a href='../cgi-bin/global.cgi?pattern=bl&amp;type=symbol' title='Multiple used in 14 places.'>bl</a>
+<a id='L296' name='L296'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=jnz&amp;type=symbol' title='Multiple used in 15 places.'>jnz</a>             <a href='../cgi-bin/global.cgi?pattern=loop&amp;type=symbol' title='Multiple used in 9 places.'>loop</a>            <em class='comment'>// If both bits were 0, drop out</em>
+<a id='L297' name='L297'></a>
+<a id='L298' name='L298'></a><a href='../cgi-bin/global.cgi?pattern=done&amp;type=symbol' title='Multiple used in 28 places.'>done</a>:
+<a id='L299' name='L299'></a><strong class='reserved'>asm</strong>     <a href='../cgi-bin/global.cgi?pattern=pop&amp;type=symbol' title='Multiple used in 12 places.'>pop</a>             <a href='../cgi-bin/global.cgi?pattern=bp&amp;type=symbol' title='Multiple used in 53 places.'>bp</a>
+<a id='L300' name='L300'></a>
+<a id='L301' name='L301'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=mov&amp;type=symbol' title='Multiple used in 505 places.'>mov</a>             <a href='../cgi-bin/global.cgi?pattern=cl&amp;type=symbol' title='Multiple used in 31 places.'>cl</a>,[<a href='../cgi-bin/global.cgi?pattern=xs&amp;type=symbol' title='Multiple used in 4 places.'>xs</a>]         <em class='comment'>// Get the number of bits to shift</em>
+<a id='L302' name='L302'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=shr&amp;type=symbol' title='Multiple used in 25 places.'>shr</a>             <a href='../cgi-bin/global.cgi?pattern=si&amp;type=symbol' title='Multiple used in 64 places.'>si</a>,<a href='../cgi-bin/global.cgi?pattern=cl&amp;type=symbol' title='Multiple used in 31 places.'>cl</a>           <em class='comment'>//  and shift the count that many times</em>
+<a id='L303' name='L303'></a>
+<a id='L304' name='L304'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=mov&amp;type=symbol' title='Multiple used in 505 places.'>mov</a>             <a href='../cgi-bin/global.cgi?pattern=cl&amp;type=symbol' title='Multiple used in 31 places.'>cl</a>,[<a href='../cgi-bin/global.cgi?pattern=ys&amp;type=symbol' title='Multiple used in 4 places.'>ys</a>]
+<a id='L305' name='L305'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=shr&amp;type=symbol' title='Multiple used in 25 places.'>shr</a>             <a href='../cgi-bin/global.cgi?pattern=di&amp;type=symbol' title='Multiple used in 102 places.'>di</a>,<a href='../cgi-bin/global.cgi?pattern=cl&amp;type=symbol' title='Multiple used in 31 places.'>cl</a>
+<a id='L306' name='L306'></a>
+<a id='L307' name='L307'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=mov&amp;type=symbol' title='Multiple used in 505 places.'>mov</a>             [<a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a>],<a href='../cgi-bin/global.cgi?pattern=si&amp;type=symbol' title='Multiple used in 64 places.'>si</a>          <em class='comment'>// Store the values into the variables</em>
+<a id='L308' name='L308'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=mov&amp;type=symbol' title='Multiple used in 505 places.'>mov</a>             [<a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a>],<a href='../cgi-bin/global.cgi?pattern=di&amp;type=symbol' title='Multiple used in 102 places.'>di</a>
+<a id='L309' name='L309'></a>
+<a id='L310' name='L310'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=pop&amp;type=symbol' title='Multiple used in 12 places.'>pop</a>             <a href='../cgi-bin/global.cgi?pattern=di&amp;type=symbol' title='Multiple used in 102 places.'>di</a>
+<a id='L311' name='L311'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=pop&amp;type=symbol' title='Multiple used in 12 places.'>pop</a>             <a href='../cgi-bin/global.cgi?pattern=si&amp;type=symbol' title='Multiple used in 64 places.'>si</a>
+<a id='L312' name='L312'></a><strong class='reserved'>asm</strong>             <a href='../cgi-bin/global.cgi?pattern=popf&amp;type=symbol' title='Multiple used in 26 places.'>popf</a>                            <em class='comment'>// Restore the registers</em>
+<a id='L313' name='L313'></a>
+<a id='L314' name='L314'></a>        *<a href='../cgi-bin/global.cgi?pattern=xp&amp;type=symbol' title='Multiple used in 3 places.'>xp</a> = <a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a>;
+<a id='L315' name='L315'></a>        *<a href='../cgi-bin/global.cgi?pattern=yp&amp;type=symbol' title='Multiple used in 3 places.'>yp</a> = <a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a>;
+<a id='L316' name='L316'></a><em class='brace'>}</em>
+<a id='L317' name='L317'></a>
+<a id='L318' name='L318'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L319' name='L319'></a><em class='comment'>//</em>
+<a id='L320' name='L320'></a><em class='comment'>//      INL_GetJoyDelta() - Returns the relative movement of the specified</em>
+<a id='L321' name='L321'></a><em class='comment'>//              joystick (from +/-127)</em>
+<a id='L322' name='L322'></a><em class='comment'>//</em>
+<a id='L323' name='L323'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L324' name='L324'></a><strong class='reserved'>void</strong> <a href='../cgi-bin/global.cgi?pattern=INL_GetJoyDelta&amp;type=reference' title='Multiple referred from 4 places.'>INL_GetJoyDelta</a>(<a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a> <a href='../cgi-bin/global.cgi?pattern=joy&amp;type=symbol' title='Multiple used in 25 places.'>joy</a>,<strong class='reserved'>int</strong> *<a href='../cgi-bin/global.cgi?pattern=dx&amp;type=symbol' title='Multiple used in 306 places.'>dx</a>,<strong class='reserved'>int</strong> *<a href='../cgi-bin/global.cgi?pattern=dy&amp;type=symbol' title='Multiple used in 55 places.'>dy</a>)
+<em class='comment'>/* <a href='#L247'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><a href='#L390'><img class='icon' src='../icons/right.png' alt='[next]' /></a><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L325' name='L325'></a><em class='brace'>{</em>
+<a id='L326' name='L326'></a>        <a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a>            <a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a>,<a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a>;
+<a id='L327' name='L327'></a>        <a href='../cgi-bin/global.cgi?pattern=longword&amp;type=definitions' title='Multiple defined in 2 places.'>longword</a>        <a href='../cgi-bin/global.cgi?pattern=time&amp;type=symbol' title='Multiple used in 12 places.'>time</a>;
+<a id='L328' name='L328'></a>        <a href='../S/91.html#L154' title='Defined at 154 in WOLFSRC/ID_IN.H.'>JoystickDef</a>     *<a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>;
+<a id='L329' name='L329'></a><strong class='reserved'>static</strong>  <a href='../cgi-bin/global.cgi?pattern=longword&amp;type=definitions' title='Multiple defined in 2 places.'>longword</a>        <a href='../cgi-bin/global.cgi?pattern=lasttime&amp;type=symbol' title='Multiple used in 16 places.'>lasttime</a>;
+<a id='L330' name='L330'></a>
+<a id='L331' name='L331'></a>        <a href='../S/62.html#L247' title='Defined at 247 in WOLFSRC/ID_IN.C.'>IN_GetJoyAbs</a>(<a href='../cgi-bin/global.cgi?pattern=joy&amp;type=symbol' title='Multiple used in 25 places.'>joy</a>,&amp;<a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a>,&amp;<a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a>);
+<a id='L332' name='L332'></a>        <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a> = <a href='../cgi-bin/global.cgi?pattern=JoyDefs&amp;type=symbol' title='Multiple used in 5 places.'>JoyDefs</a> + <a href='../cgi-bin/global.cgi?pattern=joy&amp;type=symbol' title='Multiple used in 25 places.'>joy</a>;
+<a id='L333' name='L333'></a>
+<a id='L334' name='L334'></a>        <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a> &lt; <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=threshMinX&amp;type=symbol' title='Multiple used in 5 places.'>threshMinX</a>)
+<a id='L335' name='L335'></a>        <em class='brace'>{</em>
+<a id='L336' name='L336'></a>                <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a> &lt; <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=joyMinX&amp;type=symbol' title='Multiple used in 5 places.'>joyMinX</a>)
+<a id='L337' name='L337'></a>                        <a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a> = <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=joyMinX&amp;type=symbol' title='Multiple used in 5 places.'>joyMinX</a>;
+<a id='L338' name='L338'></a>
+<a id='L339' name='L339'></a>                <a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a> = -(<a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a> - <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=threshMinX&amp;type=symbol' title='Multiple used in 5 places.'>threshMinX</a>);
+<a id='L340' name='L340'></a>                <a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a> *= <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=joyMultXL&amp;type=symbol' title='Multiple used in 3 places.'>joyMultXL</a>;
+<a id='L341' name='L341'></a>                <a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a> &gt;&gt;= <a href='../S/62.html#L39' title='Defined at 39 in WOLFSRC/ID_IN.C.'>JoyScaleShift</a>;
+<a id='L342' name='L342'></a>                *<a href='../cgi-bin/global.cgi?pattern=dx&amp;type=symbol' title='Multiple used in 306 places.'>dx</a> = (<a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a> &gt; 127)? -127 : -<a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a>;
+<a id='L343' name='L343'></a>        <em class='brace'>}</em>
+<a id='L344' name='L344'></a>        <strong class='reserved'>else</strong> <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a> &gt; <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=threshMaxX&amp;type=symbol' title='Multiple used in 5 places.'>threshMaxX</a>)
+<a id='L345' name='L345'></a>        <em class='brace'>{</em>
+<a id='L346' name='L346'></a>                <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a> &gt; <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=joyMaxX&amp;type=symbol' title='Multiple used in 5 places.'>joyMaxX</a>)
+<a id='L347' name='L347'></a>                        <a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a> = <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=joyMaxX&amp;type=symbol' title='Multiple used in 5 places.'>joyMaxX</a>;
+<a id='L348' name='L348'></a>
+<a id='L349' name='L349'></a>                <a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a> = <a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a> - <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=threshMaxX&amp;type=symbol' title='Multiple used in 5 places.'>threshMaxX</a>;
+<a id='L350' name='L350'></a>                <a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a> *= <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=joyMultXH&amp;type=symbol' title='Multiple used in 3 places.'>joyMultXH</a>;
+<a id='L351' name='L351'></a>                <a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a> &gt;&gt;= <a href='../S/62.html#L39' title='Defined at 39 in WOLFSRC/ID_IN.C.'>JoyScaleShift</a>;
+<a id='L352' name='L352'></a>                *<a href='../cgi-bin/global.cgi?pattern=dx&amp;type=symbol' title='Multiple used in 306 places.'>dx</a> = (<a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a> &gt; 127)? 127 : <a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a>;
+<a id='L353' name='L353'></a>        <em class='brace'>}</em>
+<a id='L354' name='L354'></a>        <strong class='reserved'>else</strong>
+<a id='L355' name='L355'></a>                *<a href='../cgi-bin/global.cgi?pattern=dx&amp;type=symbol' title='Multiple used in 306 places.'>dx</a> = 0;
+<a id='L356' name='L356'></a>
+<a id='L357' name='L357'></a>        <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a> &lt; <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=threshMinY&amp;type=symbol' title='Multiple used in 5 places.'>threshMinY</a>)
+<a id='L358' name='L358'></a>        <em class='brace'>{</em>
+<a id='L359' name='L359'></a>                <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a> &lt; <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=joyMinY&amp;type=symbol' title='Multiple used in 5 places.'>joyMinY</a>)
+<a id='L360' name='L360'></a>                        <a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a> = <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=joyMinY&amp;type=symbol' title='Multiple used in 5 places.'>joyMinY</a>;
+<a id='L361' name='L361'></a>
+<a id='L362' name='L362'></a>                <a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a> = -(<a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a> - <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=threshMinY&amp;type=symbol' title='Multiple used in 5 places.'>threshMinY</a>);
+<a id='L363' name='L363'></a>                <a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a> *= <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=joyMultYL&amp;type=symbol' title='Multiple used in 3 places.'>joyMultYL</a>;
+<a id='L364' name='L364'></a>                <a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a> &gt;&gt;= <a href='../S/62.html#L39' title='Defined at 39 in WOLFSRC/ID_IN.C.'>JoyScaleShift</a>;
+<a id='L365' name='L365'></a>                *<a href='../cgi-bin/global.cgi?pattern=dy&amp;type=symbol' title='Multiple used in 55 places.'>dy</a> = (<a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a> &gt; 127)? -127 : -<a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a>;
+<a id='L366' name='L366'></a>        <em class='brace'>}</em>
+<a id='L367' name='L367'></a>        <strong class='reserved'>else</strong> <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a> &gt; <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=threshMaxY&amp;type=symbol' title='Multiple used in 5 places.'>threshMaxY</a>)
+<a id='L368' name='L368'></a>        <em class='brace'>{</em>
+<a id='L369' name='L369'></a>                <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a> &gt; <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=joyMaxY&amp;type=symbol' title='Multiple used in 5 places.'>joyMaxY</a>)
+<a id='L370' name='L370'></a>                        <a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a> = <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=joyMaxY&amp;type=symbol' title='Multiple used in 5 places.'>joyMaxY</a>;
+<a id='L371' name='L371'></a>
+<a id='L372' name='L372'></a>                <a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a> = <a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a> - <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=threshMaxY&amp;type=symbol' title='Multiple used in 5 places.'>threshMaxY</a>;
+<a id='L373' name='L373'></a>                <a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a> *= <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=joyMultYH&amp;type=symbol' title='Multiple used in 3 places.'>joyMultYH</a>;
+<a id='L374' name='L374'></a>                <a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a> &gt;&gt;= <a href='../S/62.html#L39' title='Defined at 39 in WOLFSRC/ID_IN.C.'>JoyScaleShift</a>;
+<a id='L375' name='L375'></a>                *<a href='../cgi-bin/global.cgi?pattern=dy&amp;type=symbol' title='Multiple used in 55 places.'>dy</a> = (<a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a> &gt; 127)? 127 : <a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a>;
+<a id='L376' name='L376'></a>        <em class='brace'>}</em>
+<a id='L377' name='L377'></a>        <strong class='reserved'>else</strong>
+<a id='L378' name='L378'></a>                *<a href='../cgi-bin/global.cgi?pattern=dy&amp;type=symbol' title='Multiple used in 55 places.'>dy</a> = 0;
+<a id='L379' name='L379'></a>
+<a id='L380' name='L380'></a>        <a href='../cgi-bin/global.cgi?pattern=lasttime&amp;type=symbol' title='Multiple used in 16 places.'>lasttime</a> = <a href='../cgi-bin/global.cgi?pattern=TimeCount&amp;type=symbol' title='Multiple used in 64 places.'>TimeCount</a>;
+<a id='L381' name='L381'></a><em class='brace'>}</em>
+<a id='L382' name='L382'></a>
+<a id='L383' name='L383'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L384' name='L384'></a><em class='comment'>//</em>
+<a id='L385' name='L385'></a><em class='comment'>//      INL_GetJoyButtons() - Returns the button status of the specified</em>
+<a id='L386' name='L386'></a><em class='comment'>//              joystick</em>
+<a id='L387' name='L387'></a><em class='comment'>//</em>
+<a id='L388' name='L388'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L389' name='L389'></a><strong class='reserved'>static</strong> <a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a>
+<a id='L390' name='L390'></a><a href='../cgi-bin/global.cgi?pattern=INL_GetJoyButtons&amp;type=reference' title='Multiple referred from 3 places.'>INL_GetJoyButtons</a>(<a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a> <a href='../cgi-bin/global.cgi?pattern=joy&amp;type=symbol' title='Multiple used in 25 places.'>joy</a>)
+<em class='comment'>/* <a href='#L324'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><a href='#L408'><img class='icon' src='../icons/right.png' alt='[next]' /></a><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L391' name='L391'></a><em class='brace'>{</em>
+<a id='L392' name='L392'></a><strong class='reserved'>register</strong>        <a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a>    <a href='../cgi-bin/global.cgi?pattern=result&amp;type=symbol' title='Multiple used in 54 places.'>result</a>;
+<a id='L393' name='L393'></a>
+<a id='L394' name='L394'></a>        <a href='../cgi-bin/global.cgi?pattern=result&amp;type=symbol' title='Multiple used in 54 places.'>result</a> = <a href='../cgi-bin/global.cgi?pattern=inportb&amp;type=symbol' title='Multiple used in 18 places.'>inportb</a>(0x201);        <em class='comment'>// Get all the joystick buttons</em>
+<a id='L395' name='L395'></a>        <a href='../cgi-bin/global.cgi?pattern=result&amp;type=symbol' title='Multiple used in 54 places.'>result</a> &gt;&gt;= <a href='../cgi-bin/global.cgi?pattern=joy&amp;type=symbol' title='Multiple used in 25 places.'>joy</a>? 6 : 4;  <em class='comment'>// Shift into bits 0-1</em>
+<a id='L396' name='L396'></a>        <a href='../cgi-bin/global.cgi?pattern=result&amp;type=symbol' title='Multiple used in 54 places.'>result</a> &amp;= 3;                            <em class='comment'>// Mask off the useless bits</em>
+<a id='L397' name='L397'></a>        <a href='../cgi-bin/global.cgi?pattern=result&amp;type=symbol' title='Multiple used in 54 places.'>result</a> ^= 3;
+<a id='L398' name='L398'></a>        <strong class='reserved'>return</strong>(<a href='../cgi-bin/global.cgi?pattern=result&amp;type=symbol' title='Multiple used in 54 places.'>result</a>);
+<a id='L399' name='L399'></a><em class='brace'>}</em>
+<a id='L400' name='L400'></a>
+<a id='L401' name='L401'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L402' name='L402'></a><em class='comment'>//</em>
+<a id='L403' name='L403'></a><em class='comment'>//      IN_GetJoyButtonsDB() - Returns the de-bounced button status of the</em>
+<a id='L404' name='L404'></a><em class='comment'>//              specified joystick</em>
+<a id='L405' name='L405'></a><em class='comment'>//</em>
+<a id='L406' name='L406'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L407' name='L407'></a><a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a>
+<a id='L408' name='L408'></a><a href='../S/91.html#L191' title='Referred from 191 in WOLFSRC/ID_IN.H.'>IN_GetJoyButtonsDB</a>(<a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a> <a href='../cgi-bin/global.cgi?pattern=joy&amp;type=symbol' title='Multiple used in 25 places.'>joy</a>)
+<em class='comment'>/* <a href='#L390'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><a href='#L430'><img class='icon' src='../icons/right.png' alt='[next]' /></a><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L409' name='L409'></a><em class='brace'>{</em>
+<a id='L410' name='L410'></a>        <a href='../cgi-bin/global.cgi?pattern=longword&amp;type=definitions' title='Multiple defined in 2 places.'>longword</a>        <a href='../cgi-bin/global.cgi?pattern=lasttime&amp;type=symbol' title='Multiple used in 16 places.'>lasttime</a>;
+<a id='L411' name='L411'></a>        <a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a>            <a href='../cgi-bin/global.cgi?pattern=result1&amp;type=symbol' title='Multiple used in 4 places.'>result1</a>,<a href='../cgi-bin/global.cgi?pattern=result2&amp;type=symbol' title='Multiple used in 3 places.'>result2</a>;
+<a id='L412' name='L412'></a>
+<a id='L413' name='L413'></a>        <strong class='reserved'>do</strong>
+<a id='L414' name='L414'></a>        <em class='brace'>{</em>
+<a id='L415' name='L415'></a>                <a href='../cgi-bin/global.cgi?pattern=result1&amp;type=symbol' title='Multiple used in 4 places.'>result1</a> = <a href='../S/62.html#L390' title='Defined at 390 in WOLFSRC/ID_IN.C.'>INL_GetJoyButtons</a>(<a href='../cgi-bin/global.cgi?pattern=joy&amp;type=symbol' title='Multiple used in 25 places.'>joy</a>);
+<a id='L416' name='L416'></a>                <a href='../cgi-bin/global.cgi?pattern=lasttime&amp;type=symbol' title='Multiple used in 16 places.'>lasttime</a> = <a href='../cgi-bin/global.cgi?pattern=TimeCount&amp;type=symbol' title='Multiple used in 64 places.'>TimeCount</a>;
+<a id='L417' name='L417'></a>                <strong class='reserved'>while</strong> (<a href='../cgi-bin/global.cgi?pattern=TimeCount&amp;type=symbol' title='Multiple used in 64 places.'>TimeCount</a> == <a href='../cgi-bin/global.cgi?pattern=lasttime&amp;type=symbol' title='Multiple used in 16 places.'>lasttime</a>)
+<a id='L418' name='L418'></a>                        ;
+<a id='L419' name='L419'></a>                <a href='../cgi-bin/global.cgi?pattern=result2&amp;type=symbol' title='Multiple used in 3 places.'>result2</a> = <a href='../S/62.html#L390' title='Defined at 390 in WOLFSRC/ID_IN.C.'>INL_GetJoyButtons</a>(<a href='../cgi-bin/global.cgi?pattern=joy&amp;type=symbol' title='Multiple used in 25 places.'>joy</a>);
+<a id='L420' name='L420'></a>        <em class='brace'>}</em> <strong class='reserved'>while</strong> (<a href='../cgi-bin/global.cgi?pattern=result1&amp;type=symbol' title='Multiple used in 4 places.'>result1</a> != <a href='../cgi-bin/global.cgi?pattern=result2&amp;type=symbol' title='Multiple used in 3 places.'>result2</a>);
+<a id='L421' name='L421'></a>        <strong class='reserved'>return</strong>(<a href='../cgi-bin/global.cgi?pattern=result1&amp;type=symbol' title='Multiple used in 4 places.'>result1</a>);
+<a id='L422' name='L422'></a><em class='brace'>}</em>
+<a id='L423' name='L423'></a>
+<a id='L424' name='L424'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L425' name='L425'></a><em class='comment'>//</em>
+<a id='L426' name='L426'></a><em class='comment'>//      INL_StartKbd() - Sets up my keyboard stuff for use</em>
+<a id='L427' name='L427'></a><em class='comment'>//</em>
+<a id='L428' name='L428'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L429' name='L429'></a><strong class='reserved'>static</strong> <strong class='reserved'>void</strong>
+<a id='L430' name='L430'></a><a href='../S/62.html#L607' title='Referred from 607 in WOLFSRC/ID_IN.C.'>INL_StartKbd</a>(<strong class='reserved'>void</strong>)
+<em class='comment'>/* <a href='#L408'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><a href='#L446'><img class='icon' src='../icons/right.png' alt='[next]' /></a><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L431' name='L431'></a><em class='brace'>{</em>
+<a id='L432' name='L432'></a>        <a href='../cgi-bin/global.cgi?pattern=INL_KeyHook&amp;type=symbol' title='Multiple used in 5 places.'>INL_KeyHook</a> = <a href='../cgi-bin/global.cgi?pattern=NULL&amp;type=symbol' title='Multiple used in 478 places.'>NULL</a>;                     <em class='comment'>// no key hook routine</em>
+<a id='L433' name='L433'></a>
+<a id='L434' name='L434'></a>        <a href='../S/62.html#L674' title='Defined at 674 in WOLFSRC/ID_IN.C.'>IN_ClearKeysDown</a>();
+<a id='L435' name='L435'></a>
+<a id='L436' name='L436'></a>        <a href='../cgi-bin/global.cgi?pattern=OldKeyVect&amp;type=symbol' title='Multiple used in 3 places.'>OldKeyVect</a> = <a href='../cgi-bin/global.cgi?pattern=getvect&amp;type=symbol' title='Multiple used in 4 places.'>getvect</a>(<a href='../S/62.html#L23' title='Defined at 23 in WOLFSRC/ID_IN.C.'>KeyInt</a>);
+<a id='L437' name='L437'></a>        <a href='../cgi-bin/global.cgi?pattern=setvect&amp;type=symbol' title='Multiple used in 6 places.'>setvect</a>(<a href='../S/62.html#L23' title='Defined at 23 in WOLFSRC/ID_IN.C.'>KeyInt</a>,<a href='../S/62.html#L143' title='Defined at 143 in WOLFSRC/ID_IN.C.'>INL_KeyService</a>);
+<a id='L438' name='L438'></a><em class='brace'>}</em>
+<a id='L439' name='L439'></a>
+<a id='L440' name='L440'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L441' name='L441'></a><em class='comment'>//</em>
+<a id='L442' name='L442'></a><em class='comment'>//      INL_ShutKbd() - Restores keyboard control to the BIOS</em>
+<a id='L443' name='L443'></a><em class='comment'>//</em>
+<a id='L444' name='L444'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L445' name='L445'></a><strong class='reserved'>static</strong> <strong class='reserved'>void</strong>
+<a id='L446' name='L446'></a><a href='../S/62.html#L651' title='Referred from 651 in WOLFSRC/ID_IN.C.'>INL_ShutKbd</a>(<strong class='reserved'>void</strong>)
+<em class='comment'>/* <a href='#L430'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><a href='#L459'><img class='icon' src='../icons/right.png' alt='[next]' /></a><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L447' name='L447'></a><em class='brace'>{</em>
+<a id='L448' name='L448'></a>        poke(0x40,0x17,<a href='../cgi-bin/global.cgi?pattern=peek&amp;type=symbol' title='Multiple used in 3 places.'>peek</a>(0x40,0x17) &amp; 0xfaf0);       <em class='comment'>// Clear ctrl/alt/shift flags</em>
+<a id='L449' name='L449'></a>
+<a id='L450' name='L450'></a>        <a href='../cgi-bin/global.cgi?pattern=setvect&amp;type=symbol' title='Multiple used in 6 places.'>setvect</a>(<a href='../S/62.html#L23' title='Defined at 23 in WOLFSRC/ID_IN.C.'>KeyInt</a>,<a href='../cgi-bin/global.cgi?pattern=OldKeyVect&amp;type=symbol' title='Multiple used in 3 places.'>OldKeyVect</a>);
+<a id='L451' name='L451'></a><em class='brace'>}</em>
+<a id='L452' name='L452'></a>
+<a id='L453' name='L453'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L454' name='L454'></a><em class='comment'>//</em>
+<a id='L455' name='L455'></a><em class='comment'>//      INL_StartMouse() - Detects and sets up the mouse</em>
+<a id='L456' name='L456'></a><em class='comment'>//</em>
+<a id='L457' name='L457'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L458' name='L458'></a><strong class='reserved'>static</strong> <a href='../cgi-bin/global.cgi?pattern=boolean&amp;type=definitions' title='Multiple defined in 2 places.'>boolean</a>
+<a id='L459' name='L459'></a><a href='../S/62.html#L608' title='Referred from 608 in WOLFSRC/ID_IN.C.'>INL_StartMouse</a>(<strong class='reserved'>void</strong>)
+<em class='comment'>/* <a href='#L446'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><a href='#L490'><img class='icon' src='../icons/right.png' alt='[next]' /></a><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L460' name='L460'></a><em class='brace'>{</em>
+<a id='L461' name='L461'></a><em class='sharp'>#if</em> 0
+<a id='L462' name='L462'></a>        <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=getvect&amp;type=symbol' title='Multiple used in 4 places.'>getvect</a>(<a href='../cgi-bin/global.cgi?pattern=MouseInt&amp;type=definitions' title='Multiple defined in 2 places.'>MouseInt</a>))
+<a id='L463' name='L463'></a>        <em class='brace'>{</em>
+<a id='L464' name='L464'></a>                <a href='../cgi-bin/global.cgi?pattern=Mouse&amp;type=definitions' title='Multiple defined in 2 places.'>Mouse</a>(<a href='../cgi-bin/global.cgi?pattern=MReset&amp;type=definitions' title='Multiple defined in 2 places.'>MReset</a>);
+<a id='L465' name='L465'></a>                <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=_AX&amp;type=symbol' title='Multiple used in 15 places.'>_AX</a> == 0xffff)
+<a id='L466' name='L466'></a>                        <strong class='reserved'>return</strong>(<strong class='reserved'>true</strong>);
+<a id='L467' name='L467'></a>        <em class='brace'>}</em>
+<a id='L468' name='L468'></a>        <strong class='reserved'>return</strong>(<strong class='reserved'>false</strong>);
+<a id='L469' name='L469'></a><em class='sharp'>#endif</em>
+<a id='L470' name='L470'></a> <strong class='reserved'>union</strong> REGS regs;
+<a id='L471' name='L471'></a> <strong class='reserved'>unsigned</strong> <strong class='reserved'>char</strong> <a href='../cgi-bin/global.cgi?pattern=far&amp;type=symbol' title='Multiple used in 394 places.'>far</a> *<a href='../cgi-bin/global.cgi?pattern=vector&amp;type=symbol' title='Multiple used in 3 places.'>vector</a>;
+<a id='L472' name='L472'></a>
+<a id='L473' name='L473'></a>
+<a id='L474' name='L474'></a> <strong class='reserved'>if</strong> ((<a href='../cgi-bin/global.cgi?pattern=vector&amp;type=symbol' title='Multiple used in 3 places.'>vector</a>=<a href='../cgi-bin/global.cgi?pattern=MK_FP&amp;type=symbol' title='Multiple used in 18 places.'>MK_FP</a>(<a href='../cgi-bin/global.cgi?pattern=peek&amp;type=symbol' title='Multiple used in 3 places.'>peek</a>(0,0x33*4+2),<a href='../cgi-bin/global.cgi?pattern=peek&amp;type=symbol' title='Multiple used in 3 places.'>peek</a>(0,0x33*4)))==<a href='../cgi-bin/global.cgi?pattern=NULL&amp;type=symbol' title='Multiple used in 478 places.'>NULL</a>)
+<a id='L475' name='L475'></a>   <strong class='reserved'>return</strong> <strong class='reserved'>false</strong>;
+<a id='L476' name='L476'></a>
+<a id='L477' name='L477'></a> <strong class='reserved'>if</strong> (*<a href='../cgi-bin/global.cgi?pattern=vector&amp;type=symbol' title='Multiple used in 3 places.'>vector</a> == 207)
+<a id='L478' name='L478'></a>   <strong class='reserved'>return</strong> <strong class='reserved'>false</strong>;
+<a id='L479' name='L479'></a>
+<a id='L480' name='L480'></a> <a href='../cgi-bin/global.cgi?pattern=Mouse&amp;type=definitions' title='Multiple defined in 2 places.'>Mouse</a>(<a href='../cgi-bin/global.cgi?pattern=MReset&amp;type=definitions' title='Multiple defined in 2 places.'>MReset</a>);
+<a id='L481' name='L481'></a> <strong class='reserved'>return</strong> <strong class='reserved'>true</strong>;
+<a id='L482' name='L482'></a><em class='brace'>}</em>
+<a id='L483' name='L483'></a>
+<a id='L484' name='L484'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L485' name='L485'></a><em class='comment'>//</em>
+<a id='L486' name='L486'></a><em class='comment'>//      INL_ShutMouse() - Cleans up after the mouse</em>
+<a id='L487' name='L487'></a><em class='comment'>//</em>
+<a id='L488' name='L488'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L489' name='L489'></a><strong class='reserved'>static</strong> <strong class='reserved'>void</strong>
+<a id='L490' name='L490'></a><a href='../S/62.html#L648' title='Referred from 648 in WOLFSRC/ID_IN.C.'>INL_ShutMouse</a>(<strong class='reserved'>void</strong>)
+<em class='comment'>/* <a href='#L459'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><a href='#L498'><img class='icon' src='../icons/right.png' alt='[next]' /></a><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L491' name='L491'></a><em class='brace'>{</em>
+<a id='L492' name='L492'></a><em class='brace'>}</em>
+<a id='L493' name='L493'></a>
+<a id='L494' name='L494'></a><em class='comment'>//</em>
+<a id='L495' name='L495'></a><em class='comment'>//      INL_SetJoyScale() - Sets up scaling values for the specified joystick</em>
+<a id='L496' name='L496'></a><em class='comment'>//</em>
+<a id='L497' name='L497'></a><strong class='reserved'>static</strong> <strong class='reserved'>void</strong>
+<a id='L498' name='L498'></a><a href='../S/62.html#L537' title='Referred from 537 in WOLFSRC/ID_IN.C.'>INL_SetJoyScale</a>(<a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a> <a href='../cgi-bin/global.cgi?pattern=joy&amp;type=symbol' title='Multiple used in 25 places.'>joy</a>)
+<em class='comment'>/* <a href='#L490'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><a href='#L516'><img class='icon' src='../icons/right.png' alt='[next]' /></a><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L499' name='L499'></a><em class='brace'>{</em>
+<a id='L500' name='L500'></a>        <a href='../S/91.html#L154' title='Defined at 154 in WOLFSRC/ID_IN.H.'>JoystickDef</a>     *<a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>;
+<a id='L501' name='L501'></a>
+<a id='L502' name='L502'></a>        <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a> = &amp;<a href='../cgi-bin/global.cgi?pattern=JoyDefs&amp;type=symbol' title='Multiple used in 5 places.'>JoyDefs</a>[<a href='../cgi-bin/global.cgi?pattern=joy&amp;type=symbol' title='Multiple used in 25 places.'>joy</a>];
+<a id='L503' name='L503'></a>        <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=joyMultXL&amp;type=symbol' title='Multiple used in 3 places.'>joyMultXL</a> = <a href='../S/62.html#L38' title='Defined at 38 in WOLFSRC/ID_IN.C.'>JoyScaleMax</a> / (<a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=threshMinX&amp;type=symbol' title='Multiple used in 5 places.'>threshMinX</a> - <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=joyMinX&amp;type=symbol' title='Multiple used in 5 places.'>joyMinX</a>);
+<a id='L504' name='L504'></a>        <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=joyMultXH&amp;type=symbol' title='Multiple used in 3 places.'>joyMultXH</a> = <a href='../S/62.html#L38' title='Defined at 38 in WOLFSRC/ID_IN.C.'>JoyScaleMax</a> / (<a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=joyMaxX&amp;type=symbol' title='Multiple used in 5 places.'>joyMaxX</a> - <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=threshMaxX&amp;type=symbol' title='Multiple used in 5 places.'>threshMaxX</a>);
+<a id='L505' name='L505'></a>        <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=joyMultYL&amp;type=symbol' title='Multiple used in 3 places.'>joyMultYL</a> = <a href='../S/62.html#L38' title='Defined at 38 in WOLFSRC/ID_IN.C.'>JoyScaleMax</a> / (<a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=threshMinY&amp;type=symbol' title='Multiple used in 5 places.'>threshMinY</a> - <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=joyMinY&amp;type=symbol' title='Multiple used in 5 places.'>joyMinY</a>);
+<a id='L506' name='L506'></a>        <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=joyMultYH&amp;type=symbol' title='Multiple used in 3 places.'>joyMultYH</a> = <a href='../S/62.html#L38' title='Defined at 38 in WOLFSRC/ID_IN.C.'>JoyScaleMax</a> / (<a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=joyMaxY&amp;type=symbol' title='Multiple used in 5 places.'>joyMaxY</a> - <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=threshMaxY&amp;type=symbol' title='Multiple used in 5 places.'>threshMaxY</a>);
+<a id='L507' name='L507'></a><em class='brace'>}</em>
+<a id='L508' name='L508'></a>
+<a id='L509' name='L509'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L510' name='L510'></a><em class='comment'>//</em>
+<a id='L511' name='L511'></a><em class='comment'>//      IN_SetupJoy() - Sets up thresholding values and calls INL_SetJoyScale()</em>
+<a id='L512' name='L512'></a><em class='comment'>//              to set up scaling values</em>
+<a id='L513' name='L513'></a><em class='comment'>//</em>
+<a id='L514' name='L514'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L515' name='L515'></a><strong class='reserved'>void</strong>
+<a id='L516' name='L516'></a><a href='../cgi-bin/global.cgi?pattern=IN_SetupJoy&amp;type=reference' title='Multiple referred from 3 places.'>IN_SetupJoy</a>(<a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a> <a href='../cgi-bin/global.cgi?pattern=joy&amp;type=symbol' title='Multiple used in 25 places.'>joy</a>,<a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a> <a href='../cgi-bin/global.cgi?pattern=minx&amp;type=symbol' title='Multiple used in 6 places.'>minx</a>,<a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a> <a href='../cgi-bin/global.cgi?pattern=maxx&amp;type=symbol' title='Multiple used in 4 places.'>maxx</a>,<a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a> <a href='../cgi-bin/global.cgi?pattern=miny&amp;type=symbol' title='Multiple used in 6 places.'>miny</a>,<a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a> <a href='../cgi-bin/global.cgi?pattern=maxy&amp;type=symbol' title='Multiple used in 4 places.'>maxy</a>)
+<em class='comment'>/* <a href='#L498'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><a href='#L547'><img class='icon' src='../icons/right.png' alt='[next]' /></a><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L517' name='L517'></a><em class='brace'>{</em>
+<a id='L518' name='L518'></a>        <a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a>            <a href='../cgi-bin/global.cgi?pattern=d&amp;type=symbol' title='Multiple used in 39 places.'>d</a>,<a href='../cgi-bin/global.cgi?pattern=r&amp;type=symbol' title='Multiple used in 21 places.'>r</a>;
+<a id='L519' name='L519'></a>        <a href='../S/91.html#L154' title='Defined at 154 in WOLFSRC/ID_IN.H.'>JoystickDef</a>     *<a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>;
+<a id='L520' name='L520'></a>
+<a id='L521' name='L521'></a>        <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a> = &amp;<a href='../cgi-bin/global.cgi?pattern=JoyDefs&amp;type=symbol' title='Multiple used in 5 places.'>JoyDefs</a>[<a href='../cgi-bin/global.cgi?pattern=joy&amp;type=symbol' title='Multiple used in 25 places.'>joy</a>];
+<a id='L522' name='L522'></a>
+<a id='L523' name='L523'></a>        <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=joyMinX&amp;type=symbol' title='Multiple used in 5 places.'>joyMinX</a> = <a href='../cgi-bin/global.cgi?pattern=minx&amp;type=symbol' title='Multiple used in 6 places.'>minx</a>;
+<a id='L524' name='L524'></a>        <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=joyMaxX&amp;type=symbol' title='Multiple used in 5 places.'>joyMaxX</a> = <a href='../cgi-bin/global.cgi?pattern=maxx&amp;type=symbol' title='Multiple used in 4 places.'>maxx</a>;
+<a id='L525' name='L525'></a>        <a href='../cgi-bin/global.cgi?pattern=r&amp;type=symbol' title='Multiple used in 21 places.'>r</a> = <a href='../cgi-bin/global.cgi?pattern=maxx&amp;type=symbol' title='Multiple used in 4 places.'>maxx</a> - <a href='../cgi-bin/global.cgi?pattern=minx&amp;type=symbol' title='Multiple used in 6 places.'>minx</a>;
+<a id='L526' name='L526'></a>        <a href='../cgi-bin/global.cgi?pattern=d&amp;type=symbol' title='Multiple used in 39 places.'>d</a> = <a href='../cgi-bin/global.cgi?pattern=r&amp;type=symbol' title='Multiple used in 21 places.'>r</a> / 3;
+<a id='L527' name='L527'></a>        <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=threshMinX&amp;type=symbol' title='Multiple used in 5 places.'>threshMinX</a> = ((<a href='../cgi-bin/global.cgi?pattern=r&amp;type=symbol' title='Multiple used in 21 places.'>r</a> / 2) - <a href='../cgi-bin/global.cgi?pattern=d&amp;type=symbol' title='Multiple used in 39 places.'>d</a>) + <a href='../cgi-bin/global.cgi?pattern=minx&amp;type=symbol' title='Multiple used in 6 places.'>minx</a>;
+<a id='L528' name='L528'></a>        <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=threshMaxX&amp;type=symbol' title='Multiple used in 5 places.'>threshMaxX</a> = ((<a href='../cgi-bin/global.cgi?pattern=r&amp;type=symbol' title='Multiple used in 21 places.'>r</a> / 2) + <a href='../cgi-bin/global.cgi?pattern=d&amp;type=symbol' title='Multiple used in 39 places.'>d</a>) + <a href='../cgi-bin/global.cgi?pattern=minx&amp;type=symbol' title='Multiple used in 6 places.'>minx</a>;
+<a id='L529' name='L529'></a>
+<a id='L530' name='L530'></a>        <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=joyMinY&amp;type=symbol' title='Multiple used in 5 places.'>joyMinY</a> = <a href='../cgi-bin/global.cgi?pattern=miny&amp;type=symbol' title='Multiple used in 6 places.'>miny</a>;
+<a id='L531' name='L531'></a>        <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=joyMaxY&amp;type=symbol' title='Multiple used in 5 places.'>joyMaxY</a> = <a href='../cgi-bin/global.cgi?pattern=maxy&amp;type=symbol' title='Multiple used in 4 places.'>maxy</a>;
+<a id='L532' name='L532'></a>        <a href='../cgi-bin/global.cgi?pattern=r&amp;type=symbol' title='Multiple used in 21 places.'>r</a> = <a href='../cgi-bin/global.cgi?pattern=maxy&amp;type=symbol' title='Multiple used in 4 places.'>maxy</a> - <a href='../cgi-bin/global.cgi?pattern=miny&amp;type=symbol' title='Multiple used in 6 places.'>miny</a>;
+<a id='L533' name='L533'></a>        <a href='../cgi-bin/global.cgi?pattern=d&amp;type=symbol' title='Multiple used in 39 places.'>d</a> = <a href='../cgi-bin/global.cgi?pattern=r&amp;type=symbol' title='Multiple used in 21 places.'>r</a> / 3;
+<a id='L534' name='L534'></a>        <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=threshMinY&amp;type=symbol' title='Multiple used in 5 places.'>threshMinY</a> = ((<a href='../cgi-bin/global.cgi?pattern=r&amp;type=symbol' title='Multiple used in 21 places.'>r</a> / 2) - <a href='../cgi-bin/global.cgi?pattern=d&amp;type=symbol' title='Multiple used in 39 places.'>d</a>) + <a href='../cgi-bin/global.cgi?pattern=miny&amp;type=symbol' title='Multiple used in 6 places.'>miny</a>;
+<a id='L535' name='L535'></a>        <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=threshMaxY&amp;type=symbol' title='Multiple used in 5 places.'>threshMaxY</a> = ((<a href='../cgi-bin/global.cgi?pattern=r&amp;type=symbol' title='Multiple used in 21 places.'>r</a> / 2) + <a href='../cgi-bin/global.cgi?pattern=d&amp;type=symbol' title='Multiple used in 39 places.'>d</a>) + <a href='../cgi-bin/global.cgi?pattern=miny&amp;type=symbol' title='Multiple used in 6 places.'>miny</a>;
+<a id='L536' name='L536'></a>
+<a id='L537' name='L537'></a>        <a href='../S/62.html#L498' title='Defined at 498 in WOLFSRC/ID_IN.C.'>INL_SetJoyScale</a>(<a href='../cgi-bin/global.cgi?pattern=joy&amp;type=symbol' title='Multiple used in 25 places.'>joy</a>);
+<a id='L538' name='L538'></a><em class='brace'>}</em>
+<a id='L539' name='L539'></a>
+<a id='L540' name='L540'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L541' name='L541'></a><em class='comment'>//</em>
+<a id='L542' name='L542'></a><em class='comment'>//      INL_StartJoy() - Detects &amp; auto-configures the specified joystick</em>
+<a id='L543' name='L543'></a><em class='comment'>//                                      The auto-config assumes the joystick is centered</em>
+<a id='L544' name='L544'></a><em class='comment'>//</em>
+<a id='L545' name='L545'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L546' name='L546'></a><strong class='reserved'>static</strong> <a href='../cgi-bin/global.cgi?pattern=boolean&amp;type=definitions' title='Multiple defined in 2 places.'>boolean</a>
+<a id='L547' name='L547'></a><a href='../S/62.html#L611' title='Referred from 611 in WOLFSRC/ID_IN.C.'>INL_StartJoy</a>(<a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a> <a href='../cgi-bin/global.cgi?pattern=joy&amp;type=symbol' title='Multiple used in 25 places.'>joy</a>)
+<em class='comment'>/* <a href='#L516'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><a href='#L572'><img class='icon' src='../icons/right.png' alt='[next]' /></a><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L548' name='L548'></a><em class='brace'>{</em>
+<a id='L549' name='L549'></a>        <a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a>            <a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a>,<a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a>;
+<a id='L550' name='L550'></a>
+<a id='L551' name='L551'></a>        <a href='../S/62.html#L247' title='Defined at 247 in WOLFSRC/ID_IN.C.'>IN_GetJoyAbs</a>(<a href='../cgi-bin/global.cgi?pattern=joy&amp;type=symbol' title='Multiple used in 25 places.'>joy</a>,&amp;<a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a>,&amp;<a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a>);
+<a id='L552' name='L552'></a>
+<a id='L553' name='L553'></a>        <strong class='reserved'>if</strong>
+<a id='L554' name='L554'></a>        (
+<a id='L555' name='L555'></a>                ((<a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a> == 0) || (<a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a> &gt; <a href='../S/62.html#L40' title='Defined at 40 in WOLFSRC/ID_IN.C.'>MaxJoyValue</a> - 10))
+<a id='L556' name='L556'></a>        ||      ((<a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a> == 0) || (<a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a> &gt; <a href='../S/62.html#L40' title='Defined at 40 in WOLFSRC/ID_IN.C.'>MaxJoyValue</a> - 10))
+<a id='L557' name='L557'></a>        )
+<a id='L558' name='L558'></a>                <strong class='reserved'>return</strong>(<strong class='reserved'>false</strong>);
+<a id='L559' name='L559'></a>        <strong class='reserved'>else</strong>
+<a id='L560' name='L560'></a>        <em class='brace'>{</em>
+<a id='L561' name='L561'></a>                <a href='../S/62.html#L516' title='Defined at 516 in WOLFSRC/ID_IN.C.'>IN_SetupJoy</a>(<a href='../cgi-bin/global.cgi?pattern=joy&amp;type=symbol' title='Multiple used in 25 places.'>joy</a>,0,<a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a> * 2,0,<a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a> * 2);
+<a id='L562' name='L562'></a>                <strong class='reserved'>return</strong>(<strong class='reserved'>true</strong>);
+<a id='L563' name='L563'></a>        <em class='brace'>}</em>
+<a id='L564' name='L564'></a><em class='brace'>}</em>
+<a id='L565' name='L565'></a>
+<a id='L566' name='L566'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L567' name='L567'></a><em class='comment'>//</em>
+<a id='L568' name='L568'></a><em class='comment'>//      INL_ShutJoy() - Cleans up the joystick stuff</em>
+<a id='L569' name='L569'></a><em class='comment'>//</em>
+<a id='L570' name='L570'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L571' name='L571'></a><strong class='reserved'>static</strong> <strong class='reserved'>void</strong>
+<a id='L572' name='L572'></a><a href='../S/62.html#L650' title='Referred from 650 in WOLFSRC/ID_IN.C.'>INL_ShutJoy</a>(<a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a> <a href='../cgi-bin/global.cgi?pattern=joy&amp;type=symbol' title='Multiple used in 25 places.'>joy</a>)
+<em class='comment'>/* <a href='#L547'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><a href='#L584'><img class='icon' src='../icons/right.png' alt='[next]' /></a><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L573' name='L573'></a><em class='brace'>{</em>
+<a id='L574' name='L574'></a>        <a href='../cgi-bin/global.cgi?pattern=JoysPresent&amp;type=symbol' title='Multiple used in 9 places.'>JoysPresent</a>[<a href='../cgi-bin/global.cgi?pattern=joy&amp;type=symbol' title='Multiple used in 25 places.'>joy</a>] = <strong class='reserved'>false</strong>;
+<a id='L575' name='L575'></a><em class='brace'>}</em>
+<a id='L576' name='L576'></a>
+<a id='L577' name='L577'></a>
+<a id='L578' name='L578'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L579' name='L579'></a><em class='comment'>//</em>
+<a id='L580' name='L580'></a><em class='comment'>//      IN_Startup() - Starts up the Input Mgr</em>
+<a id='L581' name='L581'></a><em class='comment'>//</em>
+<a id='L582' name='L582'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L583' name='L583'></a><strong class='reserved'>void</strong>
+<a id='L584' name='L584'></a><a href='../cgi-bin/global.cgi?pattern=IN_Startup&amp;type=reference' title='Multiple referred from 2 places.'>IN_Startup</a>(<strong class='reserved'>void</strong>)
+<em class='comment'>/* <a href='#L572'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><a href='#L622'><img class='icon' src='../icons/right.png' alt='[next]' /></a><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L585' name='L585'></a><em class='brace'>{</em>
+<a id='L586' name='L586'></a>        <a href='../cgi-bin/global.cgi?pattern=boolean&amp;type=definitions' title='Multiple defined in 2 places.'>boolean</a> <a href='../cgi-bin/global.cgi?pattern=checkjoys&amp;type=symbol' title='Multiple used in 4 places.'>checkjoys</a>,<a href='../cgi-bin/global.cgi?pattern=checkmouse&amp;type=symbol' title='Multiple used in 4 places.'>checkmouse</a>;
+<a id='L587' name='L587'></a>        <a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a>    <a href='../cgi-bin/global.cgi?pattern=i&amp;type=symbol' title='Multiple used in 602 places.'>i</a>;
+<a id='L588' name='L588'></a>
+<a id='L589' name='L589'></a>        <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=IN_Started&amp;type=symbol' title='Multiple used in 5 places.'>IN_Started</a>)
+<a id='L590' name='L590'></a>                <strong class='reserved'>return</strong>;
+<a id='L591' name='L591'></a>
+<a id='L592' name='L592'></a>        <a href='../cgi-bin/global.cgi?pattern=checkjoys&amp;type=symbol' title='Multiple used in 4 places.'>checkjoys</a> = <strong class='reserved'>true</strong>;
+<a id='L593' name='L593'></a>        <a href='../cgi-bin/global.cgi?pattern=checkmouse&amp;type=symbol' title='Multiple used in 4 places.'>checkmouse</a> = <strong class='reserved'>true</strong>;
+<a id='L594' name='L594'></a>        <strong class='reserved'>for</strong> (<a href='../cgi-bin/global.cgi?pattern=i&amp;type=symbol' title='Multiple used in 602 places.'>i</a> = 1;<a href='../cgi-bin/global.cgi?pattern=i&amp;type=symbol' title='Multiple used in 602 places.'>i</a> &lt; <a href='../cgi-bin/global.cgi?pattern=_argc&amp;type=symbol' title='Multiple used in 9 places.'>_argc</a>;<a href='../cgi-bin/global.cgi?pattern=i&amp;type=symbol' title='Multiple used in 602 places.'>i</a>++)
+<a id='L595' name='L595'></a>        <em class='brace'>{</em>
+<a id='L596' name='L596'></a>                <strong class='reserved'>switch</strong> (<a href='../S/64.html#L237' title='Defined at 237 in WOLFSRC/ID_US_1.C.'>US_CheckParm</a>(<a href='../cgi-bin/global.cgi?pattern=_argv&amp;type=symbol' title='Multiple used in 10 places.'>_argv</a>[<a href='../cgi-bin/global.cgi?pattern=i&amp;type=symbol' title='Multiple used in 602 places.'>i</a>],<a href='../cgi-bin/global.cgi?pattern=ParmStrings&amp;type=symbol' title='Multiple used in 13 places.'>ParmStrings</a>))
+<a id='L597' name='L597'></a>                <em class='brace'>{</em>
+<a id='L598' name='L598'></a>                <strong class='reserved'>case</strong> 0:
+<a id='L599' name='L599'></a>                        <a href='../cgi-bin/global.cgi?pattern=checkjoys&amp;type=symbol' title='Multiple used in 4 places.'>checkjoys</a> = <strong class='reserved'>false</strong>;
+<a id='L600' name='L600'></a>                        <strong class='reserved'>break</strong>;
+<a id='L601' name='L601'></a>                <strong class='reserved'>case</strong> 1:
+<a id='L602' name='L602'></a>                        <a href='../cgi-bin/global.cgi?pattern=checkmouse&amp;type=symbol' title='Multiple used in 4 places.'>checkmouse</a> = <strong class='reserved'>false</strong>;
+<a id='L603' name='L603'></a>                        <strong class='reserved'>break</strong>;
+<a id='L604' name='L604'></a>                <em class='brace'>}</em>
+<a id='L605' name='L605'></a>        <em class='brace'>}</em>
+<a id='L606' name='L606'></a>
+<a id='L607' name='L607'></a>        <a href='../S/62.html#L430' title='Defined at 430 in WOLFSRC/ID_IN.C.'>INL_StartKbd</a>();
+<a id='L608' name='L608'></a>        <a href='../cgi-bin/global.cgi?pattern=MousePresent&amp;type=symbol' title='Multiple used in 19 places.'>MousePresent</a> = <a href='../cgi-bin/global.cgi?pattern=checkmouse&amp;type=symbol' title='Multiple used in 4 places.'>checkmouse</a>? <a href='../S/62.html#L459' title='Defined at 459 in WOLFSRC/ID_IN.C.'>INL_StartMouse</a>() : <strong class='reserved'>false</strong>;
+<a id='L609' name='L609'></a>
+<a id='L610' name='L610'></a>        <strong class='reserved'>for</strong> (<a href='../cgi-bin/global.cgi?pattern=i&amp;type=symbol' title='Multiple used in 602 places.'>i</a> = 0;<a href='../cgi-bin/global.cgi?pattern=i&amp;type=symbol' title='Multiple used in 602 places.'>i</a> &lt; <a href='../S/91.html#L17' title='Defined at 17 in WOLFSRC/ID_IN.H.'>MaxJoys</a>;<a href='../cgi-bin/global.cgi?pattern=i&amp;type=symbol' title='Multiple used in 602 places.'>i</a>++)
+<a id='L611' name='L611'></a>                <a href='../cgi-bin/global.cgi?pattern=JoysPresent&amp;type=symbol' title='Multiple used in 9 places.'>JoysPresent</a>[<a href='../cgi-bin/global.cgi?pattern=i&amp;type=symbol' title='Multiple used in 602 places.'>i</a>] = <a href='../cgi-bin/global.cgi?pattern=checkjoys&amp;type=symbol' title='Multiple used in 4 places.'>checkjoys</a>? <a href='../S/62.html#L547' title='Defined at 547 in WOLFSRC/ID_IN.C.'>INL_StartJoy</a>(<a href='../cgi-bin/global.cgi?pattern=i&amp;type=symbol' title='Multiple used in 602 places.'>i</a>) : <strong class='reserved'>false</strong>;
+<a id='L612' name='L612'></a>
+<a id='L613' name='L613'></a>        <a href='../cgi-bin/global.cgi?pattern=IN_Started&amp;type=symbol' title='Multiple used in 5 places.'>IN_Started</a> = <strong class='reserved'>true</strong>;
+<a id='L614' name='L614'></a><em class='brace'>}</em>
+<a id='L615' name='L615'></a>
+<a id='L616' name='L616'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L617' name='L617'></a><em class='comment'>//</em>
+<a id='L618' name='L618'></a><em class='comment'>//      IN_Default() - Sets up default conditions for the Input Mgr</em>
+<a id='L619' name='L619'></a><em class='comment'>//</em>
+<a id='L620' name='L620'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L621' name='L621'></a><strong class='reserved'>void</strong>
+<a id='L622' name='L622'></a><a href='../S/91.html#L177' title='Referred from 177 in WOLFSRC/ID_IN.H.'>IN_Default</a>(<a href='../cgi-bin/global.cgi?pattern=boolean&amp;type=definitions' title='Multiple defined in 2 places.'>boolean</a> <a href='../cgi-bin/global.cgi?pattern=gotit&amp;type=symbol' title='Multiple used in 7 places.'>gotit</a>,<a href='../S/91.html#L121' title='Defined at 121 in WOLFSRC/ID_IN.H.'>ControlType</a> <a href='../cgi-bin/global.cgi?pattern=in&amp;type=symbol' title='Multiple used in 88 places.'>in</a>)
+<em class='comment'>/* <a href='#L584'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><a href='#L641'><img class='icon' src='../icons/right.png' alt='[next]' /></a><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L623' name='L623'></a><em class='brace'>{</em>
+<a id='L624' name='L624'></a>        <strong class='reserved'>if</strong>
+<a id='L625' name='L625'></a>        (
+<a id='L626' name='L626'></a>                (!<a href='../cgi-bin/global.cgi?pattern=gotit&amp;type=symbol' title='Multiple used in 7 places.'>gotit</a>)
+<a id='L627' name='L627'></a>        ||      ((<a href='../cgi-bin/global.cgi?pattern=in&amp;type=symbol' title='Multiple used in 88 places.'>in</a> == <a href='../S/91.html#L119' title='Defined at 119 in WOLFSRC/ID_IN.H.'>ctrl_Joystick1</a>) &amp;&amp; !<a href='../cgi-bin/global.cgi?pattern=JoysPresent&amp;type=symbol' title='Multiple used in 9 places.'>JoysPresent</a>[0])
+<a id='L628' name='L628'></a>        ||      ((<a href='../cgi-bin/global.cgi?pattern=in&amp;type=symbol' title='Multiple used in 88 places.'>in</a> == <a href='../S/91.html#L119' title='Defined at 119 in WOLFSRC/ID_IN.H.'>ctrl_Joystick2</a>) &amp;&amp; !<a href='../cgi-bin/global.cgi?pattern=JoysPresent&amp;type=symbol' title='Multiple used in 9 places.'>JoysPresent</a>[1])
+<a id='L629' name='L629'></a>        ||      ((<a href='../cgi-bin/global.cgi?pattern=in&amp;type=symbol' title='Multiple used in 88 places.'>in</a> == <a href='../S/91.html#L120' title='Defined at 120 in WOLFSRC/ID_IN.H.'>ctrl_Mouse</a>) &amp;&amp; !<a href='../cgi-bin/global.cgi?pattern=MousePresent&amp;type=symbol' title='Multiple used in 19 places.'>MousePresent</a>)
+<a id='L630' name='L630'></a>        )
+<a id='L631' name='L631'></a>                <a href='../cgi-bin/global.cgi?pattern=in&amp;type=symbol' title='Multiple used in 88 places.'>in</a> = <a href='../S/91.html#L117' title='Defined at 117 in WOLFSRC/ID_IN.H.'>ctrl_Keyboard1</a>;
+<a id='L632' name='L632'></a>        <a href='../S/62.html#L822' title='Defined at 822 in WOLFSRC/ID_IN.C.'>IN_SetControlType</a>(0,<a href='../cgi-bin/global.cgi?pattern=in&amp;type=symbol' title='Multiple used in 88 places.'>in</a>);
+<a id='L633' name='L633'></a><em class='brace'>}</em>
+<a id='L634' name='L634'></a>
+<a id='L635' name='L635'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L636' name='L636'></a><em class='comment'>//</em>
+<a id='L637' name='L637'></a><em class='comment'>//      IN_Shutdown() - Shuts down the Input Mgr</em>
+<a id='L638' name='L638'></a><em class='comment'>//</em>
+<a id='L639' name='L639'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L640' name='L640'></a><strong class='reserved'>void</strong>
+<a id='L641' name='L641'></a><a href='../cgi-bin/global.cgi?pattern=IN_Shutdown&amp;type=reference' title='Multiple referred from 3 places.'>IN_Shutdown</a>(<strong class='reserved'>void</strong>)
+<em class='comment'>/* <a href='#L622'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><a href='#L663'><img class='icon' src='../icons/right.png' alt='[next]' /></a><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L642' name='L642'></a><em class='brace'>{</em>
+<a id='L643' name='L643'></a>        <a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a>    <a href='../cgi-bin/global.cgi?pattern=i&amp;type=symbol' title='Multiple used in 602 places.'>i</a>;
+<a id='L644' name='L644'></a>
+<a id='L645' name='L645'></a>        <strong class='reserved'>if</strong> (!<a href='../cgi-bin/global.cgi?pattern=IN_Started&amp;type=symbol' title='Multiple used in 5 places.'>IN_Started</a>)
+<a id='L646' name='L646'></a>                <strong class='reserved'>return</strong>;
+<a id='L647' name='L647'></a>
+<a id='L648' name='L648'></a>        <a href='../S/62.html#L490' title='Defined at 490 in WOLFSRC/ID_IN.C.'>INL_ShutMouse</a>();
+<a id='L649' name='L649'></a>        <strong class='reserved'>for</strong> (<a href='../cgi-bin/global.cgi?pattern=i&amp;type=symbol' title='Multiple used in 602 places.'>i</a> = 0;<a href='../cgi-bin/global.cgi?pattern=i&amp;type=symbol' title='Multiple used in 602 places.'>i</a> &lt; <a href='../S/91.html#L17' title='Defined at 17 in WOLFSRC/ID_IN.H.'>MaxJoys</a>;<a href='../cgi-bin/global.cgi?pattern=i&amp;type=symbol' title='Multiple used in 602 places.'>i</a>++)
+<a id='L650' name='L650'></a>                <a href='../S/62.html#L572' title='Defined at 572 in WOLFSRC/ID_IN.C.'>INL_ShutJoy</a>(<a href='../cgi-bin/global.cgi?pattern=i&amp;type=symbol' title='Multiple used in 602 places.'>i</a>);
+<a id='L651' name='L651'></a>        <a href='../S/62.html#L446' title='Defined at 446 in WOLFSRC/ID_IN.C.'>INL_ShutKbd</a>();
+<a id='L652' name='L652'></a>
+<a id='L653' name='L653'></a>        <a href='../cgi-bin/global.cgi?pattern=IN_Started&amp;type=symbol' title='Multiple used in 5 places.'>IN_Started</a> = <strong class='reserved'>false</strong>;
+<a id='L654' name='L654'></a><em class='brace'>}</em>
+<a id='L655' name='L655'></a>
+<a id='L656' name='L656'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L657' name='L657'></a><em class='comment'>//</em>
+<a id='L658' name='L658'></a><em class='comment'>//      IN_SetKeyHook() - Sets the routine that gets called by INL_KeyService()</em>
+<a id='L659' name='L659'></a><em class='comment'>//                      everytime a real make/break code gets hit</em>
+<a id='L660' name='L660'></a><em class='comment'>//</em>
+<a id='L661' name='L661'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L662' name='L662'></a><strong class='reserved'>void</strong>
+<a id='L663' name='L663'></a><a href='../S/91.html#L178' title='Referred from 178 in WOLFSRC/ID_IN.H.'>IN_SetKeyHook</a>(<strong class='reserved'>void</strong> (*<a href='../cgi-bin/global.cgi?pattern=hook&amp;type=symbol' title='Multiple used in 5 places.'>hook</a>)())
+<em class='comment'>/* <a href='#L641'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><a href='#L674'><img class='icon' src='../icons/right.png' alt='[next]' /></a><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L664' name='L664'></a><em class='brace'>{</em>
+<a id='L665' name='L665'></a>        <a href='../cgi-bin/global.cgi?pattern=INL_KeyHook&amp;type=symbol' title='Multiple used in 5 places.'>INL_KeyHook</a> = <a href='../cgi-bin/global.cgi?pattern=hook&amp;type=symbol' title='Multiple used in 5 places.'>hook</a>;
+<a id='L666' name='L666'></a><em class='brace'>}</em>
+<a id='L667' name='L667'></a>
+<a id='L668' name='L668'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L669' name='L669'></a><em class='comment'>//</em>
+<a id='L670' name='L670'></a><em class='comment'>//      IN_ClearKeysDown() - Clears the keyboard array</em>
+<a id='L671' name='L671'></a><em class='comment'>//</em>
+<a id='L672' name='L672'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L673' name='L673'></a><strong class='reserved'>void</strong>
+<a id='L674' name='L674'></a><a href='../cgi-bin/global.cgi?pattern=IN_ClearKeysDown&amp;type=reference' title='Multiple referred from 48 places.'>IN_ClearKeysDown</a>(<strong class='reserved'>void</strong>)
+<em class='comment'>/* <a href='#L663'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><a href='#L691'><img class='icon' src='../icons/right.png' alt='[next]' /></a><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L675' name='L675'></a><em class='brace'>{</em>
+<a id='L676' name='L676'></a>        <strong class='reserved'>int</strong>     <a href='../cgi-bin/global.cgi?pattern=i&amp;type=symbol' title='Multiple used in 602 places.'>i</a>;
+<a id='L677' name='L677'></a>
+<a id='L678' name='L678'></a>        <a href='../cgi-bin/global.cgi?pattern=LastScan&amp;type=symbol' title='Multiple used in 25 places.'>LastScan</a> = <a href='../S/91.html#L21' title='Defined at 21 in WOLFSRC/ID_IN.H.'>sc_None</a>;
+<a id='L679' name='L679'></a>        <a href='../cgi-bin/global.cgi?pattern=LastASCII&amp;type=symbol' title='Multiple used in 10 places.'>LastASCII</a> = <a href='../S/91.html#L95' title='Defined at 95 in WOLFSRC/ID_IN.H.'>key_None</a>;
+<a id='L680' name='L680'></a>        <a href='../cgi-bin/global.cgi?pattern=memset&amp;type=symbol' title='Multiple used in 14 places.'>memset</a> (<a href='../cgi-bin/global.cgi?pattern=Keyboard&amp;type=symbol' title='Multiple used in 106 places.'>Keyboard</a>,0,<strong class='reserved'>sizeof</strong>(<a href='../cgi-bin/global.cgi?pattern=Keyboard&amp;type=symbol' title='Multiple used in 106 places.'>Keyboard</a>));
+<a id='L681' name='L681'></a><em class='brace'>}</em>
+<a id='L682' name='L682'></a>
+<a id='L683' name='L683'></a>
+<a id='L684' name='L684'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L685' name='L685'></a><em class='comment'>//</em>
+<a id='L686' name='L686'></a><em class='comment'>//      IN_ReadControl() - Reads the device associated with the specified</em>
+<a id='L687' name='L687'></a><em class='comment'>//              player and fills in the control info struct</em>
+<a id='L688' name='L688'></a><em class='comment'>//</em>
+<a id='L689' name='L689'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L690' name='L690'></a><strong class='reserved'>void</strong>
+<a id='L691' name='L691'></a><a href='../cgi-bin/global.cgi?pattern=IN_ReadControl&amp;type=reference' title='Multiple referred from 2 places.'>IN_ReadControl</a>(<strong class='reserved'>int</strong> <a href='../cgi-bin/global.cgi?pattern=player&amp;type=symbol' title='Multiple used in 190 places.'>player</a>,<a href='../S/91.html#L140' title='Defined at 140 in WOLFSRC/ID_IN.H.'>ControlInfo</a> *<a href='../cgi-bin/global.cgi?pattern=info&amp;type=symbol' title='Multiple used in 10 places.'>info</a>)
+<em class='comment'>/* <a href='#L674'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><a href='#L822'><img class='icon' src='../icons/right.png' alt='[next]' /></a><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L692' name='L692'></a><em class='brace'>{</em>
+<a id='L693' name='L693'></a>                        <a href='../cgi-bin/global.cgi?pattern=boolean&amp;type=definitions' title='Multiple defined in 2 places.'>boolean</a>         <a href='../cgi-bin/global.cgi?pattern=realdelta&amp;type=symbol' title='Multiple used in 6 places.'>realdelta</a>;
+<a id='L694' name='L694'></a>                        <a href='../cgi-bin/global.cgi?pattern=byte&amp;type=definitions' title='Multiple defined in 2 places.'>byte</a>            <a href='../cgi-bin/global.cgi?pattern=dbyte&amp;type=symbol' title='Multiple used in 8 places.'>dbyte</a>;
+<a id='L695' name='L695'></a>                        <a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a>            <a href='../cgi-bin/global.cgi?pattern=buttons&amp;type=symbol' title='Multiple used in 39 places.'>buttons</a>;
+<a id='L696' name='L696'></a>                        <strong class='reserved'>int</strong>                     <a href='../cgi-bin/global.cgi?pattern=dx&amp;type=symbol' title='Multiple used in 306 places.'>dx</a>,<a href='../cgi-bin/global.cgi?pattern=dy&amp;type=symbol' title='Multiple used in 55 places.'>dy</a>;
+<a id='L697' name='L697'></a>                        <a href='../S/91.html#L126' title='Defined at 126 in WOLFSRC/ID_IN.H.'>Motion</a>          <a href='../cgi-bin/global.cgi?pattern=mx&amp;type=symbol' title='Multiple used in 14 places.'>mx</a>,<a href='../cgi-bin/global.cgi?pattern=my&amp;type=symbol' title='Multiple used in 14 places.'>my</a>;
+<a id='L698' name='L698'></a>                        <a href='../S/91.html#L121' title='Defined at 121 in WOLFSRC/ID_IN.H.'>ControlType</a>     <a href='../cgi-bin/global.cgi?pattern=type&amp;type=symbol' title='Multiple used in 24 places.'>type</a>;
+<a id='L699' name='L699'></a><strong class='reserved'>register</strong>        <a href='../S/91.html#L146' title='Defined at 146 in WOLFSRC/ID_IN.H.'>KeyboardDef</a>     *<a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>;
+<a id='L700' name='L700'></a>
+<a id='L701' name='L701'></a>        <a href='../cgi-bin/global.cgi?pattern=dx&amp;type=symbol' title='Multiple used in 306 places.'>dx</a> = <a href='../cgi-bin/global.cgi?pattern=dy&amp;type=symbol' title='Multiple used in 55 places.'>dy</a> = 0;
+<a id='L702' name='L702'></a>        <a href='../cgi-bin/global.cgi?pattern=mx&amp;type=symbol' title='Multiple used in 14 places.'>mx</a> = <a href='../cgi-bin/global.cgi?pattern=my&amp;type=symbol' title='Multiple used in 14 places.'>my</a> = <a href='../S/91.html#L124' title='Defined at 124 in WOLFSRC/ID_IN.H.'>motion_None</a>;
+<a id='L703' name='L703'></a>        <a href='../cgi-bin/global.cgi?pattern=buttons&amp;type=symbol' title='Multiple used in 39 places.'>buttons</a> = 0;
+<a id='L704' name='L704'></a>
+<a id='L705' name='L705'></a>        <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=DemoMode&amp;type=symbol' title='Multiple used in 6 places.'>DemoMode</a> == <a href='../S/91.html#L113' title='Defined at 113 in WOLFSRC/ID_IN.H.'>demo_Playback</a>)
+<a id='L706' name='L706'></a>        <em class='brace'>{</em>
+<a id='L707' name='L707'></a>                <a href='../cgi-bin/global.cgi?pattern=dbyte&amp;type=symbol' title='Multiple used in 8 places.'>dbyte</a> = <a href='../cgi-bin/global.cgi?pattern=DemoBuffer&amp;type=symbol' title='Multiple used in 10 places.'>DemoBuffer</a>[<a href='../cgi-bin/global.cgi?pattern=DemoOffset&amp;type=symbol' title='Multiple used in 14 places.'>DemoOffset</a> + 1];
+<a id='L708' name='L708'></a>                <a href='../cgi-bin/global.cgi?pattern=my&amp;type=symbol' title='Multiple used in 14 places.'>my</a> = (<a href='../cgi-bin/global.cgi?pattern=dbyte&amp;type=symbol' title='Multiple used in 8 places.'>dbyte</a> &amp; 3) - 1;
+<a id='L709' name='L709'></a>                <a href='../cgi-bin/global.cgi?pattern=mx&amp;type=symbol' title='Multiple used in 14 places.'>mx</a> = ((<a href='../cgi-bin/global.cgi?pattern=dbyte&amp;type=symbol' title='Multiple used in 8 places.'>dbyte</a> &gt;&gt; 2) &amp; 3) - 1;
+<a id='L710' name='L710'></a>                <a href='../cgi-bin/global.cgi?pattern=buttons&amp;type=symbol' title='Multiple used in 39 places.'>buttons</a> = (<a href='../cgi-bin/global.cgi?pattern=dbyte&amp;type=symbol' title='Multiple used in 8 places.'>dbyte</a> &gt;&gt; 4) &amp; 3;
+<a id='L711' name='L711'></a>
+<a id='L712' name='L712'></a>                <strong class='reserved'>if</strong> (!(--<a href='../cgi-bin/global.cgi?pattern=DemoBuffer&amp;type=symbol' title='Multiple used in 10 places.'>DemoBuffer</a>[<a href='../cgi-bin/global.cgi?pattern=DemoOffset&amp;type=symbol' title='Multiple used in 14 places.'>DemoOffset</a>]))
+<a id='L713' name='L713'></a>                <em class='brace'>{</em>
+<a id='L714' name='L714'></a>                        <a href='../cgi-bin/global.cgi?pattern=DemoOffset&amp;type=symbol' title='Multiple used in 14 places.'>DemoOffset</a> += 2;
+<a id='L715' name='L715'></a>                        <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=DemoOffset&amp;type=symbol' title='Multiple used in 14 places.'>DemoOffset</a> &gt;= <a href='../cgi-bin/global.cgi?pattern=DemoSize&amp;type=symbol' title='Multiple used in 4 places.'>DemoSize</a>)
+<a id='L716' name='L716'></a>                                <a href='../cgi-bin/global.cgi?pattern=DemoMode&amp;type=symbol' title='Multiple used in 6 places.'>DemoMode</a> = <a href='../S/91.html#L113' title='Defined at 113 in WOLFSRC/ID_IN.H.'>demo_PlayDone</a>;
+<a id='L717' name='L717'></a>                <em class='brace'>}</em>
+<a id='L718' name='L718'></a>
+<a id='L719' name='L719'></a>                <a href='../cgi-bin/global.cgi?pattern=realdelta&amp;type=symbol' title='Multiple used in 6 places.'>realdelta</a> = <strong class='reserved'>false</strong>;
+<a id='L720' name='L720'></a>        <em class='brace'>}</em>
+<a id='L721' name='L721'></a>        <strong class='reserved'>else</strong> <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=DemoMode&amp;type=symbol' title='Multiple used in 6 places.'>DemoMode</a> == <a href='../S/91.html#L113' title='Defined at 113 in WOLFSRC/ID_IN.H.'>demo_PlayDone</a>)
+<a id='L722' name='L722'></a>                <a href='../S/32.html#L1346' title='Defined at 1346 in WOLFSRC/WL_MAIN.C.'>Quit</a>("Demo playback exceeded");
+<a id='L723' name='L723'></a>        <strong class='reserved'>else</strong>
+<a id='L724' name='L724'></a>        <em class='brace'>{</em>
+<a id='L725' name='L725'></a>                <strong class='reserved'>switch</strong> (<a href='../cgi-bin/global.cgi?pattern=type&amp;type=symbol' title='Multiple used in 24 places.'>type</a> = <a href='../cgi-bin/global.cgi?pattern=Controls&amp;type=symbol' title='Multiple used in 4 places.'>Controls</a>[<a href='../cgi-bin/global.cgi?pattern=player&amp;type=symbol' title='Multiple used in 190 places.'>player</a>])
+<a id='L726' name='L726'></a>                <em class='brace'>{</em>
+<a id='L727' name='L727'></a>                <strong class='reserved'>case</strong> <a href='../S/91.html#L116' title='Defined at 116 in WOLFSRC/ID_IN.H.'>ctrl_Keyboard</a>:
+<a id='L728' name='L728'></a>                        <a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a> = &amp;<a href='../cgi-bin/global.cgi?pattern=KbdDefs&amp;type=symbol' title='Multiple used in 3 places.'>KbdDefs</a>;
+<a id='L729' name='L729'></a>
+<a id='L730' name='L730'></a>                        <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=Keyboard&amp;type=symbol' title='Multiple used in 106 places.'>Keyboard</a>[<a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=upleft&amp;type=symbol' title='Multiple used in 2 places.'>upleft</a>])
+<a id='L731' name='L731'></a>                                <a href='../cgi-bin/global.cgi?pattern=mx&amp;type=symbol' title='Multiple used in 14 places.'>mx</a> = <a href='../S/91.html#L123' title='Defined at 123 in WOLFSRC/ID_IN.H.'>motion_Left</a>,<a href='../cgi-bin/global.cgi?pattern=my&amp;type=symbol' title='Multiple used in 14 places.'>my</a> = <a href='../S/91.html#L123' title='Defined at 123 in WOLFSRC/ID_IN.H.'>motion_Up</a>;
+<a id='L732' name='L732'></a>                        <strong class='reserved'>else</strong> <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=Keyboard&amp;type=symbol' title='Multiple used in 106 places.'>Keyboard</a>[<a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=upright&amp;type=symbol' title='Multiple used in 2 places.'>upright</a>])
+<a id='L733' name='L733'></a>                                <a href='../cgi-bin/global.cgi?pattern=mx&amp;type=symbol' title='Multiple used in 14 places.'>mx</a> = <a href='../S/91.html#L125' title='Defined at 125 in WOLFSRC/ID_IN.H.'>motion_Right</a>,<a href='../cgi-bin/global.cgi?pattern=my&amp;type=symbol' title='Multiple used in 14 places.'>my</a> = <a href='../S/91.html#L123' title='Defined at 123 in WOLFSRC/ID_IN.H.'>motion_Up</a>;
+<a id='L734' name='L734'></a>                        <strong class='reserved'>else</strong> <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=Keyboard&amp;type=symbol' title='Multiple used in 106 places.'>Keyboard</a>[<a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=downleft&amp;type=symbol' title='Multiple used in 2 places.'>downleft</a>])
+<a id='L735' name='L735'></a>                                <a href='../cgi-bin/global.cgi?pattern=mx&amp;type=symbol' title='Multiple used in 14 places.'>mx</a> = <a href='../S/91.html#L123' title='Defined at 123 in WOLFSRC/ID_IN.H.'>motion_Left</a>,<a href='../cgi-bin/global.cgi?pattern=my&amp;type=symbol' title='Multiple used in 14 places.'>my</a> = <a href='../S/91.html#L125' title='Defined at 125 in WOLFSRC/ID_IN.H.'>motion_Down</a>;
+<a id='L736' name='L736'></a>                        <strong class='reserved'>else</strong> <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=Keyboard&amp;type=symbol' title='Multiple used in 106 places.'>Keyboard</a>[<a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=downright&amp;type=symbol' title='Multiple used in 2 places.'>downright</a>])
+<a id='L737' name='L737'></a>                                <a href='../cgi-bin/global.cgi?pattern=mx&amp;type=symbol' title='Multiple used in 14 places.'>mx</a> = <a href='../S/91.html#L125' title='Defined at 125 in WOLFSRC/ID_IN.H.'>motion_Right</a>,<a href='../cgi-bin/global.cgi?pattern=my&amp;type=symbol' title='Multiple used in 14 places.'>my</a> = <a href='../S/91.html#L125' title='Defined at 125 in WOLFSRC/ID_IN.H.'>motion_Down</a>;
+<a id='L738' name='L738'></a>
+<a id='L739' name='L739'></a>                        <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=Keyboard&amp;type=symbol' title='Multiple used in 106 places.'>Keyboard</a>[<a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=up&amp;type=symbol' title='Multiple used in 2 places.'>up</a>])
+<a id='L740' name='L740'></a>                                <a href='../cgi-bin/global.cgi?pattern=my&amp;type=symbol' title='Multiple used in 14 places.'>my</a> = <a href='../S/91.html#L123' title='Defined at 123 in WOLFSRC/ID_IN.H.'>motion_Up</a>;
+<a id='L741' name='L741'></a>                        <strong class='reserved'>else</strong> <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=Keyboard&amp;type=symbol' title='Multiple used in 106 places.'>Keyboard</a>[<a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=down&amp;type=symbol' title='Multiple used in 2 places.'>down</a>])
+<a id='L742' name='L742'></a>                                <a href='../cgi-bin/global.cgi?pattern=my&amp;type=symbol' title='Multiple used in 14 places.'>my</a> = <a href='../S/91.html#L125' title='Defined at 125 in WOLFSRC/ID_IN.H.'>motion_Down</a>;
+<a id='L743' name='L743'></a>
+<a id='L744' name='L744'></a>                        <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=Keyboard&amp;type=symbol' title='Multiple used in 106 places.'>Keyboard</a>[<a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=left&amp;type=symbol' title='Multiple used in 2 places.'>left</a>])
+<a id='L745' name='L745'></a>                                <a href='../cgi-bin/global.cgi?pattern=mx&amp;type=symbol' title='Multiple used in 14 places.'>mx</a> = <a href='../S/91.html#L123' title='Defined at 123 in WOLFSRC/ID_IN.H.'>motion_Left</a>;
+<a id='L746' name='L746'></a>                        <strong class='reserved'>else</strong> <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=Keyboard&amp;type=symbol' title='Multiple used in 106 places.'>Keyboard</a>[<a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=right&amp;type=symbol' title='Multiple used in 2 places.'>right</a>])
+<a id='L747' name='L747'></a>                                <a href='../cgi-bin/global.cgi?pattern=mx&amp;type=symbol' title='Multiple used in 14 places.'>mx</a> = <a href='../S/91.html#L125' title='Defined at 125 in WOLFSRC/ID_IN.H.'>motion_Right</a>;
+<a id='L748' name='L748'></a>
+<a id='L749' name='L749'></a>                        <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=Keyboard&amp;type=symbol' title='Multiple used in 106 places.'>Keyboard</a>[<a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=button0&amp;type=symbol' title='Multiple used in 15 places.'>button0</a>])
+<a id='L750' name='L750'></a>                                <a href='../cgi-bin/global.cgi?pattern=buttons&amp;type=symbol' title='Multiple used in 39 places.'>buttons</a> += 1 &lt;&lt; 0;
+<a id='L751' name='L751'></a>                        <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=Keyboard&amp;type=symbol' title='Multiple used in 106 places.'>Keyboard</a>[<a href='../cgi-bin/global.cgi?pattern=def&amp;type=symbol' title='Multiple used in 54 places.'>def</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=button1&amp;type=symbol' title='Multiple used in 14 places.'>button1</a>])
+<a id='L752' name='L752'></a>                                <a href='../cgi-bin/global.cgi?pattern=buttons&amp;type=symbol' title='Multiple used in 39 places.'>buttons</a> += 1 &lt;&lt; 1;
+<a id='L753' name='L753'></a>                        <a href='../cgi-bin/global.cgi?pattern=realdelta&amp;type=symbol' title='Multiple used in 6 places.'>realdelta</a> = <strong class='reserved'>false</strong>;
+<a id='L754' name='L754'></a>                        <strong class='reserved'>break</strong>;
+<a id='L755' name='L755'></a>                <strong class='reserved'>case</strong> <a href='../S/91.html#L119' title='Defined at 119 in WOLFSRC/ID_IN.H.'>ctrl_Joystick1</a>:
+<a id='L756' name='L756'></a>                <strong class='reserved'>case</strong> <a href='../S/91.html#L119' title='Defined at 119 in WOLFSRC/ID_IN.H.'>ctrl_Joystick2</a>:
+<a id='L757' name='L757'></a>                        <a href='../S/62.html#L324' title='Defined at 324 in WOLFSRC/ID_IN.C.'>INL_GetJoyDelta</a>(<a href='../cgi-bin/global.cgi?pattern=type&amp;type=symbol' title='Multiple used in 24 places.'>type</a> - <a href='../S/91.html#L118' title='Defined at 118 in WOLFSRC/ID_IN.H.'>ctrl_Joystick</a>,&amp;<a href='../cgi-bin/global.cgi?pattern=dx&amp;type=symbol' title='Multiple used in 306 places.'>dx</a>,&amp;<a href='../cgi-bin/global.cgi?pattern=dy&amp;type=symbol' title='Multiple used in 55 places.'>dy</a>);
+<a id='L758' name='L758'></a>                        <a href='../cgi-bin/global.cgi?pattern=buttons&amp;type=symbol' title='Multiple used in 39 places.'>buttons</a> = <a href='../S/62.html#L390' title='Defined at 390 in WOLFSRC/ID_IN.C.'>INL_GetJoyButtons</a>(<a href='../cgi-bin/global.cgi?pattern=type&amp;type=symbol' title='Multiple used in 24 places.'>type</a> - <a href='../S/91.html#L118' title='Defined at 118 in WOLFSRC/ID_IN.H.'>ctrl_Joystick</a>);
+<a id='L759' name='L759'></a>                        <a href='../cgi-bin/global.cgi?pattern=realdelta&amp;type=symbol' title='Multiple used in 6 places.'>realdelta</a> = <strong class='reserved'>true</strong>;
+<a id='L760' name='L760'></a>                        <strong class='reserved'>break</strong>;
+<a id='L761' name='L761'></a>                <strong class='reserved'>case</strong> <a href='../S/91.html#L120' title='Defined at 120 in WOLFSRC/ID_IN.H.'>ctrl_Mouse</a>:
+<a id='L762' name='L762'></a>                        <a href='../S/62.html#L218' title='Defined at 218 in WOLFSRC/ID_IN.C.'>INL_GetMouseDelta</a>(&amp;<a href='../cgi-bin/global.cgi?pattern=dx&amp;type=symbol' title='Multiple used in 306 places.'>dx</a>,&amp;<a href='../cgi-bin/global.cgi?pattern=dy&amp;type=symbol' title='Multiple used in 55 places.'>dy</a>);
+<a id='L763' name='L763'></a>                        <a href='../cgi-bin/global.cgi?pattern=buttons&amp;type=symbol' title='Multiple used in 39 places.'>buttons</a> = <a href='../S/62.html#L232' title='Defined at 232 in WOLFSRC/ID_IN.C.'>INL_GetMouseButtons</a>();
+<a id='L764' name='L764'></a>                        <a href='../cgi-bin/global.cgi?pattern=realdelta&amp;type=symbol' title='Multiple used in 6 places.'>realdelta</a> = <strong class='reserved'>true</strong>;
+<a id='L765' name='L765'></a>                        <strong class='reserved'>break</strong>;
+<a id='L766' name='L766'></a>                <em class='brace'>}</em>
+<a id='L767' name='L767'></a>        <em class='brace'>}</em>
+<a id='L768' name='L768'></a>
+<a id='L769' name='L769'></a>        <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=realdelta&amp;type=symbol' title='Multiple used in 6 places.'>realdelta</a>)
+<a id='L770' name='L770'></a>        <em class='brace'>{</em>
+<a id='L771' name='L771'></a>                <a href='../cgi-bin/global.cgi?pattern=mx&amp;type=symbol' title='Multiple used in 14 places.'>mx</a> = (<a href='../cgi-bin/global.cgi?pattern=dx&amp;type=symbol' title='Multiple used in 306 places.'>dx</a> &lt; 0)? <a href='../S/91.html#L123' title='Defined at 123 in WOLFSRC/ID_IN.H.'>motion_Left</a> : ((<a href='../cgi-bin/global.cgi?pattern=dx&amp;type=symbol' title='Multiple used in 306 places.'>dx</a> &gt; 0)? <a href='../S/91.html#L125' title='Defined at 125 in WOLFSRC/ID_IN.H.'>motion_Right</a> : <a href='../S/91.html#L124' title='Defined at 124 in WOLFSRC/ID_IN.H.'>motion_None</a>);
+<a id='L772' name='L772'></a>                <a href='../cgi-bin/global.cgi?pattern=my&amp;type=symbol' title='Multiple used in 14 places.'>my</a> = (<a href='../cgi-bin/global.cgi?pattern=dy&amp;type=symbol' title='Multiple used in 55 places.'>dy</a> &lt; 0)? <a href='../S/91.html#L123' title='Defined at 123 in WOLFSRC/ID_IN.H.'>motion_Up</a> : ((<a href='../cgi-bin/global.cgi?pattern=dy&amp;type=symbol' title='Multiple used in 55 places.'>dy</a> &gt; 0)? <a href='../S/91.html#L125' title='Defined at 125 in WOLFSRC/ID_IN.H.'>motion_Down</a> : <a href='../S/91.html#L124' title='Defined at 124 in WOLFSRC/ID_IN.H.'>motion_None</a>);
+<a id='L773' name='L773'></a>        <em class='brace'>}</em>
+<a id='L774' name='L774'></a>        <strong class='reserved'>else</strong>
+<a id='L775' name='L775'></a>        <em class='brace'>{</em>
+<a id='L776' name='L776'></a>                <a href='../cgi-bin/global.cgi?pattern=dx&amp;type=symbol' title='Multiple used in 306 places.'>dx</a> = <a href='../cgi-bin/global.cgi?pattern=mx&amp;type=symbol' title='Multiple used in 14 places.'>mx</a> * 127;
+<a id='L777' name='L777'></a>                <a href='../cgi-bin/global.cgi?pattern=dy&amp;type=symbol' title='Multiple used in 55 places.'>dy</a> = <a href='../cgi-bin/global.cgi?pattern=my&amp;type=symbol' title='Multiple used in 14 places.'>my</a> * 127;
+<a id='L778' name='L778'></a>        <em class='brace'>}</em>
+<a id='L779' name='L779'></a>
+<a id='L780' name='L780'></a>        <a href='../cgi-bin/global.cgi?pattern=info&amp;type=symbol' title='Multiple used in 10 places.'>info</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a> = <a href='../cgi-bin/global.cgi?pattern=dx&amp;type=symbol' title='Multiple used in 306 places.'>dx</a>;
+<a id='L781' name='L781'></a>        <a href='../cgi-bin/global.cgi?pattern=info&amp;type=symbol' title='Multiple used in 10 places.'>info</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=xaxis&amp;type=symbol' title='Multiple used in 2 places.'>xaxis</a> = <a href='../cgi-bin/global.cgi?pattern=mx&amp;type=symbol' title='Multiple used in 14 places.'>mx</a>;
+<a id='L782' name='L782'></a>        <a href='../cgi-bin/global.cgi?pattern=info&amp;type=symbol' title='Multiple used in 10 places.'>info</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a> = <a href='../cgi-bin/global.cgi?pattern=dy&amp;type=symbol' title='Multiple used in 55 places.'>dy</a>;
+<a id='L783' name='L783'></a>        <a href='../cgi-bin/global.cgi?pattern=info&amp;type=symbol' title='Multiple used in 10 places.'>info</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=yaxis&amp;type=symbol' title='Multiple used in 2 places.'>yaxis</a> = <a href='../cgi-bin/global.cgi?pattern=my&amp;type=symbol' title='Multiple used in 14 places.'>my</a>;
+<a id='L784' name='L784'></a>        <a href='../cgi-bin/global.cgi?pattern=info&amp;type=symbol' title='Multiple used in 10 places.'>info</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=button0&amp;type=symbol' title='Multiple used in 15 places.'>button0</a> = <a href='../cgi-bin/global.cgi?pattern=buttons&amp;type=symbol' title='Multiple used in 39 places.'>buttons</a> &amp; (1 &lt;&lt; 0);
+<a id='L785' name='L785'></a>        <a href='../cgi-bin/global.cgi?pattern=info&amp;type=symbol' title='Multiple used in 10 places.'>info</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=button1&amp;type=symbol' title='Multiple used in 14 places.'>button1</a> = <a href='../cgi-bin/global.cgi?pattern=buttons&amp;type=symbol' title='Multiple used in 39 places.'>buttons</a> &amp; (1 &lt;&lt; 1);
+<a id='L786' name='L786'></a>        <a href='../cgi-bin/global.cgi?pattern=info&amp;type=symbol' title='Multiple used in 10 places.'>info</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=button2&amp;type=symbol' title='Multiple used in 8 places.'>button2</a> = <a href='../cgi-bin/global.cgi?pattern=buttons&amp;type=symbol' title='Multiple used in 39 places.'>buttons</a> &amp; (1 &lt;&lt; 2);
+<a id='L787' name='L787'></a>        <a href='../cgi-bin/global.cgi?pattern=info&amp;type=symbol' title='Multiple used in 10 places.'>info</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=button3&amp;type=symbol' title='Multiple used in 8 places.'>button3</a> = <a href='../cgi-bin/global.cgi?pattern=buttons&amp;type=symbol' title='Multiple used in 39 places.'>buttons</a> &amp; (1 &lt;&lt; 3);
+<a id='L788' name='L788'></a>        <a href='../cgi-bin/global.cgi?pattern=info&amp;type=symbol' title='Multiple used in 10 places.'>info</a>-&gt;<a href='../cgi-bin/global.cgi?pattern=dir&amp;type=symbol' title='Multiple used in 108 places.'>dir</a> = <a href='../cgi-bin/global.cgi?pattern=DirTable&amp;type=symbol' title='Multiple used in 2 places.'>DirTable</a>[((<a href='../cgi-bin/global.cgi?pattern=my&amp;type=symbol' title='Multiple used in 14 places.'>my</a> + 1) * 3) + (<a href='../cgi-bin/global.cgi?pattern=mx&amp;type=symbol' title='Multiple used in 14 places.'>mx</a> + 1)];
+<a id='L789' name='L789'></a>
+<a id='L790' name='L790'></a>        <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=DemoMode&amp;type=symbol' title='Multiple used in 6 places.'>DemoMode</a> == <a href='../S/91.html#L113' title='Defined at 113 in WOLFSRC/ID_IN.H.'>demo_Record</a>)
+<a id='L791' name='L791'></a>        <em class='brace'>{</em>
+<a id='L792' name='L792'></a>                <em class='comment'>// Pack the control info into a byte</em>
+<a id='L793' name='L793'></a>                <a href='../cgi-bin/global.cgi?pattern=dbyte&amp;type=symbol' title='Multiple used in 8 places.'>dbyte</a> = (<a href='../cgi-bin/global.cgi?pattern=buttons&amp;type=symbol' title='Multiple used in 39 places.'>buttons</a> &lt;&lt; 4) | ((<a href='../cgi-bin/global.cgi?pattern=mx&amp;type=symbol' title='Multiple used in 14 places.'>mx</a> + 1) &lt;&lt; 2) | (<a href='../cgi-bin/global.cgi?pattern=my&amp;type=symbol' title='Multiple used in 14 places.'>my</a> + 1);
+<a id='L794' name='L794'></a>
+<a id='L795' name='L795'></a>                <strong class='reserved'>if</strong>
+<a id='L796' name='L796'></a>                (
+<a id='L797' name='L797'></a>                        (<a href='../cgi-bin/global.cgi?pattern=DemoBuffer&amp;type=symbol' title='Multiple used in 10 places.'>DemoBuffer</a>[<a href='../cgi-bin/global.cgi?pattern=DemoOffset&amp;type=symbol' title='Multiple used in 14 places.'>DemoOffset</a> + 1] == <a href='../cgi-bin/global.cgi?pattern=dbyte&amp;type=symbol' title='Multiple used in 8 places.'>dbyte</a>)
+<a id='L798' name='L798'></a>                &amp;&amp;      (<a href='../cgi-bin/global.cgi?pattern=DemoBuffer&amp;type=symbol' title='Multiple used in 10 places.'>DemoBuffer</a>[<a href='../cgi-bin/global.cgi?pattern=DemoOffset&amp;type=symbol' title='Multiple used in 14 places.'>DemoOffset</a>] &lt; 255)
+<a id='L799' name='L799'></a>                )
+<a id='L800' name='L800'></a>                        (<a href='../cgi-bin/global.cgi?pattern=DemoBuffer&amp;type=symbol' title='Multiple used in 10 places.'>DemoBuffer</a>[<a href='../cgi-bin/global.cgi?pattern=DemoOffset&amp;type=symbol' title='Multiple used in 14 places.'>DemoOffset</a>])++;
+<a id='L801' name='L801'></a>                <strong class='reserved'>else</strong>
+<a id='L802' name='L802'></a>                <em class='brace'>{</em>
+<a id='L803' name='L803'></a>                        <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=DemoOffset&amp;type=symbol' title='Multiple used in 14 places.'>DemoOffset</a> || <a href='../cgi-bin/global.cgi?pattern=DemoBuffer&amp;type=symbol' title='Multiple used in 10 places.'>DemoBuffer</a>[<a href='../cgi-bin/global.cgi?pattern=DemoOffset&amp;type=symbol' title='Multiple used in 14 places.'>DemoOffset</a>])
+<a id='L804' name='L804'></a>                                <a href='../cgi-bin/global.cgi?pattern=DemoOffset&amp;type=symbol' title='Multiple used in 14 places.'>DemoOffset</a> += 2;
+<a id='L805' name='L805'></a>
+<a id='L806' name='L806'></a>                        <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=DemoOffset&amp;type=symbol' title='Multiple used in 14 places.'>DemoOffset</a> &gt;= <a href='../cgi-bin/global.cgi?pattern=DemoSize&amp;type=symbol' title='Multiple used in 4 places.'>DemoSize</a>)
+<a id='L807' name='L807'></a>                                <a href='../S/32.html#L1346' title='Defined at 1346 in WOLFSRC/WL_MAIN.C.'>Quit</a>("Demo buffer overflow");
+<a id='L808' name='L808'></a>
+<a id='L809' name='L809'></a>                        <a href='../cgi-bin/global.cgi?pattern=DemoBuffer&amp;type=symbol' title='Multiple used in 10 places.'>DemoBuffer</a>[<a href='../cgi-bin/global.cgi?pattern=DemoOffset&amp;type=symbol' title='Multiple used in 14 places.'>DemoOffset</a>] = 1;
+<a id='L810' name='L810'></a>                        <a href='../cgi-bin/global.cgi?pattern=DemoBuffer&amp;type=symbol' title='Multiple used in 10 places.'>DemoBuffer</a>[<a href='../cgi-bin/global.cgi?pattern=DemoOffset&amp;type=symbol' title='Multiple used in 14 places.'>DemoOffset</a> + 1] = <a href='../cgi-bin/global.cgi?pattern=dbyte&amp;type=symbol' title='Multiple used in 8 places.'>dbyte</a>;
+<a id='L811' name='L811'></a>                <em class='brace'>}</em>
+<a id='L812' name='L812'></a>        <em class='brace'>}</em>
+<a id='L813' name='L813'></a><em class='brace'>}</em>
+<a id='L814' name='L814'></a>
+<a id='L815' name='L815'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L816' name='L816'></a><em class='comment'>//</em>
+<a id='L817' name='L817'></a><em class='comment'>//      IN_SetControlType() - Sets the control type to be used by the specified</em>
+<a id='L818' name='L818'></a><em class='comment'>//              player</em>
+<a id='L819' name='L819'></a><em class='comment'>//</em>
+<a id='L820' name='L820'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L821' name='L821'></a><strong class='reserved'>void</strong>
+<a id='L822' name='L822'></a><a href='../cgi-bin/global.cgi?pattern=IN_SetControlType&amp;type=reference' title='Multiple referred from 2 places.'>IN_SetControlType</a>(<strong class='reserved'>int</strong> <a href='../cgi-bin/global.cgi?pattern=player&amp;type=symbol' title='Multiple used in 190 places.'>player</a>,<a href='../S/91.html#L121' title='Defined at 121 in WOLFSRC/ID_IN.H.'>ControlType</a> <a href='../cgi-bin/global.cgi?pattern=type&amp;type=symbol' title='Multiple used in 24 places.'>type</a>)
+<em class='comment'>/* <a href='#L691'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><a href='#L835'><img class='icon' src='../icons/right.png' alt='[next]' /></a><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L823' name='L823'></a><em class='brace'>{</em>
+<a id='L824' name='L824'></a>        <em class='comment'>// DEBUG - check that requested type is present?</em>
+<a id='L825' name='L825'></a>        <a href='../cgi-bin/global.cgi?pattern=Controls&amp;type=symbol' title='Multiple used in 4 places.'>Controls</a>[<a href='../cgi-bin/global.cgi?pattern=player&amp;type=symbol' title='Multiple used in 190 places.'>player</a>] = <a href='../cgi-bin/global.cgi?pattern=type&amp;type=symbol' title='Multiple used in 24 places.'>type</a>;
+<a id='L826' name='L826'></a><em class='brace'>}</em>
+<a id='L827' name='L827'></a>
+<a id='L828' name='L828'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L829' name='L829'></a><em class='comment'>//</em>
+<a id='L830' name='L830'></a><em class='comment'>//      IN_WaitForKey() - Waits for a scan code, then clears LastScan and</em>
+<a id='L831' name='L831'></a><em class='comment'>//              returns the scan code</em>
+<a id='L832' name='L832'></a><em class='comment'>//</em>
+<a id='L833' name='L833'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L834' name='L834'></a><a href='../S/91.html#L20' title='Defined at 20 in WOLFSRC/ID_IN.H.'>ScanCode</a>
+<a id='L835' name='L835'></a><a href='../S/91.html#L190' title='Referred from 190 in WOLFSRC/ID_IN.H.'>IN_WaitForKey</a>(<strong class='reserved'>void</strong>)
+<em class='comment'>/* <a href='#L822'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><a href='#L852'><img class='icon' src='../icons/right.png' alt='[next]' /></a><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L836' name='L836'></a><em class='brace'>{</em>
+<a id='L837' name='L837'></a>        <a href='../S/91.html#L20' title='Defined at 20 in WOLFSRC/ID_IN.H.'>ScanCode</a>        <a href='../cgi-bin/global.cgi?pattern=result&amp;type=symbol' title='Multiple used in 54 places.'>result</a>;
+<a id='L838' name='L838'></a>
+<a id='L839' name='L839'></a>        <strong class='reserved'>while</strong> (!(<a href='../cgi-bin/global.cgi?pattern=result&amp;type=symbol' title='Multiple used in 54 places.'>result</a> = <a href='../cgi-bin/global.cgi?pattern=LastScan&amp;type=symbol' title='Multiple used in 25 places.'>LastScan</a>))
+<a id='L840' name='L840'></a>                ;
+<a id='L841' name='L841'></a>        <a href='../cgi-bin/global.cgi?pattern=LastScan&amp;type=symbol' title='Multiple used in 25 places.'>LastScan</a> = 0;
+<a id='L842' name='L842'></a>        <strong class='reserved'>return</strong>(<a href='../cgi-bin/global.cgi?pattern=result&amp;type=symbol' title='Multiple used in 54 places.'>result</a>);
+<a id='L843' name='L843'></a><em class='brace'>}</em>
+<a id='L844' name='L844'></a>
+<a id='L845' name='L845'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L846' name='L846'></a><em class='comment'>//</em>
+<a id='L847' name='L847'></a><em class='comment'>//      IN_WaitForASCII() - Waits for an ASCII char, then clears LastASCII and</em>
+<a id='L848' name='L848'></a><em class='comment'>//              returns the ASCII value</em>
+<a id='L849' name='L849'></a><em class='comment'>//</em>
+<a id='L850' name='L850'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L851' name='L851'></a><strong class='reserved'>char</strong>
+<a id='L852' name='L852'></a><a href='../cgi-bin/global.cgi?pattern=IN_WaitForASCII&amp;type=reference' title='Multiple referred from 2 places.'>IN_WaitForASCII</a>(<strong class='reserved'>void</strong>)
+<em class='comment'>/* <a href='#L835'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><a href='#L871'><img class='icon' src='../icons/right.png' alt='[next]' /></a><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L853' name='L853'></a><em class='brace'>{</em>
+<a id='L854' name='L854'></a>        <strong class='reserved'>char</strong>            <a href='../cgi-bin/global.cgi?pattern=result&amp;type=symbol' title='Multiple used in 54 places.'>result</a>;
+<a id='L855' name='L855'></a>
+<a id='L856' name='L856'></a>        <strong class='reserved'>while</strong> (!(<a href='../cgi-bin/global.cgi?pattern=result&amp;type=symbol' title='Multiple used in 54 places.'>result</a> = <a href='../cgi-bin/global.cgi?pattern=LastASCII&amp;type=symbol' title='Multiple used in 10 places.'>LastASCII</a>))
+<a id='L857' name='L857'></a>                ;
+<a id='L858' name='L858'></a>        <a href='../cgi-bin/global.cgi?pattern=LastASCII&amp;type=symbol' title='Multiple used in 10 places.'>LastASCII</a> = '\0';
+<a id='L859' name='L859'></a>        <strong class='reserved'>return</strong>(<a href='../cgi-bin/global.cgi?pattern=result&amp;type=symbol' title='Multiple used in 54 places.'>result</a>);
+<a id='L860' name='L860'></a><em class='brace'>}</em>
+<a id='L861' name='L861'></a>
+<a id='L862' name='L862'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L863' name='L863'></a><em class='comment'>//</em>
+<a id='L864' name='L864'></a><em class='comment'>//      IN_Ack() - waits for a button or key press.  If a button is down, upon</em>
+<a id='L865' name='L865'></a><em class='comment'>// calling, it must be released for it to be recognized</em>
+<a id='L866' name='L866'></a><em class='comment'>//</em>
+<a id='L867' name='L867'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L868' name='L868'></a>
+<a id='L869' name='L869'></a><a href='../cgi-bin/global.cgi?pattern=boolean&amp;type=definitions' title='Multiple defined in 2 places.'>boolean</a> <a href='../cgi-bin/global.cgi?pattern=btnstate&amp;type=symbol' title='Multiple used in 5 places.'>btnstate</a>[8];
+<a id='L870' name='L870'></a>
+<a id='L871' name='L871'></a><strong class='reserved'>void</strong> <a href='../cgi-bin/global.cgi?pattern=IN_StartAck&amp;type=reference' title='Multiple referred from 9 places.'>IN_StartAck</a>(<strong class='reserved'>void</strong>)
+<em class='comment'>/* <a href='#L852'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><a href='#L891'><img class='icon' src='../icons/right.png' alt='[next]' /></a><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L872' name='L872'></a><em class='brace'>{</em>
+<a id='L873' name='L873'></a>        <strong class='reserved'>unsigned</strong>        <a href='../cgi-bin/global.cgi?pattern=i&amp;type=symbol' title='Multiple used in 602 places.'>i</a>,<a href='../cgi-bin/global.cgi?pattern=buttons&amp;type=symbol' title='Multiple used in 39 places.'>buttons</a>;
+<a id='L874' name='L874'></a>
+<a id='L875' name='L875'></a><em class='comment'>//</em>
+<a id='L876' name='L876'></a><em class='comment'>// get initial state of everything</em>
+<a id='L877' name='L877'></a><em class='comment'>//</em>
+<a id='L878' name='L878'></a>        <a href='../S/62.html#L674' title='Defined at 674 in WOLFSRC/ID_IN.C.'>IN_ClearKeysDown</a>();
+<a id='L879' name='L879'></a>        <a href='../cgi-bin/global.cgi?pattern=memset&amp;type=symbol' title='Multiple used in 14 places.'>memset</a> (<a href='../cgi-bin/global.cgi?pattern=btnstate&amp;type=symbol' title='Multiple used in 5 places.'>btnstate</a>,0,<strong class='reserved'>sizeof</strong>(<a href='../cgi-bin/global.cgi?pattern=btnstate&amp;type=symbol' title='Multiple used in 5 places.'>btnstate</a>));
+<a id='L880' name='L880'></a>
+<a id='L881' name='L881'></a>        <a href='../cgi-bin/global.cgi?pattern=buttons&amp;type=symbol' title='Multiple used in 39 places.'>buttons</a> = <a href='../S/62.html#L979' title='Defined at 979 in WOLFSRC/ID_IN.C.'>IN_JoyButtons</a> () &lt;&lt; 4;
+<a id='L882' name='L882'></a>        <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=MousePresent&amp;type=symbol' title='Multiple used in 19 places.'>MousePresent</a>)
+<a id='L883' name='L883'></a>                <a href='../cgi-bin/global.cgi?pattern=buttons&amp;type=symbol' title='Multiple used in 39 places.'>buttons</a> |= <a href='../S/62.html#L959' title='Defined at 959 in WOLFSRC/ID_IN.C.'>IN_MouseButtons</a> ();
+<a id='L884' name='L884'></a>
+<a id='L885' name='L885'></a>        <strong class='reserved'>for</strong> (<a href='../cgi-bin/global.cgi?pattern=i&amp;type=symbol' title='Multiple used in 602 places.'>i</a>=0;<a href='../cgi-bin/global.cgi?pattern=i&amp;type=symbol' title='Multiple used in 602 places.'>i</a>&lt;8;<a href='../cgi-bin/global.cgi?pattern=i&amp;type=symbol' title='Multiple used in 602 places.'>i</a>++,<a href='../cgi-bin/global.cgi?pattern=buttons&amp;type=symbol' title='Multiple used in 39 places.'>buttons</a>&gt;&gt;=1)
+<a id='L886' name='L886'></a>                <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=buttons&amp;type=symbol' title='Multiple used in 39 places.'>buttons</a>&amp;1)
+<a id='L887' name='L887'></a>                        <a href='../cgi-bin/global.cgi?pattern=btnstate&amp;type=symbol' title='Multiple used in 5 places.'>btnstate</a>[<a href='../cgi-bin/global.cgi?pattern=i&amp;type=symbol' title='Multiple used in 602 places.'>i</a>] = <strong class='reserved'>true</strong>;
+<a id='L888' name='L888'></a><em class='brace'>}</em>
+<a id='L889' name='L889'></a>
+<a id='L890' name='L890'></a>
+<a id='L891' name='L891'></a><a href='../cgi-bin/global.cgi?pattern=boolean&amp;type=definitions' title='Multiple defined in 2 places.'>boolean</a> <a href='../cgi-bin/global.cgi?pattern=IN_CheckAck&amp;type=reference' title='Multiple referred from 12 places.'>IN_CheckAck</a> (<strong class='reserved'>void</strong>)
+<em class='comment'>/* <a href='#L871'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><a href='#L918'><img class='icon' src='../icons/right.png' alt='[next]' /></a><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L892' name='L892'></a><em class='brace'>{</em>
+<a id='L893' name='L893'></a>        <strong class='reserved'>unsigned</strong>        <a href='../cgi-bin/global.cgi?pattern=i&amp;type=symbol' title='Multiple used in 602 places.'>i</a>,<a href='../cgi-bin/global.cgi?pattern=buttons&amp;type=symbol' title='Multiple used in 39 places.'>buttons</a>;
+<a id='L894' name='L894'></a>
+<a id='L895' name='L895'></a><em class='comment'>//</em>
+<a id='L896' name='L896'></a><em class='comment'>// see if something has been pressed</em>
+<a id='L897' name='L897'></a><em class='comment'>//</em>
+<a id='L898' name='L898'></a>        <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=LastScan&amp;type=symbol' title='Multiple used in 25 places.'>LastScan</a>)
+<a id='L899' name='L899'></a>                <strong class='reserved'>return</strong> <strong class='reserved'>true</strong>;
+<a id='L900' name='L900'></a>
+<a id='L901' name='L901'></a>        <a href='../cgi-bin/global.cgi?pattern=buttons&amp;type=symbol' title='Multiple used in 39 places.'>buttons</a> = <a href='../S/62.html#L979' title='Defined at 979 in WOLFSRC/ID_IN.C.'>IN_JoyButtons</a> () &lt;&lt; 4;
+<a id='L902' name='L902'></a>        <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=MousePresent&amp;type=symbol' title='Multiple used in 19 places.'>MousePresent</a>)
+<a id='L903' name='L903'></a>                <a href='../cgi-bin/global.cgi?pattern=buttons&amp;type=symbol' title='Multiple used in 39 places.'>buttons</a> |= <a href='../S/62.html#L959' title='Defined at 959 in WOLFSRC/ID_IN.C.'>IN_MouseButtons</a> ();
+<a id='L904' name='L904'></a>
+<a id='L905' name='L905'></a>        <strong class='reserved'>for</strong> (<a href='../cgi-bin/global.cgi?pattern=i&amp;type=symbol' title='Multiple used in 602 places.'>i</a>=0;<a href='../cgi-bin/global.cgi?pattern=i&amp;type=symbol' title='Multiple used in 602 places.'>i</a>&lt;8;<a href='../cgi-bin/global.cgi?pattern=i&amp;type=symbol' title='Multiple used in 602 places.'>i</a>++,<a href='../cgi-bin/global.cgi?pattern=buttons&amp;type=symbol' title='Multiple used in 39 places.'>buttons</a>&gt;&gt;=1)
+<a id='L906' name='L906'></a>                <strong class='reserved'>if</strong> ( <a href='../cgi-bin/global.cgi?pattern=buttons&amp;type=symbol' title='Multiple used in 39 places.'>buttons</a>&amp;1 )
+<a id='L907' name='L907'></a>                <em class='brace'>{</em>
+<a id='L908' name='L908'></a>                        <strong class='reserved'>if</strong> (!<a href='../cgi-bin/global.cgi?pattern=btnstate&amp;type=symbol' title='Multiple used in 5 places.'>btnstate</a>[<a href='../cgi-bin/global.cgi?pattern=i&amp;type=symbol' title='Multiple used in 602 places.'>i</a>])
+<a id='L909' name='L909'></a>                                <strong class='reserved'>return</strong> <strong class='reserved'>true</strong>;
+<a id='L910' name='L910'></a>                <em class='brace'>}</em>
+<a id='L911' name='L911'></a>                <strong class='reserved'>else</strong>
+<a id='L912' name='L912'></a>                        <a href='../cgi-bin/global.cgi?pattern=btnstate&amp;type=symbol' title='Multiple used in 5 places.'>btnstate</a>[<a href='../cgi-bin/global.cgi?pattern=i&amp;type=symbol' title='Multiple used in 602 places.'>i</a>]=<strong class='reserved'>false</strong>;
+<a id='L913' name='L913'></a>
+<a id='L914' name='L914'></a>        <strong class='reserved'>return</strong> <strong class='reserved'>false</strong>;
+<a id='L915' name='L915'></a><em class='brace'>}</em>
+<a id='L916' name='L916'></a>
+<a id='L917' name='L917'></a>
+<a id='L918' name='L918'></a><strong class='reserved'>void</strong> <a href='../cgi-bin/global.cgi?pattern=IN_Ack&amp;type=reference' title='Multiple referred from 25 places.'>IN_Ack</a> (<strong class='reserved'>void</strong>)
+<em class='comment'>/* <a href='#L891'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><a href='#L935'><img class='icon' src='../icons/right.png' alt='[next]' /></a><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L919' name='L919'></a><em class='brace'>{</em>
+<a id='L920' name='L920'></a>        <a href='../S/62.html#L871' title='Defined at 871 in WOLFSRC/ID_IN.C.'>IN_StartAck</a> ();
+<a id='L921' name='L921'></a>
+<a id='L922' name='L922'></a>        <strong class='reserved'>while</strong> (!<a href='../S/62.html#L891' title='Defined at 891 in WOLFSRC/ID_IN.C.'>IN_CheckAck</a> ())
+<a id='L923' name='L923'></a>        ;
+<a id='L924' name='L924'></a><em class='brace'>}</em>
+<a id='L925' name='L925'></a>
+<a id='L926' name='L926'></a>
+<a id='L927' name='L927'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L928' name='L928'></a><em class='comment'>//</em>
+<a id='L929' name='L929'></a><em class='comment'>//      IN_UserInput() - Waits for the specified delay time (in ticks) or the</em>
+<a id='L930' name='L930'></a><em class='comment'>//              user pressing a key or a mouse button. If the clear flag is set, it</em>
+<a id='L931' name='L931'></a><em class='comment'>//              then either clears the key or waits for the user to let the mouse</em>
+<a id='L932' name='L932'></a><em class='comment'>//              button up.</em>
+<a id='L933' name='L933'></a><em class='comment'>//</em>
+<a id='L934' name='L934'></a><em class='comment'>///////////////////////////////////////////////////////////////////////////</em>
+<a id='L935' name='L935'></a><a href='../cgi-bin/global.cgi?pattern=boolean&amp;type=definitions' title='Multiple defined in 2 places.'>boolean</a> <a href='../cgi-bin/global.cgi?pattern=IN_UserInput&amp;type=reference' title='Multiple referred from 10 places.'>IN_UserInput</a>(<a href='../cgi-bin/global.cgi?pattern=longword&amp;type=definitions' title='Multiple defined in 2 places.'>longword</a> <a href='../cgi-bin/global.cgi?pattern=delay&amp;type=symbol' title='Multiple used in 3 places.'>delay</a>)
+<em class='comment'>/* <a href='#L918'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><a href='#L959'><img class='icon' src='../icons/right.png' alt='[next]' /></a><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L936' name='L936'></a><em class='brace'>{</em>
+<a id='L937' name='L937'></a>        <a href='../cgi-bin/global.cgi?pattern=longword&amp;type=definitions' title='Multiple defined in 2 places.'>longword</a>        <a href='../cgi-bin/global.cgi?pattern=lasttime&amp;type=symbol' title='Multiple used in 16 places.'>lasttime</a>;
+<a id='L938' name='L938'></a>
+<a id='L939' name='L939'></a>        <a href='../cgi-bin/global.cgi?pattern=lasttime&amp;type=symbol' title='Multiple used in 16 places.'>lasttime</a> = <a href='../cgi-bin/global.cgi?pattern=TimeCount&amp;type=symbol' title='Multiple used in 64 places.'>TimeCount</a>;
+<a id='L940' name='L940'></a>        <a href='../S/62.html#L871' title='Defined at 871 in WOLFSRC/ID_IN.C.'>IN_StartAck</a> ();
+<a id='L941' name='L941'></a>        <strong class='reserved'>do</strong>
+<a id='L942' name='L942'></a>        <em class='brace'>{</em>
+<a id='L943' name='L943'></a>                <strong class='reserved'>if</strong> (<a href='../S/62.html#L891' title='Defined at 891 in WOLFSRC/ID_IN.C.'>IN_CheckAck</a>())
+<a id='L944' name='L944'></a>                        <strong class='reserved'>return</strong> <strong class='reserved'>true</strong>;
+<a id='L945' name='L945'></a>        <em class='brace'>}</em> <strong class='reserved'>while</strong> (<a href='../cgi-bin/global.cgi?pattern=TimeCount&amp;type=symbol' title='Multiple used in 64 places.'>TimeCount</a> - <a href='../cgi-bin/global.cgi?pattern=lasttime&amp;type=symbol' title='Multiple used in 16 places.'>lasttime</a> &lt; <a href='../cgi-bin/global.cgi?pattern=delay&amp;type=symbol' title='Multiple used in 3 places.'>delay</a>);
+<a id='L946' name='L946'></a>        <strong class='reserved'>return</strong>(<strong class='reserved'>false</strong>);
+<a id='L947' name='L947'></a><em class='brace'>}</em>
+<a id='L948' name='L948'></a>
+<a id='L949' name='L949'></a><em class='comment'>//===========================================================================</em>
+<a id='L950' name='L950'></a>
+<a id='L951' name='L951'></a><em class='comment'>/*</em>
+<a id='L952' name='L952'></a><em class='comment'>===================</em>
+<a id='L953' name='L953'></a><em class='comment'>=</em>
+<a id='L954' name='L954'></a><em class='comment'>= IN_MouseButtons</em>
+<a id='L955' name='L955'></a><em class='comment'>=</em>
+<a id='L956' name='L956'></a><em class='comment'>===================</em>
+<a id='L957' name='L957'></a><em class='comment'>*/</em>
+<a id='L958' name='L958'></a>
+<a id='L959' name='L959'></a><a href='../cgi-bin/global.cgi?pattern=byte&amp;type=definitions' title='Multiple defined in 2 places.'>byte</a>    <a href='../cgi-bin/global.cgi?pattern=IN_MouseButtons&amp;type=reference' title='Multiple referred from 8 places.'>IN_MouseButtons</a> (<strong class='reserved'>void</strong>)
+<em class='comment'>/* <a href='#L935'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><a href='#L979'><img class='icon' src='../icons/right.png' alt='[next]' /></a><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L960' name='L960'></a><em class='brace'>{</em>
+<a id='L961' name='L961'></a>        <strong class='reserved'>if</strong> (<a href='../cgi-bin/global.cgi?pattern=MousePresent&amp;type=symbol' title='Multiple used in 19 places.'>MousePresent</a>)
+<a id='L962' name='L962'></a>        <em class='brace'>{</em>
+<a id='L963' name='L963'></a>                <a href='../cgi-bin/global.cgi?pattern=Mouse&amp;type=definitions' title='Multiple defined in 2 places.'>Mouse</a>(<a href='../cgi-bin/global.cgi?pattern=MButtons&amp;type=definitions' title='Multiple defined in 2 places.'>MButtons</a>);
+<a id='L964' name='L964'></a>                <strong class='reserved'>return</strong> <a href='../cgi-bin/global.cgi?pattern=_BX&amp;type=symbol' title='Multiple used in 9 places.'>_BX</a>;
+<a id='L965' name='L965'></a>        <em class='brace'>}</em>
+<a id='L966' name='L966'></a>        <strong class='reserved'>else</strong>
+<a id='L967' name='L967'></a>                <strong class='reserved'>return</strong> 0;
+<a id='L968' name='L968'></a><em class='brace'>}</em>
+<a id='L969' name='L969'></a>
+<a id='L970' name='L970'></a>
+<a id='L971' name='L971'></a><em class='comment'>/*</em>
+<a id='L972' name='L972'></a><em class='comment'>===================</em>
+<a id='L973' name='L973'></a><em class='comment'>=</em>
+<a id='L974' name='L974'></a><em class='comment'>= IN_JoyButtons</em>
+<a id='L975' name='L975'></a><em class='comment'>=</em>
+<a id='L976' name='L976'></a><em class='comment'>===================</em>
+<a id='L977' name='L977'></a><em class='comment'>*/</em>
+<a id='L978' name='L978'></a>
+<a id='L979' name='L979'></a><a href='../cgi-bin/global.cgi?pattern=byte&amp;type=definitions' title='Multiple defined in 2 places.'>byte</a>    <a href='../cgi-bin/global.cgi?pattern=IN_JoyButtons&amp;type=reference' title='Multiple referred from 8 places.'>IN_JoyButtons</a> (<strong class='reserved'>void</strong>)
+<em class='comment'>/* <a href='#L959'><img class='icon' src='../icons/left.png' alt='[previous]' /></a><img class='icon' src='../icons/n_right.png' alt='[next]' /><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><img class='icon' src='../icons/n_last.png' alt='[last]' /><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<a id='L980' name='L980'></a><em class='brace'>{</em>
+<a id='L981' name='L981'></a>        <strong class='reserved'>unsigned</strong> <a href='../cgi-bin/global.cgi?pattern=joybits&amp;type=symbol' title='Multiple used in 5 places.'>joybits</a>;
+<a id='L982' name='L982'></a>
+<a id='L983' name='L983'></a>        <a href='../cgi-bin/global.cgi?pattern=joybits&amp;type=symbol' title='Multiple used in 5 places.'>joybits</a> = <a href='../cgi-bin/global.cgi?pattern=inportb&amp;type=symbol' title='Multiple used in 18 places.'>inportb</a>(0x201);       <em class='comment'>// Get all the joystick buttons</em>
+<a id='L984' name='L984'></a>        <a href='../cgi-bin/global.cgi?pattern=joybits&amp;type=symbol' title='Multiple used in 5 places.'>joybits</a> &gt;&gt;= 4;                          <em class='comment'>// only the high bits are useful</em>
+<a id='L985' name='L985'></a>        <a href='../cgi-bin/global.cgi?pattern=joybits&amp;type=symbol' title='Multiple used in 5 places.'>joybits</a> ^= 15;                          <em class='comment'>// return with 1=pressed</em>
+<a id='L986' name='L986'></a>
+<a id='L987' name='L987'></a>        <strong class='reserved'>return</strong> <a href='../cgi-bin/global.cgi?pattern=joybits&amp;type=symbol' title='Multiple used in 5 places.'>joybits</a>;
+<a id='L988' name='L988'></a><em class='brace'>}</em>
+<a id='L989' name='L989'></a>
+<a id='L990' name='L990'></a>
+</pre>
+<hr />
+<a id='BOTTOM' name='BOTTOM'></a>
+<em class='comment'>/* <img class='icon' src='../icons/n_left.png' alt='[previous]' /><img class='icon' src='../icons/n_right.png' alt='[next]' /><a href='#L143'><img class='icon' src='../icons/first.png' alt='[first]' /></a><a href='#L979'><img class='icon' src='../icons/last.png' alt='[last]' /></a><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><img class='icon' src='../icons/n_bottom.png' alt='[bottom]' /><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+</body>
+</html>

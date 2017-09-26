@@ -1,0 +1,861 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<title>WOLFSRC/C0.ASM</title>
+<meta name='robots' content='noindex,nofollow' />
+<meta name='generator' content='GLOBAL-6.5.7' />
+<meta http-equiv='Content-Style-Type' content='text/css' />
+<link rel='stylesheet' type='text/css' href='../style.css' />
+</head>
+<body>
+<a id='TOP' name='TOP'></a><h2 class='header'><a href='../mains.html'>root</a>/<a href='../files/100.html'>WOLFSRC</a>/C0.ASM</h2>
+<em class='comment'>/* <img class='icon' src='../icons/n_left.png' alt='[previous]' /><img class='icon' src='../icons/n_right.png' alt='[next]' /><img class='icon' src='../icons/n_first.png' alt='[first]' /><img class='icon' src='../icons/n_last.png' alt='[last]' /><img class='icon' src='../icons/n_top.png' alt='[top]' /><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<hr />
+<pre>
+<a id='L1' name='L1'></a>        NAME    c0
+<a id='L2' name='L2'></a>        PAGE    60,132
+<a id='L3' name='L3'></a>        LOCALS
+<a id='L4' name='L4'></a>;[]------------------------------------------------------------[]
+<a id='L5' name='L5'></a>;|      C0.ASM -- Start Up Code                                 |
+<a id='L6' name='L6'></a>;|                                                              |
+<a id='L7' name='L7'></a>;|      Turbo C++ Run Time Library                              |
+<a id='L8' name='L8'></a>;|                                                              |
+<a id='L9' name='L9'></a>;|      Copyright (c) 1987, 1991 by Borland International Inc.  |
+<a id='L10' name='L10'></a>;|      All Rights Reserved.                                    |
+<a id='L11' name='L11'></a>;[]------------------------------------------------------------[]
+<a id='L12' name='L12'></a>
+<a id='L13' name='L13'></a>                __C0__ = 1
+<a id='L14' name='L14'></a>INCLUDE         RULES.ASI
+<a id='L15' name='L15'></a>
+<a id='L16' name='L16'></a>;       Segment and Group declarations
+<a id='L17' name='L17'></a>
+<a id='L18' name='L18'></a>_TEXT           SEGMENT BYTE PUBLIC 'CODE'
+<a id='L19' name='L19'></a>                ENDS
+<a id='L20' name='L20'></a>_FARDATA        SEGMENT PARA PUBLIC 'FAR_DATA'
+<a id='L21' name='L21'></a>                ENDS
+<a id='L22' name='L22'></a>_FARBSS         SEGMENT PARA PUBLIC 'FAR_BSS'
+<a id='L23' name='L23'></a>                ENDS
+<a id='L24' name='L24'></a>IFNDEF __TINY__
+<a id='L25' name='L25'></a>_OVERLAY_       SEGMENT PARA PUBLIC 'OVRINFO'
+<a id='L26' name='L26'></a>        ENDS
+<a id='L27' name='L27'></a>_1STUB_     SEGMENT PARA PUBLIC 'STUBSEG'
+<a id='L28' name='L28'></a>        ENDS
+<a id='L29' name='L29'></a>ENDIF
+<a id='L30' name='L30'></a>_DATA           SEGMENT PARA PUBLIC 'DATA'
+<a id='L31' name='L31'></a>                ENDS
+<a id='L32' name='L32'></a>_INIT_          SEGMENT WORD PUBLIC 'INITDATA'
+<a id='L33' name='L33'></a>InitStart       label byte
+<a id='L34' name='L34'></a>                ENDS
+<a id='L35' name='L35'></a>_INITEND_       SEGMENT BYTE PUBLIC 'INITDATA'
+<a id='L36' name='L36'></a>InitEnd         label byte
+<a id='L37' name='L37'></a>                ENDS
+<a id='L38' name='L38'></a>_EXIT_          SEGMENT WORD PUBLIC 'EXITDATA'
+<a id='L39' name='L39'></a>ExitStart       label byte
+<a id='L40' name='L40'></a>                ENDS
+<a id='L41' name='L41'></a>_EXITEND_       SEGMENT BYTE PUBLIC 'EXITDATA'
+<a id='L42' name='L42'></a>ExitEnd         label byte
+<a id='L43' name='L43'></a>                ENDS
+<a id='L44' name='L44'></a>_CVTSEG         SEGMENT WORD PUBLIC 'DATA'
+<a id='L45' name='L45'></a>                ENDS
+<a id='L46' name='L46'></a>_SCNSEG         SEGMENT WORD PUBLIC 'DATA'
+<a id='L47' name='L47'></a>                ENDS
+<a id='L48' name='L48'></a>IFNDEF __HUGE__
+<a id='L49' name='L49'></a>  _BSS          SEGMENT WORD PUBLIC 'BSS'
+<a id='L50' name='L50'></a>                ENDS
+<a id='L51' name='L51'></a>  _BSSEND       SEGMENT BYTE PUBLIC 'BSSEND'
+<a id='L52' name='L52'></a>                ENDS
+<a id='L53' name='L53'></a>ENDIF
+<a id='L54' name='L54'></a>IFNDEF __TINY__
+<a id='L55' name='L55'></a>  _STACK        SEGMENT STACK 'STACK'
+<a id='L56' name='L56'></a>                ENDS
+<a id='L57' name='L57'></a>ENDIF
+<a id='L58' name='L58'></a>
+<a id='L59' name='L59'></a>        ASSUME  CS:_TEXT, DS:DGROUP
+<a id='L60' name='L60'></a>
+<a id='L61' name='L61'></a>;       External References
+<a id='L62' name='L62'></a>
+<a id='L63' name='L63'></a>extrn       _main:DIST
+<a id='L64' name='L64'></a>extrn       _exit:DIST
+<a id='L65' name='L65'></a>extrn       __exit:DIST
+<a id='L66' name='L66'></a>extrn       __nfile:word
+<a id='L67' name='L67'></a>extrn       __setupio:near          ;required!
+<a id='L68' name='L68'></a>extrn       __stklen:word
+<a id='L69' name='L69'></a>IF LDATA EQ false
+<a id='L70' name='L70'></a>extrn       __heaplen:word
+<a id='L71' name='L71'></a>ENDIF
+<a id='L72' name='L72'></a>
+<a id='L73' name='L73'></a>        SUBTTL  Start Up Code
+<a id='L74' name='L74'></a>        PAGE
+<a id='L75' name='L75'></a>;/*                                                     */
+<a id='L76' name='L76'></a>;/*-----------------------------------------------------*/
+<a id='L77' name='L77'></a>;/*                                                     */
+<a id='L78' name='L78'></a>;/*     Start Up Code                                   */
+<a id='L79' name='L79'></a>;/*     -------------                                   */
+<a id='L80' name='L80'></a>;/*                                                     */
+<a id='L81' name='L81'></a>;/*-----------------------------------------------------*/
+<a id='L82' name='L82'></a>;/*                                                     */
+<a id='L83' name='L83'></a>PSPHigh         equ     00002h
+<a id='L84' name='L84'></a>PSPEnv          equ     0002ch
+<a id='L85' name='L85'></a>PSPCmd          equ     00080h
+<a id='L86' name='L86'></a>
+<a id='L87' name='L87'></a>                public  __AHINCR
+<a id='L88' name='L88'></a>__AHINCR        equ     1000h
+<a id='L89' name='L89'></a>                public  __AHSHIFT
+<a id='L90' name='L90'></a>__AHSHIFT       equ     12
+<a id='L91' name='L91'></a>
+<a id='L92' name='L92'></a>IFDEF   __NOFLOAT__
+<a id='L93' name='L93'></a>MINSTACK        equ     128     ; minimal stack size in words
+<a id='L94' name='L94'></a>ELSE
+<a id='L95' name='L95'></a>MINSTACK        equ     256     ; minimal stack size in words
+<a id='L96' name='L96'></a>ENDIF
+<a id='L97' name='L97'></a>;
+<a id='L98' name='L98'></a>;       At the start, DS and ES both point to the segment prefix.
+<a id='L99' name='L99'></a>;       SS points to the stack segment except in TINY model where
+<a id='L100' name='L100'></a>;       SS is equal to CS
+<a id='L101' name='L101'></a>;
+<a id='L102' name='L102'></a>_TEXT           SEGMENT
+<a id='L103' name='L103'></a>IFDEF           __TINY__
+<a id='L104' name='L104'></a>                ORG     100h
+<a id='L105' name='L105'></a>ENDIF
+<a id='L106' name='L106'></a>STARTX          PROC    NEAR
+<a id='L107' name='L107'></a>;       Save general information, such as :
+<a id='L108' name='L108'></a>;               DGROUP segment address
+<a id='L109' name='L109'></a>;               DOS version number
+<a id='L110' name='L110'></a>;               Program Segment Prefix address
+<a id='L111' name='L111'></a>;               Environment address
+<a id='L112' name='L112'></a>;               Top of far heap
+<a id='L113' name='L113'></a>
+<a id='L114' name='L114'></a>IFDEF   __TINY__
+<a id='L115' name='L115'></a>                                mov     dx, cs          ; DX = GROUP Segment address
+<a id='L116' name='L116'></a>ELSE
+<a id='L117' name='L117'></a>                                mov     dx, DGROUP      ; DX = GROUP Segment address
+<a id='L118' name='L118'></a>ENDIF
+<a id='L119' name='L119'></a>IFNDEF  __BOSS__
+<a id='L120' name='L120'></a>                                mov     cs:DGROUP@@, dx ;  __BOSS__
+<a id='L121' name='L121'></a>ENDIF
+<a id='L122' name='L122'></a>                                mov     ah, 30h
+<a id='L123' name='L123'></a>                                int     21h             ; get DOS version number
+<a id='L124' name='L124'></a>                                mov     bp, ds:[PSPHigh]; BP = Highest Memory Segment Addr
+<a id='L125' name='L125'></a>                                mov     bx, ds:[PSPEnv] ; BX = Environment Segment address
+<a id='L126' name='L126'></a>                                mov     ds, dx
+<a id='L127' name='L127'></a>                                mov     _version@, ax   ; Keep major and minor version number
+<a id='L128' name='L128'></a>                                mov     _psp@, es       ; Keep Program Segment Prefix address
+<a id='L129' name='L129'></a>                                mov     _envseg@, bx    ; Keep Environment Segment address
+<a id='L130' name='L130'></a>                                mov     word ptr _heaptop@ + 2, bp
+<a id='L131' name='L131'></a>;
+<a id='L132' name='L132'></a>;       Save several vectors and install default divide by zero handler.
+<a id='L133' name='L133'></a>;
+<a id='L134' name='L134'></a>                                call    SaveVectors
+<a id='L135' name='L135'></a>
+<a id='L136' name='L136'></a>;===================
+<a id='L137' name='L137'></a>;
+<a id='L138' name='L138'></a>;               IDsoft - Check to make sure that we're running on a 286 or better
+<a id='L139' name='L139'></a>
+<a id='L140' name='L140'></a>                                pushf                                   ; Save original flags
+<a id='L141' name='L141'></a>                                xor             ax,ax                   ; Clear AX
+<a id='L142' name='L142'></a>                                push    ax
+<a id='L143' name='L143'></a>                                popf                                    ; Try to pop the 0
+<a id='L144' name='L144'></a>                                pushf
+<a id='L145' name='L145'></a>                                pop             ax                              ; Get results of popping 0 into flags
+<a id='L146' name='L146'></a>                                popf                                    ; Restore original flags
+<a id='L147' name='L147'></a>                                or              ax,ax
+<a id='L148' name='L148'></a>                                jns             @@Have286               ; If no sign bit, have a 286
+<a id='L149' name='L149'></a>
+<a id='L150' name='L150'></a>                                mov     cx, lgth_no286MSG
+<a id='L151' name='L151'></a>                                mov     dx, offset DGROUP: no286MSG
+<a id='L152' name='L152'></a>                                jmp             MsgExit3
+<a id='L153' name='L153'></a>
+<a id='L154' name='L154'></a>@@Have286:
+<a id='L155' name='L155'></a>;               IDsoft - End of modifications (there's also a code segment string)
+<a id='L156' name='L156'></a>;
+<a id='L157' name='L157'></a>;===================
+<a id='L158' name='L158'></a>
+<a id='L159' name='L159'></a>IFDEF   __BOSS__
+<a id='L160' name='L160'></a>; Determine if in real mode
+<a id='L161' name='L161'></a>                        mov     ax,0FB42h       ; find out if DPMI loader is here
+<a id='L162' name='L162'></a>                mov     bx,1            ; get info function
+<a id='L163' name='L163'></a>                int     2fh             ;
+<a id='L164' name='L164'></a>
+<a id='L165' name='L165'></a>                push    ax              ;
+<a id='L166' name='L166'></a>                mov     ax, cs          ; now, save DGROUP
+<a id='L167' name='L167'></a>                add     ax, cx          ;
+<a id='L168' name='L168'></a>                mov     es, ax          ;
+<a id='L169' name='L169'></a>                mov     dx, ds          ;
+<a id='L170' name='L170'></a>                mov     es:DGROUP@@, dx  ;
+<a id='L171' name='L171'></a>                mov     es:CSalias@@, ax ;
+<a id='L172' name='L172'></a>                pop     ax               ;
+<a id='L173' name='L173'></a>
+<a id='L174' name='L174'></a>;               cmp     ax,0001h        ; if not "TRUE"
+<a id='L175' name='L175'></a>;               JNE     InRealMode
+<a id='L176' name='L176'></a>
+<a id='L177' name='L177'></a>; 8 is the value of the alias selector
+<a id='L178' name='L178'></a>; in this system
+<a id='L179' name='L179'></a>                MOV     _protected@, cx
+<a id='L180' name='L180'></a>                MOV     _hugeincval@, cx
+<a id='L181' name='L181'></a>                clc
+<a id='L182' name='L182'></a>                mov     ax, cx
+<a id='L183' name='L183'></a>                xor     cx, cx
+<a id='L184' name='L184'></a>                or      ax, ax
+<a id='L185' name='L185'></a>                je      @@gotshift
+<a id='L186' name='L186'></a>@@shiftcnt:
+<a id='L187' name='L187'></a>                rcr     ax,1
+<a id='L188' name='L188'></a>                jc      @@gotshift
+<a id='L189' name='L189'></a>                inc     cx
+<a id='L190' name='L190'></a>                jmp     @@shiftcnt
+<a id='L191' name='L191'></a>@@gotshift:
+<a id='L192' name='L192'></a>                mov     _shiftcount@,cx
+<a id='L193' name='L193'></a>
+<a id='L194' name='L194'></a>; used by emulator
+<a id='L195' name='L195'></a>;               PUSH    DS
+<a id='L196' name='L196'></a>;               MOV     AX, 0E502H      ; prot kernel function, get LDT alias
+<a id='L197' name='L197'></a>;               INT     21H
+<a id='L198' name='L198'></a>;               POP     DS
+<a id='L199' name='L199'></a>;               MOV     _LDT@, AX
+<a id='L200' name='L200'></a>
+<a id='L201' name='L201'></a>;               cmp     _protected@,0001h       ; if not "TRUE"
+<a id='L202' name='L202'></a>;               JNE     InRealMode
+<a id='L203' name='L203'></a>
+<a id='L204' name='L204'></a>                .286P
+<a id='L205' name='L205'></a>IFE     LDATA                                   
+<a id='L206' name='L206'></a>                mov     dx, ds                  ;
+<a id='L207' name='L207'></a>;               LSL     AX, DX                  ;
+<a id='L208' name='L208'></a>;               DEC     AX                      ;
+<a id='L209' name='L209'></a>                MOV     AX, 0FFFEh              ;
+<a id='L210' name='L210'></a>                MOV     SP, AX                  ;
+<a id='L211' name='L211'></a>                MOV     SS, DX                  ;
+<a id='L212' name='L212'></a>ENDIF                                           
+<a id='L213' name='L213'></a>                .8086
+<a id='L214' name='L214'></a>;               JMP     BossSkip
+<a id='L215' name='L215'></a>
+<a id='L216' name='L216'></a>InRealMode      label   near
+<a id='L217' name='L217'></a>
+<a id='L218' name='L218'></a>ENDIF
+<a id='L219' name='L219'></a>
+<a id='L220' name='L220'></a>;       Count the number of environment variables and compute the size.
+<a id='L221' name='L221'></a>;       Each variable is ended by a 0 and a zero-length variable stops
+<a id='L222' name='L222'></a>;       the environment. The environment can NOT be greater than 32k.
+<a id='L223' name='L223'></a>
+<a id='L224' name='L224'></a>                les     di, dword ptr _envLng@
+<a id='L225' name='L225'></a>                mov     ax, di
+<a id='L226' name='L226'></a>                mov     bx, ax
+<a id='L227' name='L227'></a>                mov     cx, 07FFFh      ; Environment cannot be &gt; 32 Kbytes
+<a id='L228' name='L228'></a>                cld
+<a id='L229' name='L229'></a>@@EnvLoop:
+<a id='L230' name='L230'></a>                repnz   scasb
+<a id='L231' name='L231'></a>                jcxz    InitFailed      ; Bad environment !!!
+<a id='L232' name='L232'></a>IFDEF __BOSS__
+<a id='L233' name='L233'></a>                jmp     InitOK
+<a id='L234' name='L234'></a>InitFailed:     jmp     near ptr _abort
+<a id='L235' name='L235'></a>InitOK:
+<a id='L236' name='L236'></a>ENDIF
+<a id='L237' name='L237'></a>     
+<a id='L238' name='L238'></a>                inc     bx              ; BX = Nb environment variables
+<a id='L239' name='L239'></a>                cmp     es:[di], al
+<a id='L240' name='L240'></a>                jne     @@EnvLoop       ; Next variable ...
+<a id='L241' name='L241'></a>                or      ch, 10000000b
+<a id='L242' name='L242'></a>                neg     cx
+<a id='L243' name='L243'></a>                mov     _envLng@, cx    ; Save Environment size
+<a id='L244' name='L244'></a>                mov     cx, dPtrSize / 2
+<a id='L245' name='L245'></a>                shl     bx, cl
+<a id='L246' name='L246'></a>                add     bx, dPtrSize * 4
+<a id='L247' name='L247'></a>                and     bx, not ((dPtrSize * 4) - 1)
+<a id='L248' name='L248'></a>                mov     _envSize@, bx   ; Save Environment Variables Nb.
+<a id='L249' name='L249'></a>
+<a id='L250' name='L250'></a>IFNDEF __BOSS__
+<a id='L251' name='L251'></a>
+<a id='L252' name='L252'></a>;       Determine the amount of memory that we need to keep
+<a id='L253' name='L253'></a>
+<a id='L254' name='L254'></a>IFDEF _DSSTACK_
+<a id='L255' name='L255'></a>                mov     dx, ds
+<a id='L256' name='L256'></a>ELSE
+<a id='L257' name='L257'></a>                mov     dx, ss
+<a id='L258' name='L258'></a>ENDIF
+<a id='L259' name='L259'></a>                sub     bp, dx          ; BP = remaining size in paragraphs
+<a id='L260' name='L260'></a>IF LDATA
+<a id='L261' name='L261'></a>                mov     di, seg __stklen
+<a id='L262' name='L262'></a>                mov     es, di
+<a id='L263' name='L263'></a>                mov     di, es:__stklen ; DI = Requested stack size
+<a id='L264' name='L264'></a>ELSE
+<a id='L265' name='L265'></a>                mov     di, __stklen    ; DI = Requested stack size
+<a id='L266' name='L266'></a>ENDIF
+<a id='L267' name='L267'></a>;
+<a id='L268' name='L268'></a>; Make sure that the requested stack size is at least MINSTACK words.
+<a id='L269' name='L269'></a>;
+<a id='L270' name='L270'></a>                cmp     di, 2*MINSTACK  ; requested stack big enough ?
+<a id='L271' name='L271'></a>                jae     AskedStackOK
+<a id='L272' name='L272'></a>                mov     di, 2*MINSTACK  ; no --&gt; use minimal value
+<a id='L273' name='L273'></a>IF LDATA
+<a id='L274' name='L274'></a>                mov     es:__stklen, di ; override requested stack size
+<a id='L275' name='L275'></a>ELSE
+<a id='L276' name='L276'></a>                mov        __stklen, di ; override requested stack size
+<a id='L277' name='L277'></a>ENDIF
+<a id='L278' name='L278'></a>
+<a id='L279' name='L279'></a>AskedStackOK    label   near
+<a id='L280' name='L280'></a>IFDEF _DSSTACK_
+<a id='L281' name='L281'></a>                add     di, offset DGROUP: edata@
+<a id='L282' name='L282'></a>                jb      InitFailed      ; DATA segment can NOT be &gt; 64 Kbytes
+<a id='L283' name='L283'></a>ENDIF
+<a id='L284' name='L284'></a>IF LDATA EQ false
+<a id='L285' name='L285'></a>                add     di, __heaplen
+<a id='L286' name='L286'></a>                jb      InitFailed      ; DATA segment can NOT be &gt; 64 Kbytes
+<a id='L287' name='L287'></a>ENDIF
+<a id='L288' name='L288'></a>                mov     cl, 4
+<a id='L289' name='L289'></a>                shr     di, cl          ; $$$ Do not destroy CL $$$
+<a id='L290' name='L290'></a>                inc     di              ; DI = DS size in paragraphs
+<a id='L291' name='L291'></a>                cmp     bp, di
+<a id='L292' name='L292'></a>IF LDATA EQ false
+<a id='L293' name='L293'></a>                jb      InitFailed      ; Not enough memory
+<a id='L294' name='L294'></a>                cmp     __stklen, 0
+<a id='L295' name='L295'></a>                je      ExpandDS        ; Expand DS up to 64 Kb
+<a id='L296' name='L296'></a>                cmp     __heaplen, 0
+<a id='L297' name='L297'></a>                jne     ExcessOfMemory  ; Much more available than needed
+<a id='L298' name='L298'></a>ExpandDS        label   near
+<a id='L299' name='L299'></a>                mov     di, 1000h
+<a id='L300' name='L300'></a>                cmp     bp, di
+<a id='L301' name='L301'></a>                ja      ExcessOfMemory  ; Enough to run the program
+<a id='L302' name='L302'></a>                mov     di, bp
+<a id='L303' name='L303'></a>                jmp     short ExcessOfMemory  ; Enough to run the program
+<a id='L304' name='L304'></a>ELSE
+<a id='L305' name='L305'></a>                jnb     ExcessOfMemory  ; Much more available than needed
+<a id='L306' name='L306'></a>ENDIF
+<a id='L307' name='L307'></a>
+<a id='L308' name='L308'></a>;       All initialization errors arrive here
+<a id='L309' name='L309'></a>
+<a id='L310' name='L310'></a>InitFailed      label   near
+<a id='L311' name='L311'></a>                jmp     near ptr _abort
+<a id='L312' name='L312'></a>
+<a id='L313' name='L313'></a>;       Return to DOS the amount of memory in excess
+<a id='L314' name='L314'></a>;       Set far heap base and pointer
+<a id='L315' name='L315'></a>
+<a id='L316' name='L316'></a>ExcessOfMemory  label   near
+<a id='L317' name='L317'></a>                mov     bx, di
+<a id='L318' name='L318'></a>                add     bx, dx
+<a id='L319' name='L319'></a>                mov     word ptr _heapbase@ + 2, bx
+<a id='L320' name='L320'></a>                mov     word ptr _brklvl@ + 2, bx
+<a id='L321' name='L321'></a>                mov     ax, _psp@
+<a id='L322' name='L322'></a>                sub     bx, ax          ; BX = Number of paragraphs to keep
+<a id='L323' name='L323'></a>                mov     es, ax          ; ES = Program Segment Prefix address
+<a id='L324' name='L324'></a>                mov     ah, 04Ah
+<a id='L325' name='L325'></a>                push    di              ; preserve DI
+<a id='L326' name='L326'></a>                int     021h            ; this call clobbers SI,DI,BP !!!!!!
+<a id='L327' name='L327'></a>                pop     di              ; restore  DI
+<a id='L328' name='L328'></a>
+<a id='L329' name='L329'></a>                shl     di, cl          ; $$$ CX is still equal to 4 $$$
+<a id='L330' name='L330'></a>
+<a id='L331' name='L331'></a>                cli                     ; req'd for pre-1983 88/86s
+<a id='L332' name='L332'></a>                mov     ss, dx          ; Set the program stack
+<a id='L333' name='L333'></a>                mov     sp, di
+<a id='L334' name='L334'></a>                sti
+<a id='L335' name='L335'></a>
+<a id='L336' name='L336'></a>IFNDEF _DSSTACK_
+<a id='L337' name='L337'></a>                mov     ax, seg __stklen
+<a id='L338' name='L338'></a>                mov     es, ax
+<a id='L339' name='L339'></a>                mov     es:__stklen, di ; If separate stack segment, save size
+<a id='L340' name='L340'></a>ENDIF
+<a id='L341' name='L341'></a>
+<a id='L342' name='L342'></a>ENDIF ; __BOSS__
+<a id='L343' name='L343'></a>
+<a id='L344' name='L344'></a>IFNDEF  __HUGE__
+<a id='L345' name='L345'></a>
+<a id='L346' name='L346'></a>;       Reset uninitialized data area
+<a id='L347' name='L347'></a>
+<a id='L348' name='L348'></a>                xor     ax, ax
+<a id='L349' name='L349'></a>                mov     es, cs:DGROUP@@
+<a id='L350' name='L350'></a>                mov     di, offset DGROUP: bdata@
+<a id='L351' name='L351'></a>                mov     cx, offset DGROUP: edata@
+<a id='L352' name='L352'></a>                sub     cx, di
+<a id='L353' name='L353'></a>                cld
+<a id='L354' name='L354'></a>                rep     stosb
+<a id='L355' name='L355'></a>ENDIF
+<a id='L356' name='L356'></a>
+<a id='L357' name='L357'></a>;   If default number of file handles have changed then tell DOS
+<a id='L358' name='L358'></a>                cmp     __nfile, 20
+<a id='L359' name='L359'></a>                jbe     @@NoChange
+<a id='L360' name='L360'></a>
+<a id='L361' name='L361'></a>                cmp     _osmajor@, 3   ; Check for &gt;= DOS 3.3
+<a id='L362' name='L362'></a>                jb      @@NoChange
+<a id='L363' name='L363'></a>                ja      @@DoChange
+<a id='L364' name='L364'></a>                cmp     _osminor@, 1Eh
+<a id='L365' name='L365'></a>                jb      @@NoChange
+<a id='L366' name='L366'></a>@@DoChange:
+<a id='L367' name='L367'></a>                mov     ax, 5801h      ; Set last fit allocation
+<a id='L368' name='L368'></a>                mov     bx, 2
+<a id='L369' name='L369'></a>                int     21h
+<a id='L370' name='L370'></a>                jc      @@BadInit
+<a id='L371' name='L371'></a>
+<a id='L372' name='L372'></a>                mov     ah, 67h        ; Expand handle table
+<a id='L373' name='L373'></a>                mov     bx, __nfile
+<a id='L374' name='L374'></a>                int     21h
+<a id='L375' name='L375'></a>                jc      @@BadInit
+<a id='L376' name='L376'></a>
+<a id='L377' name='L377'></a>                mov     ah, 48h        ; Allocate 16 bytes to find new
+<a id='L378' name='L378'></a>                mov     bx, 1          ;   top of memory address
+<a id='L379' name='L379'></a>                int     21h
+<a id='L380' name='L380'></a>                jc      @@BadInit
+<a id='L381' name='L381'></a>                inc     ax             ; Adjust address to point after block
+<a id='L382' name='L382'></a>                mov     word ptr _heaptop@ + 2, ax
+<a id='L383' name='L383'></a>
+<a id='L384' name='L384'></a>                dec     ax             ; Change back and release block
+<a id='L385' name='L385'></a>                mov     es, ax
+<a id='L386' name='L386'></a>                mov     ah, 49h
+<a id='L387' name='L387'></a>                int     21h
+<a id='L388' name='L388'></a>                jc      @@BadInit
+<a id='L389' name='L389'></a>
+<a id='L390' name='L390'></a>                mov     ax, 5801h      ; Set first fit allocation
+<a id='L391' name='L391'></a>                mov     bx, 0
+<a id='L392' name='L392'></a>                int     21h
+<a id='L393' name='L393'></a>                jnc     @@NoChange
+<a id='L394' name='L394'></a>
+<a id='L395' name='L395'></a>@@BadInit:      jmp near ptr _abort
+<a id='L396' name='L396'></a>
+<a id='L397' name='L397'></a>@@NoChange:
+<a id='L398' name='L398'></a>
+<a id='L399' name='L399'></a>;       Prepare main arguments
+<a id='L400' name='L400'></a>
+<a id='L401' name='L401'></a>                mov     ah, 0
+<a id='L402' name='L402'></a>                int     1ah                     ; get current BIOS time in ticks
+<a id='L403' name='L403'></a>                mov     word ptr _StartTime@,dx ; save it for clock() fn
+<a id='L404' name='L404'></a>                mov     word ptr _StartTime@+2,cx
+<a id='L405' name='L405'></a>                or      al,al                   ; was midnight flag set?
+<a id='L406' name='L406'></a>                jz      @@NotMidnight
+<a id='L407' name='L407'></a>                mov     ax,40h                  ; set BIOS midnight flag
+<a id='L408' name='L408'></a>                mov     es,ax                   ;  at 40:70
+<a id='L409' name='L409'></a>                mov     bx,70h
+<a id='L410' name='L410'></a>                mov     byte ptr es:[bx],1
+<a id='L411' name='L411'></a>                        
+<a id='L412' name='L412'></a>@@NotMidnight:
+<a id='L413' name='L413'></a>                xor     bp,bp                   ; set BP to 0 for overlay mgr
+<a id='L414' name='L414'></a>
+<a id='L415' name='L415'></a>                mov     es, cs:DGROUP@@
+<a id='L416' name='L416'></a>                mov     si,offset DGROUP:InitStart      ;si = start of table
+<a id='L417' name='L417'></a>                mov     di,offset DGROUP:InitEnd        ;di = end of table
+<a id='L418' name='L418'></a>                call    StartExit
+<a id='L419' name='L419'></a>
+<a id='L420' name='L420'></a>;       ExitCode = main(argc,argv,envp);
+<a id='L421' name='L421'></a>
+<a id='L422' name='L422'></a>IF      LDATA
+<a id='L423' name='L423'></a>                push    word ptr __C0environ+2
+<a id='L424' name='L424'></a>                push    word ptr __C0environ
+<a id='L425' name='L425'></a>                push    word ptr __C0argv+2
+<a id='L426' name='L426'></a>                push    word ptr __C0argv
+<a id='L427' name='L427'></a>ELSE
+<a id='L428' name='L428'></a>                push    word ptr __C0environ
+<a id='L429' name='L429'></a>                push    word ptr __C0argv
+<a id='L430' name='L430'></a>ENDIF
+<a id='L431' name='L431'></a>                push    __C0argc
+<a id='L432' name='L432'></a>                call    _main
+<a id='L433' name='L433'></a>
+<a id='L434' name='L434'></a>;       Flush and close streams and files
+<a id='L435' name='L435'></a>
+<a id='L436' name='L436'></a>                push    ax
+<a id='L437' name='L437'></a>                call    _exit
+<a id='L438' name='L438'></a>
+<a id='L439' name='L439'></a>;---------------------------------------------------------------------------
+<a id='L440' name='L440'></a>;       _cleanup()      call all #pragma exit cleanup routines.
+<a id='L441' name='L441'></a>;       _checknull()    check for null pointer zapping copyright message
+<a id='L442' name='L442'></a>;       _terminate(int) exit program with error code
+<a id='L443' name='L443'></a>;
+<a id='L444' name='L444'></a>;       These functions are called by exit(), _exit(), _cexit(),
+<a id='L445' name='L445'></a>;       and _c_exit().
+<a id='L446' name='L446'></a>;---------------------------------------------------------------------------
+<a id='L447' name='L447'></a>
+<a id='L448' name='L448'></a>;       Call cleanup routines
+<a id='L449' name='L449'></a>
+<a id='L450' name='L450'></a>__cleanup       PROC    DIST
+<a id='L451' name='L451'></a>                PUBLIC  __cleanup
+<a id='L452' name='L452'></a>
+<a id='L453' name='L453'></a>                mov     es, cs:DGROUP@@
+<a id='L454' name='L454'></a>                push    si
+<a id='L455' name='L455'></a>                push    di
+<a id='L456' name='L456'></a>                mov     si,offset DGROUP:ExitStart
+<a id='L457' name='L457'></a>                mov     di,offset DGROUP:ExitEnd
+<a id='L458' name='L458'></a>                call    StartExit
+<a id='L459' name='L459'></a>                pop     di
+<a id='L460' name='L460'></a>                pop     si
+<a id='L461' name='L461'></a>                ret
+<a id='L462' name='L462'></a>__cleanup       ENDP
+<a id='L463' name='L463'></a>
+<a id='L464' name='L464'></a>;       Check for null pointers before exit
+<a id='L465' name='L465'></a>
+<a id='L466' name='L466'></a>__checknull     PROC    DIST
+<a id='L467' name='L467'></a>                PUBLIC  __checknull
+<a id='L468' name='L468'></a>
+<a id='L469' name='L469'></a>IF      LDATA EQ false
+<a id='L470' name='L470'></a>  IFNDEF  __TINY__
+<a id='L471' name='L471'></a>                push    si
+<a id='L472' name='L472'></a>                push    di
+<a id='L473' name='L473'></a>                mov     es, cs:DGROUP@@
+<a id='L474' name='L474'></a>                xor     ax, ax
+<a id='L475' name='L475'></a>                mov     si, ax
+<a id='L476' name='L476'></a>                mov     cx, lgth_CopyRight
+<a id='L477' name='L477'></a>ComputeChecksum label   near
+<a id='L478' name='L478'></a>                add     al, es:[si]
+<a id='L479' name='L479'></a>                adc     ah, 0
+<a id='L480' name='L480'></a>                inc     si
+<a id='L481' name='L481'></a>                loop    ComputeChecksum
+<a id='L482' name='L482'></a>                sub     ax, CheckSum
+<a id='L483' name='L483'></a>                jz      @@SumOk
+<a id='L484' name='L484'></a>                mov     cx, lgth_NullCheck
+<a id='L485' name='L485'></a>                mov     dx, offset DGROUP: NullCheck
+<a id='L486' name='L486'></a>                call    ErrorDisplay
+<a id='L487' name='L487'></a>@@SumOK:        pop     di
+<a id='L488' name='L488'></a>                pop     si
+<a id='L489' name='L489'></a>  ENDIF
+<a id='L490' name='L490'></a>ENDIF
+<a id='L491' name='L491'></a>                ret
+<a id='L492' name='L492'></a>__checknull     ENDP
+<a id='L493' name='L493'></a>
+<a id='L494' name='L494'></a>;       Exit to DOS
+<a id='L495' name='L495'></a>
+<a id='L496' name='L496'></a>__terminate     PROC    DIST
+<a id='L497' name='L497'></a>                PUBLIC  __terminate
+<a id='L498' name='L498'></a>                mov     bp,sp
+<a id='L499' name='L499'></a>                mov     ah,4Ch
+<a id='L500' name='L500'></a>                mov     al,[bp+cPtrSize]
+<a id='L501' name='L501'></a>                int     21h                     ; Exit to DOS
+<a id='L502' name='L502'></a>__terminate     ENDP
+<a id='L503' name='L503'></a>
+<a id='L504' name='L504'></a>STARTX          ENDP
+<a id='L505' name='L505'></a>
+<a id='L506' name='L506'></a>        SUBTTL  Vector save/restore &amp; default Zero divide routines
+<a id='L507' name='L507'></a>        PAGE
+<a id='L508' name='L508'></a>;[]------------------------------------------------------------[]
+<a id='L509' name='L509'></a>;|                                                              |
+<a id='L510' name='L510'></a>;| Interrupt Save/Restore routines and default divide by zero   |
+<a id='L511' name='L511'></a>;| handler.                                                     |
+<a id='L512' name='L512'></a>;|                                                              |
+<a id='L513' name='L513'></a>;[]------------------------------------------------------------[]
+<a id='L514' name='L514'></a>
+<a id='L515' name='L515'></a>ZeroDivision    PROC    FAR
+<a id='L516' name='L516'></a>                mov     cx, lgth_ZeroDivMSG
+<a id='L517' name='L517'></a>                mov     dx, offset DGROUP: ZeroDivMSG
+<a id='L518' name='L518'></a>                jmp     MsgExit3
+<a id='L519' name='L519'></a>ZeroDivision    ENDP
+<a id='L520' name='L520'></a>
+<a id='L521' name='L521'></a>;--------------------------------------------------------------------------
+<a id='L522' name='L522'></a>;       savevectors()
+<a id='L523' name='L523'></a>;
+<a id='L524' name='L524'></a>;       Save vectors for 0, 4, 5 &amp; 6 interrupts.  This is for extended
+<a id='L525' name='L525'></a>;       signal()/raise() support as the signal functions can steal these
+<a id='L526' name='L526'></a>;       vectors during runtime.
+<a id='L527' name='L527'></a>;--------------------------------------------------------------------------
+<a id='L528' name='L528'></a>SaveVectors     PROC    NEAR
+<a id='L529' name='L529'></a>                push    ds
+<a id='L530' name='L530'></a>; Save INT 0
+<a id='L531' name='L531'></a>                mov     ax, 3500h
+<a id='L532' name='L532'></a>                int     021h
+<a id='L533' name='L533'></a>                mov     word ptr _Int0Vector@, bx
+<a id='L534' name='L534'></a>                mov     word ptr _Int0Vector@+2, es
+<a id='L535' name='L535'></a>; Save INT 4
+<a id='L536' name='L536'></a>                mov     ax, 3504h
+<a id='L537' name='L537'></a>                int     021h
+<a id='L538' name='L538'></a>                mov     word ptr _Int4Vector@, bx
+<a id='L539' name='L539'></a>                mov     word ptr _Int4Vector@+2, es
+<a id='L540' name='L540'></a>; Save INT 5
+<a id='L541' name='L541'></a>                mov     ax, 3505h
+<a id='L542' name='L542'></a>                int     021h
+<a id='L543' name='L543'></a>                mov     word ptr _Int5Vector@, bx
+<a id='L544' name='L544'></a>                mov     word ptr _Int5Vector@+2, es
+<a id='L545' name='L545'></a>; Save INT 6
+<a id='L546' name='L546'></a>                mov     ax, 3506h
+<a id='L547' name='L547'></a>                int     021h
+<a id='L548' name='L548'></a>                mov     word ptr _Int6Vector@, bx
+<a id='L549' name='L549'></a>                mov     word ptr _Int6Vector@+2, es
+<a id='L550' name='L550'></a>;
+<a id='L551' name='L551'></a>;       Install default divide by zero handler.
+<a id='L552' name='L552'></a>;
+<a id='L553' name='L553'></a>                mov     ax, 2500h
+<a id='L554' name='L554'></a>                mov     dx, cs
+<a id='L555' name='L555'></a>                mov     ds, dx
+<a id='L556' name='L556'></a>                mov     dx, offset ZeroDivision
+<a id='L557' name='L557'></a>                int     21h
+<a id='L558' name='L558'></a>
+<a id='L559' name='L559'></a>                pop     ds
+<a id='L560' name='L560'></a>                ret
+<a id='L561' name='L561'></a>SaveVectors     ENDP
+<a id='L562' name='L562'></a>
+<a id='L563' name='L563'></a>;--------------------------------------------------------------------------
+<a id='L564' name='L564'></a>;       _restorezero() puts back all the vectors that SaveVectors took.
+<a id='L565' name='L565'></a>;
+<a id='L566' name='L566'></a>;NOTE : TSRs must BE AWARE that signal() functions which take these 
+<a id='L567' name='L567'></a>;       vectors will be deactivated if the keep() function is executed.
+<a id='L568' name='L568'></a>;       If a TSR wants to use the signal functions when it is active it 
+<a id='L569' name='L569'></a>;       will have to save/restore these vectors itself when activated and
+<a id='L570' name='L570'></a>;       deactivated.
+<a id='L571' name='L571'></a>;--------------------------------------------------------------------------
+<a id='L572' name='L572'></a>__restorezero   PROC    DIST
+<a id='L573' name='L573'></a>                PUBLIC  __restorezero
+<a id='L574' name='L574'></a>IFDEF   __HUGE__
+<a id='L575' name='L575'></a>                push    ds
+<a id='L576' name='L576'></a>                mov     ds, cs: DGROUP@@
+<a id='L577' name='L577'></a>ENDIF
+<a id='L578' name='L578'></a>                push    ds
+<a id='L579' name='L579'></a>                mov     ax, 2500h
+<a id='L580' name='L580'></a>                lds     dx, _Int0Vector@
+<a id='L581' name='L581'></a>                int     21h
+<a id='L582' name='L582'></a>                pop     ds
+<a id='L583' name='L583'></a>
+<a id='L584' name='L584'></a>                push    ds
+<a id='L585' name='L585'></a>                mov     ax, 2504h
+<a id='L586' name='L586'></a>                lds     dx, _Int4Vector@
+<a id='L587' name='L587'></a>                int     21h
+<a id='L588' name='L588'></a>                pop     ds
+<a id='L589' name='L589'></a>
+<a id='L590' name='L590'></a>                push    ds
+<a id='L591' name='L591'></a>                mov     ax, 2505h
+<a id='L592' name='L592'></a>                lds     dx, _Int5Vector@
+<a id='L593' name='L593'></a>                int     21h
+<a id='L594' name='L594'></a>                pop     ds
+<a id='L595' name='L595'></a>
+<a id='L596' name='L596'></a>IFNDEF   __HUGE__
+<a id='L597' name='L597'></a>                push    ds
+<a id='L598' name='L598'></a>ENDIF
+<a id='L599' name='L599'></a>                mov     ax, 2506h
+<a id='L600' name='L600'></a>                lds     dx, _Int6Vector@
+<a id='L601' name='L601'></a>                int     21h
+<a id='L602' name='L602'></a>                pop     ds
+<a id='L603' name='L603'></a>
+<a id='L604' name='L604'></a>                ret
+<a id='L605' name='L605'></a>                ENDP
+<a id='L606' name='L606'></a>
+<a id='L607' name='L607'></a>;------------------------------------------------------------------
+<a id='L608' name='L608'></a>;  Loop through a startup/exit (SE) table, 
+<a id='L609' name='L609'></a>;  calling functions in order of priority.
+<a id='L610' name='L610'></a>;  ES:SI is assumed to point to the beginning of the SE table
+<a id='L611' name='L611'></a>;  ES:DI is assumed to point to the end of the SE table
+<a id='L612' name='L612'></a>;  First 64 priorities are reserved by Borland
+<a id='L613' name='L613'></a>;------------------------------------------------------------------
+<a id='L614' name='L614'></a>PNEAR           EQU     0
+<a id='L615' name='L615'></a>PFAR            EQU     1
+<a id='L616' name='L616'></a>NOTUSED         EQU     0ffh
+<a id='L617' name='L617'></a>
+<a id='L618' name='L618'></a>SE              STRUC
+<a id='L619' name='L619'></a>calltype        db      ?                       ; 0=near,1=far,ff=not used
+<a id='L620' name='L620'></a>priority        db      ?                       ; 0=highest,ff=lowest
+<a id='L621' name='L621'></a>addrlow         dw      ?
+<a id='L622' name='L622'></a>addrhigh        dw      ?
+<a id='L623' name='L623'></a>SE              ENDS
+<a id='L624' name='L624'></a>
+<a id='L625' name='L625'></a>StartExit       proc near
+<a id='L626' name='L626'></a>@@Start:        cmp     si,offset DGROUP:InitStart      ; startup or exit?
+<a id='L627' name='L627'></a>                je      @@StartLow              ; it's startup
+<a id='L628' name='L628'></a>                xor     ah,ah                   ; start with high priority
+<a id='L629' name='L629'></a>                jmp     short @@SaveEnd
+<a id='L630' name='L630'></a>@@StartLow:     mov     ah,0ffh                 ;start with lowest priority
+<a id='L631' name='L631'></a>@@SaveEnd:      mov     dx,di                   ;set sentinel to end of table
+<a id='L632' name='L632'></a>                mov     bx,si                   ;bx = start of table
+<a id='L633' name='L633'></a>
+<a id='L634' name='L634'></a>@@TopOfTable:   cmp     bx,di                   ;and the end of the table?
+<a id='L635' name='L635'></a>                je      @@EndOfTable            ;yes, exit the loop
+<a id='L636' name='L636'></a>                cmp     es:[bx.calltype],NOTUSED;check the call type
+<a id='L637' name='L637'></a>                je      @@Next
+<a id='L638' name='L638'></a>                cmp     si,offset DGROUP:InitStart      ; startup or exit?
+<a id='L639' name='L639'></a>                je      @@CompareHigh           ; it's startup
+<a id='L640' name='L640'></a>                cmp     ah,es:[bx.priority]     ; it's exit
+<a id='L641' name='L641'></a>                jmp     short @@CheckPrior      ; if priority too low, skip
+<a id='L642' name='L642'></a>@@CompareHigh:  cmp     es:[bx.priority],ah     ;check the priority
+<a id='L643' name='L643'></a>@@CheckPrior:   ja      @@Next                  ;too high?  skip
+<a id='L644' name='L644'></a>                mov     ah,es:[bx.priority]     ;keep priority
+<a id='L645' name='L645'></a>                mov     dx,bx                   ;keep index in dx
+<a id='L646' name='L646'></a>@@Next:         add     bx,SIZE SE              ;bx = next item in table
+<a id='L647' name='L647'></a>                jmp     @@TopOfTable
+<a id='L648' name='L648'></a>
+<a id='L649' name='L649'></a>@@EndOfTable:   cmp     dx,di                   ;did we exhaust the table?
+<a id='L650' name='L650'></a>                je      @@Done                  ;yes, quit
+<a id='L651' name='L651'></a>                mov     bx,dx                   ;bx = highest priority item
+<a id='L652' name='L652'></a>                cmp     es:[bx.calltype],PNEAR  ;is it near or far?
+<a id='L653' name='L653'></a>                mov     es:[bx.calltype],NOTUSED;wipe the call type
+<a id='L654' name='L654'></a>                push    es                      ;save es
+<a id='L655' name='L655'></a>                je      @@NearCall
+<a id='L656' name='L656'></a>
+<a id='L657' name='L657'></a>@@FarCall:      call    DWORD PTR es:[bx.addrlow]
+<a id='L658' name='L658'></a>                pop     es                      ;restore es
+<a id='L659' name='L659'></a>                jmp     short @@Start
+<a id='L660' name='L660'></a>
+<a id='L661' name='L661'></a>@@NearCall:     call    WORD PTR es:[bx.addrlow]
+<a id='L662' name='L662'></a>                pop     es                      ;restore es
+<a id='L663' name='L663'></a>                jmp     short @@Start
+<a id='L664' name='L664'></a>
+<a id='L665' name='L665'></a>@@Done:         ret
+<a id='L666' name='L666'></a>                endp
+<a id='L667' name='L667'></a>
+<a id='L668' name='L668'></a>;------------------------------------------------------------------
+<a id='L669' name='L669'></a>
+<a id='L670' name='L670'></a>ErrorDisplay    PROC    NEAR
+<a id='L671' name='L671'></a>                mov     ah, 040h
+<a id='L672' name='L672'></a>                mov     bx, 2
+<a id='L673' name='L673'></a>                int     021h
+<a id='L674' name='L674'></a>                ret
+<a id='L675' name='L675'></a>ErrorDisplay    ENDP
+<a id='L676' name='L676'></a>
+<a id='L677' name='L677'></a>_abort          PROC    DIST
+<a id='L678' name='L678'></a>                PUBLIC  _abort
+<a id='L679' name='L679'></a>                mov     cx, lgth_abortMSG
+<a id='L680' name='L680'></a>                mov     dx, offset DGROUP: abortMSG
+<a id='L681' name='L681'></a>MsgExit3        label   near
+<a id='L682' name='L682'></a>                mov     ds, cs: DGROUP@@
+<a id='L683' name='L683'></a>                call    ErrorDisplay
+<a id='L684' name='L684'></a>CallExit3       label   near
+<a id='L685' name='L685'></a>                mov     ax, 3
+<a id='L686' name='L686'></a>                push    ax
+<a id='L687' name='L687'></a>                call    __exit           ; _exit(3);
+<a id='L688' name='L688'></a>                ENDP
+<a id='L689' name='L689'></a>
+<a id='L690' name='L690'></a>; The DGROUP@ variable is used to reload DS with DGROUP
+<a id='L691' name='L691'></a>
+<a id='L692' name='L692'></a>PubSym@         DGROUP@, &lt;dw    ?&gt;, __PASCAL__
+<a id='L693' name='L693'></a>
+<a id='L694' name='L694'></a>IFDEF   __BOSS__
+<a id='L695' name='L695'></a>PubSym@         CSalias@,&lt;dw    ?&gt;, __PASCAL__
+<a id='L696' name='L696'></a>ENDIF
+<a id='L697' name='L697'></a>
+<a id='L698' name='L698'></a>
+<a id='L699' name='L699'></a>; __MMODEL is used to determine the memory model or the default
+<a id='L700' name='L700'></a>; pointer types at run time.
+<a id='L701' name='L701'></a>
+<a id='L702' name='L702'></a>                public __MMODEL
+<a id='L703' name='L703'></a>__MMODEL        dw      MMODEL
+<a id='L704' name='L704'></a>
+<a id='L705' name='L705'></a>_TEXT           ENDS
+<a id='L706' name='L706'></a>
+<a id='L707' name='L707'></a>                SUBTTL  Start Up Data Area
+<a id='L708' name='L708'></a>                PAGE
+<a id='L709' name='L709'></a>;[]------------------------------------------------------------[]
+<a id='L710' name='L710'></a>;|      Start Up Data Area                                      |
+<a id='L711' name='L711'></a>;|                                                              |
+<a id='L712' name='L712'></a>;|      WARNING         Do not move any variables in the data   |
+<a id='L713' name='L713'></a>;|                      segment unless you're absolutely sure   |
+<a id='L714' name='L714'></a>;|                      that it does not matter.                |
+<a id='L715' name='L715'></a>;[]------------------------------------------------------------[]
+<a id='L716' name='L716'></a>
+<a id='L717' name='L717'></a>_DATA           SEGMENT
+<a id='L718' name='L718'></a>
+<a id='L719' name='L719'></a>;       Magic symbol used by the debug info to locate the data segment
+<a id='L720' name='L720'></a>                public DATASEG@
+<a id='L721' name='L721'></a>DATASEG@        label   byte
+<a id='L722' name='L722'></a>
+<a id='L723' name='L723'></a>;       The CopyRight string must NOT be moved or changed without
+<a id='L724' name='L724'></a>;       changing the null pointer check logic
+<a id='L725' name='L725'></a>
+<a id='L726' name='L726'></a>CopyRight       db      4 dup(0)
+<a id='L727' name='L727'></a>                db      'Borland C++ - Copyright 1991 Borland Intl.',0
+<a id='L728' name='L728'></a>lgth_CopyRight  equ     $ - CopyRight
+<a id='L729' name='L729'></a>
+<a id='L730' name='L730'></a>IF      LDATA EQ false
+<a id='L731' name='L731'></a>IFNDEF  __TINY__
+<a id='L732' name='L732'></a>CheckSum        equ     00D5Ch
+<a id='L733' name='L733'></a>NullCheck       db      'Null pointer assignment', 13, 10
+<a id='L734' name='L734'></a>lgth_NullCheck  equ     $ - NullCheck
+<a id='L735' name='L735'></a>ENDIF
+<a id='L736' name='L736'></a>ENDIF
+<a id='L737' name='L737'></a>
+<a id='L738' name='L738'></a>ZeroDivMSG      db      'Divide error', 13, 10
+<a id='L739' name='L739'></a>lgth_ZeroDivMSG equ     $ - ZeroDivMSG
+<a id='L740' name='L740'></a>
+<a id='L741' name='L741'></a>abortMSG        db      'Abnormal program termination', 13, 10
+<a id='L742' name='L742'></a>lgth_abortMSG   equ     $ - abortMSG
+<a id='L743' name='L743'></a>
+<a id='L744' name='L744'></a>; JAB - Added string for no 286
+<a id='L745' name='L745'></a>no286MSG                db              'Sorry, this program requires a 286 or better.', 13, 10
+<a id='L746' name='L746'></a>lgth_no286MSG   equ             $ - no286MSG
+<a id='L747' name='L747'></a>; JAB - End of modifications
+<a id='L748' name='L748'></a>
+<a id='L749' name='L749'></a>;
+<a id='L750' name='L750'></a>;                       Interrupt vector save areas
+<a id='L751' name='L751'></a>;       
+<a id='L752' name='L752'></a>;       Interrupt vectors 0,4,5 &amp; 6 are saved at startup and then restored
+<a id='L753' name='L753'></a>;       when the program terminates.  The signal/raise functions might
+<a id='L754' name='L754'></a>;       steal these vectors during execution.
+<a id='L755' name='L755'></a>;
+<a id='L756' name='L756'></a>;       Note: These vectors save area must not be altered 
+<a id='L757' name='L757'></a>;             without changing the save/restore logic.
+<a id='L758' name='L758'></a>;
+<a id='L759' name='L759'></a>PubSym@         _Int0Vector     &lt;dd     0&gt;,             __CDECL__
+<a id='L760' name='L760'></a>PubSym@         _Int4Vector     &lt;dd     0&gt;,             __CDECL__
+<a id='L761' name='L761'></a>PubSym@         _Int5Vector     &lt;dd     0&gt;,             __CDECL__
+<a id='L762' name='L762'></a>PubSym@         _Int6Vector     &lt;dd     0&gt;,             __CDECL__
+<a id='L763' name='L763'></a>;
+<a id='L764' name='L764'></a>;                       Miscellaneous variables
+<a id='L765' name='L765'></a>;       
+<a id='L766' name='L766'></a>PubSym@         _C0argc,        &lt;dw     0&gt;,             __CDECL__
+<a id='L767' name='L767'></a>dPtrPub@        _C0argv,        0,                      __CDECL__
+<a id='L768' name='L768'></a>dPtrPub@        _C0environ,     0,                      __CDECL__
+<a id='L769' name='L769'></a>PubSym@         _envLng,        &lt;dw     0&gt;,             __CDECL__
+<a id='L770' name='L770'></a>PubSym@         _envseg,        &lt;dw     0&gt;,             __CDECL__
+<a id='L771' name='L771'></a>PubSym@         _envSize,       &lt;dw     0&gt;,             __CDECL__
+<a id='L772' name='L772'></a>PubSym@         _psp,           &lt;dw     0&gt;,             __CDECL__
+<a id='L773' name='L773'></a>PubSym@         _version,       &lt;label word&gt;,           __CDECL__
+<a id='L774' name='L774'></a>PubSym@         _osversion,     &lt;label word&gt;,           __CDECL__
+<a id='L775' name='L775'></a>PubSym@         _osmajor,       &lt;db     0&gt;,             __CDECL__
+<a id='L776' name='L776'></a>PubSym@         _osminor,       &lt;db     0&gt;,             __CDECL__
+<a id='L777' name='L777'></a>PubSym@         errno,          &lt;dw     0&gt;,             __CDECL__
+<a id='L778' name='L778'></a>PubSym@         _StartTime,     &lt;dw   0,0&gt;,             __CDECL__
+<a id='L779' name='L779'></a>
+<a id='L780' name='L780'></a>
+<a id='L781' name='L781'></a>IFDEF __BOSS__
+<a id='L782' name='L782'></a>PubSym@         _protected      &lt;dw    0&gt;,              __CDECL__
+<a id='L783' name='L783'></a>PubSym@         _shiftcount,    &lt;dw    12&gt;,             __CDECL__
+<a id='L784' name='L784'></a>PubSym@         _hugeincval,    &lt;dw    1000h&gt;,          __CDECL__
+<a id='L785' name='L785'></a>ENDIF
+<a id='L786' name='L786'></a>
+<a id='L787' name='L787'></a>;       Memory management variables
+<a id='L788' name='L788'></a>
+<a id='L789' name='L789'></a>IF      LDATA EQ false
+<a id='L790' name='L790'></a>PubSym@         __heapbase,     &lt;dw   DGROUP:edata@&gt;,   __CDECL__
+<a id='L791' name='L791'></a>ENDIF
+<a id='L792' name='L792'></a>IFNDEF __HUGE__
+<a id='L793' name='L793'></a>PubSym@         __brklvl,       &lt;dw   DGROUP:edata@&gt;,   __CDECL__
+<a id='L794' name='L794'></a>ENDIF
+<a id='L795' name='L795'></a>PubSym@         _heapbase,      &lt;dd   0&gt;,       __CDECL__
+<a id='L796' name='L796'></a>PubSym@         _brklvl,        &lt;dd   0&gt;,       __CDECL__
+<a id='L797' name='L797'></a>PubSym@         _heaptop,       &lt;dd   0&gt;,       __CDECL__
+<a id='L798' name='L798'></a>
+<a id='L799' name='L799'></a>;       If stack in DS and Large data model then override location of __emu
+<a id='L800' name='L800'></a>
+<a id='L801' name='L801'></a>IFDEF   _DSSTACK_
+<a id='L802' name='L802'></a>IF      LDATA
+<a id='L803' name='L803'></a>public  __emu
+<a id='L804' name='L804'></a>__emu   db      044h    DUP (0)
+<a id='L805' name='L805'></a>        db      0CCh    DUP (?)
+<a id='L806' name='L806'></a>ENDIF
+<a id='L807' name='L807'></a>ENDIF
+<a id='L808' name='L808'></a>
+<a id='L809' name='L809'></a>_DATA           ENDS
+<a id='L810' name='L810'></a>
+<a id='L811' name='L811'></a>
+<a id='L812' name='L812'></a>_CVTSEG         SEGMENT
+<a id='L813' name='L813'></a>PubSym@         _RealCvtVector, &lt;label  word&gt;,  __CDECL__
+<a id='L814' name='L814'></a>                ENDS
+<a id='L815' name='L815'></a>
+<a id='L816' name='L816'></a>_SCNSEG         SEGMENT
+<a id='L817' name='L817'></a>PubSym@         _ScanTodVector,  &lt;label word&gt;,  __CDECL__
+<a id='L818' name='L818'></a>                ENDS
+<a id='L819' name='L819'></a>
+<a id='L820' name='L820'></a>IFNDEF __HUGE__
+<a id='L821' name='L821'></a>_BSS            SEGMENT
+<a id='L822' name='L822'></a>bdata@          label   byte
+<a id='L823' name='L823'></a>                ENDS
+<a id='L824' name='L824'></a>
+<a id='L825' name='L825'></a>_BSSEND         SEGMENT
+<a id='L826' name='L826'></a>edata@          label   byte
+<a id='L827' name='L827'></a>                ENDS
+<a id='L828' name='L828'></a>ENDIF
+<a id='L829' name='L829'></a>
+<a id='L830' name='L830'></a>IFNDEF __TINY__
+<a id='L831' name='L831'></a>_STACK          SEGMENT
+<a id='L832' name='L832'></a>IFDEF __BOSS__
+<a id='L833' name='L833'></a>    IF LDATA
+<a id='L834' name='L834'></a>                db      1400h dup(?)
+<a id='L835' name='L835'></a>    ENDIF
+<a id='L836' name='L836'></a>ELSE
+<a id='L837' name='L837'></a>                db      128 dup(?)               ;minimum stack size
+<a id='L838' name='L838'></a>ENDIF  ; __BOSS__
+<a id='L839' name='L839'></a>                ENDS
+<a id='L840' name='L840'></a>ENDIF  ; __TINY__
+<a id='L841' name='L841'></a>                END     STARTX
+</pre>
+<hr />
+<a id='BOTTOM' name='BOTTOM'></a>
+<em class='comment'>/* <img class='icon' src='../icons/n_left.png' alt='[previous]' /><img class='icon' src='../icons/n_right.png' alt='[next]' /><img class='icon' src='../icons/n_first.png' alt='[first]' /><img class='icon' src='../icons/n_last.png' alt='[last]' /><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><img class='icon' src='../icons/n_bottom.png' alt='[bottom]' /><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+</body>
+</html>

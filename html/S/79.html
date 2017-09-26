@@ -1,0 +1,712 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<title>WOLFSRC/RULES.ASI</title>
+<meta name='robots' content='noindex,nofollow' />
+<meta name='generator' content='GLOBAL-6.5.7' />
+<meta http-equiv='Content-Style-Type' content='text/css' />
+<link rel='stylesheet' type='text/css' href='../style.css' />
+</head>
+<body>
+<a id='TOP' name='TOP'></a><h2 class='header'><a href='../mains.html'>root</a>/<a href='../files/100.html'>WOLFSRC</a>/RULES.ASI</h2>
+<em class='comment'>/* <img class='icon' src='../icons/n_left.png' alt='[previous]' /><img class='icon' src='../icons/n_right.png' alt='[next]' /><img class='icon' src='../icons/n_first.png' alt='[first]' /><img class='icon' src='../icons/n_last.png' alt='[last]' /><img class='icon' src='../icons/n_top.png' alt='[top]' /><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<hr />
+<pre>
+<a id='L1' name='L1'></a>;[]-----------------------------------------------------------------[]
+<a id='L2' name='L2'></a>;|      RULES.ASI  --  Rules &amp; Structures for assembler              |
+<a id='L3' name='L3'></a>;|                                                                   |
+<a id='L4' name='L4'></a>;|      Turbo C++ Run Time Library                                   |
+<a id='L5' name='L5'></a>;|                                                                   |
+<a id='L6' name='L6'></a>;|      Copyright (c) 1987, 1991 by Borland International Inc.       |
+<a id='L7' name='L7'></a>;|      All Rights Reserved.                                         |
+<a id='L8' name='L8'></a>;[]-----------------------------------------------------------------[]
+<a id='L9' name='L9'></a>
+<a id='L10' name='L10'></a>;*** First we begin with a few of the major constants of C.
+<a id='L11' name='L11'></a>
+<a id='L12' name='L12'></a>false   equ     0       ; Beware !  For incoming parameters, non-false = true.
+<a id='L13' name='L13'></a>true    equ     1       ; For results, we generate the proper numbers.
+<a id='L14' name='L14'></a>
+<a id='L15' name='L15'></a>lesser  equ    -1       ; Incoming, lesser &lt; 0
+<a id='L16' name='L16'></a>equal   equ     0
+<a id='L17' name='L17'></a>greater equ     1       ; Incoming, greater &gt; 0
+<a id='L18' name='L18'></a>
+<a id='L19' name='L19'></a>        PAGE
+<a id='L20' name='L20'></a>;[]------------------------------------------------------------[]
+<a id='L21' name='L21'></a>;|                                                              |
+<a id='L22' name='L22'></a>;|      Conditional Assembly Directives                         |
+<a id='L23' name='L23'></a>;|                                                              |
+<a id='L24' name='L24'></a>;[]------------------------------------------------------------[]
+<a id='L25' name='L25'></a>
+<a id='L26' name='L26'></a>;memory model aliases, for the convenience of building the library
+<a id='L27' name='L27'></a>
+<a id='L28' name='L28'></a>IFDEF           __s__
+<a id='L29' name='L29'></a>__SMALL__       equ     1
+<a id='L30' name='L30'></a>ENDIF
+<a id='L31' name='L31'></a>
+<a id='L32' name='L32'></a>IFDEF           __c__
+<a id='L33' name='L33'></a>__COMPACT__     equ     1
+<a id='L34' name='L34'></a>ENDIF
+<a id='L35' name='L35'></a>
+<a id='L36' name='L36'></a>IFDEF           __m__
+<a id='L37' name='L37'></a>__MEDIUM__      equ     1
+<a id='L38' name='L38'></a>ENDIF
+<a id='L39' name='L39'></a>
+<a id='L40' name='L40'></a>IFDEF           __l__
+<a id='L41' name='L41'></a>__LARGE__       equ     1
+<a id='L42' name='L42'></a>ENDIF
+<a id='L43' name='L43'></a>
+<a id='L44' name='L44'></a>IFDEF           __h__
+<a id='L45' name='L45'></a>__HUGE__        equ     1
+<a id='L46' name='L46'></a>ENDIF
+<a id='L47' name='L47'></a>
+<a id='L48' name='L48'></a>IFNDEF __TINY__
+<a id='L49' name='L49'></a>    IFNDEF __SMALL__
+<a id='L50' name='L50'></a>        IFNDEF __MEDIUM__
+<a id='L51' name='L51'></a>            IFNDEF __COMPACT__
+<a id='L52' name='L52'></a>                IFNDEF __LARGE__
+<a id='L53' name='L53'></a>                    IFNDEF __HUGE__
+<a id='L54' name='L54'></a>                        %OUT  You must supply a model symbol.
+<a id='L55' name='L55'></a>                        .ERR
+<a id='L56' name='L56'></a>                    ENDIF
+<a id='L57' name='L57'></a>                ENDIF
+<a id='L58' name='L58'></a>            ENDIF
+<a id='L59' name='L59'></a>        ENDIF
+<a id='L60' name='L60'></a>    ENDIF
+<a id='L61' name='L61'></a>ENDIF
+<a id='L62' name='L62'></a>
+<a id='L63' name='L63'></a>;bit masks to extract default pointer types from MMODEL (at run-time)
+<a id='L64' name='L64'></a>FCODE           equ     8000h
+<a id='L65' name='L65'></a>FDATA           equ     4000h
+<a id='L66' name='L66'></a>
+<a id='L67' name='L67'></a>IFDEF   __TINY__                ; Small Code - Small Data
+<a id='L68' name='L68'></a>        LPROG           equ     false
+<a id='L69' name='L69'></a>        LDATA           equ     false
+<a id='L70' name='L70'></a>        MMODEL          equ     0       
+<a id='L71' name='L71'></a>        _DSSTACK_       equ     &lt;&gt;
+<a id='L72' name='L72'></a>ENDIF
+<a id='L73' name='L73'></a>
+<a id='L74' name='L74'></a>IFDEF   __SMALL__               ; Small Code - Small Data
+<a id='L75' name='L75'></a>        LPROG           equ     false
+<a id='L76' name='L76'></a>        LDATA           equ     false
+<a id='L77' name='L77'></a>        MMODEL          equ     1       
+<a id='L78' name='L78'></a>        _DSSTACK_       equ     &lt;&gt;
+<a id='L79' name='L79'></a>ENDIF
+<a id='L80' name='L80'></a>
+<a id='L81' name='L81'></a>IFDEF   __MEDIUM__              ; Large Code - Small Data
+<a id='L82' name='L82'></a>        LPROG           equ     true
+<a id='L83' name='L83'></a>        LDATA           equ     false
+<a id='L84' name='L84'></a>        MMODEL          equ     FCODE+2 
+<a id='L85' name='L85'></a>        _DSSTACK_       equ     &lt;&gt;
+<a id='L86' name='L86'></a>ENDIF
+<a id='L87' name='L87'></a>
+<a id='L88' name='L88'></a>IFDEF   __COMPACT__             ; Small Code - Large Data
+<a id='L89' name='L89'></a>        LPROG           equ     false
+<a id='L90' name='L90'></a>        LDATA           equ     true
+<a id='L91' name='L91'></a>        MMODEL          equ     FDATA+3 
+<a id='L92' name='L92'></a>ENDIF
+<a id='L93' name='L93'></a>
+<a id='L94' name='L94'></a>IFDEF   __LARGE__               ; Large Code - Large Data
+<a id='L95' name='L95'></a>        LPROG           equ     true
+<a id='L96' name='L96'></a>        LDATA           equ     true
+<a id='L97' name='L97'></a>        MMODEL          equ     FCODE+FDATA+4
+<a id='L98' name='L98'></a>ENDIF
+<a id='L99' name='L99'></a>
+<a id='L100' name='L100'></a>IFDEF   __HUGE__                ; Large Code - Large Data
+<a id='L101' name='L101'></a>        LPROG           equ     true
+<a id='L102' name='L102'></a>        LDATA           equ     true
+<a id='L103' name='L103'></a>        MMODEL          equ     FCODE+FDATA+5
+<a id='L104' name='L104'></a>ENDIF
+<a id='L105' name='L105'></a>
+<a id='L106' name='L106'></a>IF      LPROG
+<a id='L107' name='L107'></a>        DIST            equ     FAR
+<a id='L108' name='L108'></a>ELSE
+<a id='L109' name='L109'></a>        DIST            equ     NEAR
+<a id='L110' name='L110'></a>ENDIF
+<a id='L111' name='L111'></a>
+<a id='L112' name='L112'></a>        PAGE
+<a id='L113' name='L113'></a>;[]------------------------------------------------------------[]
+<a id='L114' name='L114'></a>;|                                                              |
+<a id='L115' name='L115'></a>;|      Segment Declarations Macros                             |
+<a id='L116' name='L116'></a>;|                                                              |
+<a id='L117' name='L117'></a>;[]------------------------------------------------------------[]
+<a id='L118' name='L118'></a>
+<a id='L119' name='L119'></a>Code_Seg@       MACRO           ;; Open a Code Segment
+<a id='L120' name='L120'></a>IFDEF __WINDOWS__
+<a id='L121' name='L121'></a>_TEXT   SEGMENT WORD PUBLIC 'CODE'
+<a id='L122' name='L122'></a>ELSE
+<a id='L123' name='L123'></a>_TEXT   SEGMENT BYTE PUBLIC 'CODE'
+<a id='L124' name='L124'></a>ENDIF
+<a id='L125' name='L125'></a>        ASSUME  CS:_TEXT
+<a id='L126' name='L126'></a>                ENDM
+<a id='L127' name='L127'></a>
+<a id='L128' name='L128'></a>Code_EndS@      MACRO           ;; Close a Code Segment
+<a id='L129' name='L129'></a>_TEXT   ENDS
+<a id='L130' name='L130'></a>                ENDM
+<a id='L131' name='L131'></a>
+<a id='L132' name='L132'></a>Data_Seg@       MACRO           ;; Open a Data Segment  (initialized)
+<a id='L133' name='L133'></a>_DATA   SEGMENT WORD PUBLIC 'DATA'
+<a id='L134' name='L134'></a>                ENDM
+<a id='L135' name='L135'></a>
+<a id='L136' name='L136'></a>Data_EndS@      MACRO           ;; Close a Data Segment (initialized)
+<a id='L137' name='L137'></a>_DATA   ENDS
+<a id='L138' name='L138'></a>                ENDM
+<a id='L139' name='L139'></a>
+<a id='L140' name='L140'></a>IFNDEF __HUGE__
+<a id='L141' name='L141'></a>    BSS_Seg@        MACRO       ;; Open a Data Segment  (un-initialized)
+<a id='L142' name='L142'></a>    _BSS    SEGMENT WORD PUBLIC 'BSS'
+<a id='L143' name='L143'></a>            ENDM
+<a id='L144' name='L144'></a>
+<a id='L145' name='L145'></a>    BSS_EndS@       MACRO       ;; Close a Data Segment (un-initialized)
+<a id='L146' name='L146'></a>    _BSS    ENDS
+<a id='L147' name='L147'></a>                    ENDM
+<a id='L148' name='L148'></a>ENDIF
+<a id='L149' name='L149'></a>
+<a id='L150' name='L150'></a>FarData_Seg@    MACRO           ;; Open a FAR Data Segment
+<a id='L151' name='L151'></a>_FARDATA        SEGMENT PARA PUBLIC 'FAR_DATA'
+<a id='L152' name='L152'></a>                ENDM
+<a id='L153' name='L153'></a>
+<a id='L154' name='L154'></a>FarData_EndS@   MACRO           ;; Close a FAR Data Segment
+<a id='L155' name='L155'></a>_FARDATA        ENDS
+<a id='L156' name='L156'></a>                ENDM
+<a id='L157' name='L157'></a>
+<a id='L158' name='L158'></a>FarBSS_Seg@     MACRO           ;; Open a FAR BSS Segment
+<a id='L159' name='L159'></a>_FARBSS         SEGMENT PARA PUBLIC 'FAR_BSS'
+<a id='L160' name='L160'></a>                ENDM
+<a id='L161' name='L161'></a>
+<a id='L162' name='L162'></a>FarBSS_EndS@    MACRO           ;; Close a FAR BSS Segment
+<a id='L163' name='L163'></a>_FARBSS         ENDS
+<a id='L164' name='L164'></a>                ENDM
+<a id='L165' name='L165'></a>
+<a id='L166' name='L166'></a>Const_Seg@      MACRO           ;; Open a CONST Segment
+<a id='L167' name='L167'></a>_CONST  SEGMENT WORD PUBLIC 'CONST'
+<a id='L168' name='L168'></a>                ENDM
+<a id='L169' name='L169'></a>
+<a id='L170' name='L170'></a>Const_EndS@     MACRO           ;; Close a CONST Segment
+<a id='L171' name='L171'></a>_CONST  ENDS
+<a id='L172' name='L172'></a>                ENDM
+<a id='L173' name='L173'></a>
+<a id='L174' name='L174'></a>Init_Seg@       MACRO           ;; Open a INIT Segment
+<a id='L175' name='L175'></a>_INIT_  SEGMENT WORD PUBLIC 'INITDATA'
+<a id='L176' name='L176'></a>                ENDM
+<a id='L177' name='L177'></a>
+<a id='L178' name='L178'></a>Init_EndS@      MACRO           ;; Close a INIT Segment
+<a id='L179' name='L179'></a>_INIT_  ENDS
+<a id='L180' name='L180'></a>                ENDM
+<a id='L181' name='L181'></a>
+<a id='L182' name='L182'></a>Exit_Seg@       MACRO           ;; Open a EXIT Segment
+<a id='L183' name='L183'></a>_EXIT_  SEGMENT WORD PUBLIC 'EXITDATA'
+<a id='L184' name='L184'></a>                ENDM
+<a id='L185' name='L185'></a>
+<a id='L186' name='L186'></a>Exit_EndS@      MACRO           ;; Close a EXIT Segment
+<a id='L187' name='L187'></a>_EXIT_  ENDS
+<a id='L188' name='L188'></a>                ENDM
+<a id='L189' name='L189'></a>
+<a id='L190' name='L190'></a>CVT_Seg@        MACRO
+<a id='L191' name='L191'></a>_CVTSEG SEGMENT WORD PUBLIC 'DATA'
+<a id='L192' name='L192'></a>                ENDM
+<a id='L193' name='L193'></a>
+<a id='L194' name='L194'></a>CVT_EndS@       MACRO
+<a id='L195' name='L195'></a>_CVTSEG ENDS
+<a id='L196' name='L196'></a>                ENDM
+<a id='L197' name='L197'></a>
+<a id='L198' name='L198'></a>SCN_Seg@        MACRO
+<a id='L199' name='L199'></a>_SCNSEG SEGMENT WORD PUBLIC 'DATA'
+<a id='L200' name='L200'></a>                ENDM
+<a id='L201' name='L201'></a>
+<a id='L202' name='L202'></a>SCN_EndS@       MACRO
+<a id='L203' name='L203'></a>_SCNSEG ENDS
+<a id='L204' name='L204'></a>                ENDM
+<a id='L205' name='L205'></a>
+<a id='L206' name='L206'></a>Header@ MACRO
+<a id='L207' name='L207'></a>Code_Seg@
+<a id='L208' name='L208'></a>Code_EndS@
+<a id='L209' name='L209'></a>Data_Seg@
+<a id='L210' name='L210'></a>Data_EndS@
+<a id='L211' name='L211'></a>BSS_Seg@
+<a id='L212' name='L212'></a>BSS_EndS@
+<a id='L213' name='L213'></a>        ASSUME  CS:_TEXT, DS:DGROUP
+<a id='L214' name='L214'></a>        ENDM
+<a id='L215' name='L215'></a>
+<a id='L216' name='L216'></a>;[]------------------------------------------------------------[]
+<a id='L217' name='L217'></a>;|                                                              |
+<a id='L218' name='L218'></a>;|      Segment Definitions                                     |
+<a id='L219' name='L219'></a>;|                                                              |
+<a id='L220' name='L220'></a>;[]------------------------------------------------------------[]
+<a id='L221' name='L221'></a>
+<a id='L222' name='L222'></a>IFDEF __C0__
+<a id='L223' name='L223'></a>
+<a id='L224' name='L224'></a>IFDEF __WINDOWS__
+<a id='L225' name='L225'></a>_TEXT           SEGMENT WORD PUBLIC 'CODE'
+<a id='L226' name='L226'></a>                ENDS
+<a id='L227' name='L227'></a>ELSE
+<a id='L228' name='L228'></a>_TEXT           SEGMENT BYTE PUBLIC 'CODE'
+<a id='L229' name='L229'></a>                ENDS
+<a id='L230' name='L230'></a>ENDIF
+<a id='L231' name='L231'></a>
+<a id='L232' name='L232'></a>_FARDATA        SEGMENT PARA PUBLIC 'FAR_DATA'
+<a id='L233' name='L233'></a>                ENDS
+<a id='L234' name='L234'></a>
+<a id='L235' name='L235'></a>_FARBSS         SEGMENT PARA PUBLIC 'FAR_BSS'
+<a id='L236' name='L236'></a>                ENDS
+<a id='L237' name='L237'></a>
+<a id='L238' name='L238'></a>IFNDEF __WINDOWS__
+<a id='L239' name='L239'></a>  IFNDEF __TINY__
+<a id='L240' name='L240'></a>  _OVERLAY_       SEGMENT PARA PUBLIC 'OVRINFO'
+<a id='L241' name='L241'></a>                  ENDS
+<a id='L242' name='L242'></a>  _1STUB_         SEGMENT PARA PUBLIC 'STUBSEG'
+<a id='L243' name='L243'></a>                  ENDS
+<a id='L244' name='L244'></a>  ENDIF
+<a id='L245' name='L245'></a>ENDIF
+<a id='L246' name='L246'></a>
+<a id='L247' name='L247'></a>IFDEF __WINDOWS__
+<a id='L248' name='L248'></a>NULL            SEGMENT PARA PUBLIC 'BEGDATA'
+<a id='L249' name='L249'></a>                ENDS
+<a id='L250' name='L250'></a>ENDIF
+<a id='L251' name='L251'></a>
+<a id='L252' name='L252'></a>_DATA           SEGMENT PARA PUBLIC 'DATA'
+<a id='L253' name='L253'></a>                ENDS
+<a id='L254' name='L254'></a>                ENDS
+<a id='L255' name='L255'></a>
+<a id='L256' name='L256'></a>_CONST          SEGMENT WORD PUBLIC 'CONST'
+<a id='L257' name='L257'></a>                ENDS
+<a id='L258' name='L258'></a>
+<a id='L259' name='L259'></a>IFDEF __WINDOWS__
+<a id='L260' name='L260'></a>_FPSEG          SEGMENT WORD PUBLIC 'DATA'
+<a id='L261' name='L261'></a>                ENDS
+<a id='L262' name='L262'></a>ENDIF
+<a id='L263' name='L263'></a>
+<a id='L264' name='L264'></a>_CVTSEG         SEGMENT WORD PUBLIC 'DATA'
+<a id='L265' name='L265'></a>                ENDS
+<a id='L266' name='L266'></a>
+<a id='L267' name='L267'></a>_SCNSEG         SEGMENT WORD PUBLIC 'DATA'
+<a id='L268' name='L268'></a>                ENDS
+<a id='L269' name='L269'></a>
+<a id='L270' name='L270'></a>_INIT_          SEGMENT WORD PUBLIC 'INITDATA'
+<a id='L271' name='L271'></a>InitStart       label byte
+<a id='L272' name='L272'></a>                ENDS
+<a id='L273' name='L273'></a>_INITEND_       SEGMENT BYTE PUBLIC 'INITDATA'
+<a id='L274' name='L274'></a>InitEnd         label byte
+<a id='L275' name='L275'></a>                ENDS
+<a id='L276' name='L276'></a>
+<a id='L277' name='L277'></a>_EXIT_          SEGMENT WORD PUBLIC 'EXITDATA'
+<a id='L278' name='L278'></a>ExitStart       label byte
+<a id='L279' name='L279'></a>                ENDS
+<a id='L280' name='L280'></a>_EXITEND_       SEGMENT BYTE PUBLIC 'EXITDATA'
+<a id='L281' name='L281'></a>ExitEnd         label byte
+<a id='L282' name='L282'></a>                ENDS
+<a id='L283' name='L283'></a>
+<a id='L284' name='L284'></a>IFNDEF __HUGE__
+<a id='L285' name='L285'></a>_BSS          SEGMENT WORD PUBLIC 'BSS'
+<a id='L286' name='L286'></a>BeginBSS      label byte
+<a id='L287' name='L287'></a>              ENDS
+<a id='L288' name='L288'></a>_BSSEND       SEGMENT BYTE PUBLIC 'BSSEND'
+<a id='L289' name='L289'></a>EndBSS        label byte
+<a id='L290' name='L290'></a>              ENDS
+<a id='L291' name='L291'></a>ENDIF
+<a id='L292' name='L292'></a>
+<a id='L293' name='L293'></a>
+<a id='L294' name='L294'></a>IFDEF __WINDOWS__
+<a id='L295' name='L295'></a>
+<a id='L296' name='L296'></a>  IFDEF  __HUGE__
+<a id='L297' name='L297'></a>  DGROUP GROUP NULL,_DATA,_CONST,_FPSEG,_CVTSEG,_SCNSEG,_INIT_,_INITEND_,_EXIT_,_EXITEND_
+<a id='L298' name='L298'></a>  ELSE
+<a id='L299' name='L299'></a>  DGROUP GROUP NULL,_DATA,_CONST,_FPSEG,_CVTSEG,_SCNSEG,_INIT_,_INITEND_,_EXIT_,_EXITEND_,_BSS,_BSSEND
+<a id='L300' name='L300'></a>  ENDIF
+<a id='L301' name='L301'></a>
+<a id='L302' name='L302'></a>ELSE
+<a id='L303' name='L303'></a>
+<a id='L304' name='L304'></a>IFNDEF __NOFLOAT__
+<a id='L305' name='L305'></a>  IF LDATA
+<a id='L306' name='L306'></a>    IFDEF  __HUGE__
+<a id='L307' name='L307'></a>      DGROUP GROUP _DATA,_CONST,_CVTSEG,_SCNSEG,_INIT_,_INITEND_,_EXIT_,_EXITEND_
+<a id='L308' name='L308'></a>    ELSE
+<a id='L309' name='L309'></a>      DGROUP GROUP _DATA,_CONST,_CVTSEG,_SCNSEG,_INIT_,_INITEND_,_EXIT_,_EXITEND_,_BSS,_BSSEND
+<a id='L310' name='L310'></a>    ENDIF
+<a id='L311' name='L311'></a>  ELSE
+<a id='L312' name='L312'></a>    IFDEF __TINY__
+<a id='L313' name='L313'></a>      DGROUP GROUP _TEXT,_DATA,_CONST,_CVTSEG,_SCNSEG,_INIT_,_INITEND_,_EXIT_,_EXITEND_,_BSS,_BSSEND
+<a id='L314' name='L314'></a>    ELSE
+<a id='L315' name='L315'></a>      DGROUP GROUP _DATA,_CONST,_CVTSEG,_SCNSEG,_INIT_,_INITEND_,_EXIT_,_EXITEND_,_BSS,_BSSEND
+<a id='L316' name='L316'></a>    ENDIF
+<a id='L317' name='L317'></a>  ENDIF
+<a id='L318' name='L318'></a>ELSE
+<a id='L319' name='L319'></a>  IF LDATA
+<a id='L320' name='L320'></a>    IFDEF __HUGE__
+<a id='L321' name='L321'></a>      DGROUP GROUP _DATA,_CONST,_CVTSEG,_SCNSEG,_INIT_,_INITEND_,_EXIT_,_EXITEND_
+<a id='L322' name='L322'></a>    ELSE
+<a id='L323' name='L323'></a>      DGROUP GROUP _DATA,_CONST,_CVTSEG,_SCNSEG,_BSS,_BSSEND
+<a id='L324' name='L324'></a>    ENDIF
+<a id='L325' name='L325'></a>  ELSE
+<a id='L326' name='L326'></a>    IFDEF __TINY__
+<a id='L327' name='L327'></a>      DGROUP GROUP _TEXT,_DATA,_CONST,_CVTSEG,_SCNSEG,_INIT_,_INITEND_,_EXIT_,_EXITEND_,_BSS,_BSSEND
+<a id='L328' name='L328'></a>    ELSE
+<a id='L329' name='L329'></a>      DGROUP GROUP _DATA,_CONST,_CVTSEG,_SCNSEG,_INIT_,_INITEND_,_EXIT_,_EXITEND_,_BSS,_BSSEND
+<a id='L330' name='L330'></a>    ENDIF
+<a id='L331' name='L331'></a>  ENDIF
+<a id='L332' name='L332'></a>ENDIF ; __NOFLOAT__
+<a id='L333' name='L333'></a>
+<a id='L334' name='L334'></a>ENDIF ; __WINDOWS__
+<a id='L335' name='L335'></a>
+<a id='L336' name='L336'></a>ELSE
+<a id='L337' name='L337'></a>
+<a id='L338' name='L338'></a>Code_Seg@
+<a id='L339' name='L339'></a>Code_EndS@
+<a id='L340' name='L340'></a>Data_Seg@
+<a id='L341' name='L341'></a>Data_EndS@
+<a id='L342' name='L342'></a>DGROUP GROUP _DATA
+<a id='L343' name='L343'></a>
+<a id='L344' name='L344'></a>ENDIF ; __C0__
+<a id='L345' name='L345'></a>
+<a id='L346' name='L346'></a>        PAGE
+<a id='L347' name='L347'></a>;[]------------------------------------------------------------[]
+<a id='L348' name='L348'></a>;|                                                              |
+<a id='L349' name='L349'></a>;|      Old Segment Declarations Macros                         |
+<a id='L350' name='L350'></a>;|                                                              |
+<a id='L351' name='L351'></a>;[]------------------------------------------------------------[]
+<a id='L352' name='L352'></a>
+<a id='L353' name='L353'></a>
+<a id='L354' name='L354'></a>CSeg@           MACRO           ;; Open a Code Segment
+<a id='L355' name='L355'></a>IFDEF __WINDOWS__
+<a id='L356' name='L356'></a>_TEXT   SEGMENT WORD PUBLIC 'CODE'
+<a id='L357' name='L357'></a>ELSE
+<a id='L358' name='L358'></a>_TEXT   SEGMENT BYTE PUBLIC 'CODE'
+<a id='L359' name='L359'></a>ENDIF
+<a id='L360' name='L360'></a>        ASSUME  CS:_TEXT
+<a id='L361' name='L361'></a>                ENDM
+<a id='L362' name='L362'></a>
+<a id='L363' name='L363'></a>CSegEnd@        MACRO           ;; Close a Code Segment
+<a id='L364' name='L364'></a>_TEXT   ENDS
+<a id='L365' name='L365'></a>                ENDM
+<a id='L366' name='L366'></a>
+<a id='L367' name='L367'></a>DSeg@           MACRO           ;; Open a Data Segment  (initialized)
+<a id='L368' name='L368'></a>_DATA   SEGMENT WORD PUBLIC 'DATA'
+<a id='L369' name='L369'></a>                ENDM
+<a id='L370' name='L370'></a>
+<a id='L371' name='L371'></a>DSegEnd@        MACRO           ;; Close a Data Segment (initialized)
+<a id='L372' name='L372'></a>_DATA   ENDS
+<a id='L373' name='L373'></a>                ENDM
+<a id='L374' name='L374'></a>
+<a id='L375' name='L375'></a>IFDEF __BSS__
+<a id='L376' name='L376'></a>    IFNDEF __HUGE__
+<a id='L377' name='L377'></a>        BSeg@           MACRO           ;; Open a Data Segment  (un-initialized)
+<a id='L378' name='L378'></a>        _BSS    SEGMENT WORD PUBLIC 'BSS'
+<a id='L379' name='L379'></a>                ENDM
+<a id='L380' name='L380'></a>
+<a id='L381' name='L381'></a>        BSegEnd@        MACRO           ;; Close a Data Segment (un-initialized)
+<a id='L382' name='L382'></a>        _BSS    ENDS
+<a id='L383' name='L383'></a>                        ENDM
+<a id='L384' name='L384'></a>    ENDIF
+<a id='L385' name='L385'></a>ENDIF
+<a id='L386' name='L386'></a>
+<a id='L387' name='L387'></a>Header@ MACRO
+<a id='L388' name='L388'></a>IFDEF __WINDOWS__
+<a id='L389' name='L389'></a>_TEXT   SEGMENT WORD PUBLIC 'CODE'
+<a id='L390' name='L390'></a>ELSE
+<a id='L391' name='L391'></a>_TEXT   SEGMENT BYTE PUBLIC 'CODE'
+<a id='L392' name='L392'></a>ENDIF
+<a id='L393' name='L393'></a>_TEXT   ENDS
+<a id='L394' name='L394'></a>_DATA   SEGMENT WORD PUBLIC 'DATA'
+<a id='L395' name='L395'></a>_DATA   ENDS
+<a id='L396' name='L396'></a>IFDEF __BSS__
+<a id='L397' name='L397'></a>    IFNDEF  __HUGE__
+<a id='L398' name='L398'></a>        _BSS    SEGMENT WORD PUBLIC 'BSS'
+<a id='L399' name='L399'></a>        _BSS    ENDS
+<a id='L400' name='L400'></a>    ENDIF
+<a id='L401' name='L401'></a>ENDIF
+<a id='L402' name='L402'></a>
+<a id='L403' name='L403'></a>        ASSUME  CS:_TEXT, DS:DGROUP
+<a id='L404' name='L404'></a>        ENDM
+<a id='L405' name='L405'></a>
+<a id='L406' name='L406'></a>        PAGE
+<a id='L407' name='L407'></a>;[]------------------------------------------------------------[]
+<a id='L408' name='L408'></a>;|                                                              |
+<a id='L409' name='L409'></a>;|      C Naming Convention Macros                              |
+<a id='L410' name='L410'></a>;|                                                              |
+<a id='L411' name='L411'></a>;[]------------------------------------------------------------[]
+<a id='L412' name='L412'></a>
+<a id='L413' name='L413'></a>UNDERSCORE      EQU     1
+<a id='L414' name='L414'></a>
+<a id='L415' name='L415'></a>ExtSym@ MACRO   Sym, sType, sName
+<a id='L416' name='L416'></a>        IFNB    &lt;sName&gt;
+<a id='L417' name='L417'></a>        IFIDN   &lt;sName&gt;, &lt;__PASCAL__&gt;
+<a id='L418' name='L418'></a>NAMING      =       0
+<a id='L419' name='L419'></a>        ELSE
+<a id='L420' name='L420'></a>NAMING      =       UNDERSCORE
+<a id='L421' name='L421'></a>        ENDIF
+<a id='L422' name='L422'></a>        ENDIF
+<a id='L423' name='L423'></a>        IF      NAMING
+<a id='L424' name='L424'></a>        EXTRN   _&amp;Sym : sType
+<a id='L425' name='L425'></a>Sym&amp;@   equ     _&amp;Sym
+<a id='L426' name='L426'></a>        ELSE
+<a id='L427' name='L427'></a>        EXTRN   Sym : sType
+<a id='L428' name='L428'></a>Sym&amp;@   equ     Sym
+<a id='L429' name='L429'></a>        ENDIF
+<a id='L430' name='L430'></a>        ENDM
+<a id='L431' name='L431'></a>
+<a id='L432' name='L432'></a>PubSym@ MACRO   Sym, Definition, sName
+<a id='L433' name='L433'></a>        IFNB    &lt;sName&gt;
+<a id='L434' name='L434'></a>        IFIDN   &lt;sName&gt;, &lt;__PASCAL__&gt;
+<a id='L435' name='L435'></a>NAMING      =       0
+<a id='L436' name='L436'></a>        ELSE
+<a id='L437' name='L437'></a>NAMING      =       UNDERSCORE
+<a id='L438' name='L438'></a>        ENDIF
+<a id='L439' name='L439'></a>        ENDIF
+<a id='L440' name='L440'></a>        IF      NAMING
+<a id='L441' name='L441'></a>        PUBLIC  _&amp;Sym
+<a id='L442' name='L442'></a>_&amp;Sym   Definition
+<a id='L443' name='L443'></a>Sym&amp;@   equ     _&amp;Sym
+<a id='L444' name='L444'></a>        ELSE
+<a id='L445' name='L445'></a>        PUBLIC  Sym
+<a id='L446' name='L446'></a>Sym     Definition
+<a id='L447' name='L447'></a>Sym&amp;@   equ     Sym
+<a id='L448' name='L448'></a>        ENDIF
+<a id='L449' name='L449'></a>        ENDM
+<a id='L450' name='L450'></a>
+<a id='L451' name='L451'></a>Static@ MACRO   Sym, Definition, sName
+<a id='L452' name='L452'></a>        IFNB    &lt;sName&gt;
+<a id='L453' name='L453'></a>        IFIDN   &lt;sName&gt;, &lt;__PASCAL__&gt;
+<a id='L454' name='L454'></a>NAMING      =       0
+<a id='L455' name='L455'></a>        ELSE
+<a id='L456' name='L456'></a>NAMING      =       UNDERSCORE
+<a id='L457' name='L457'></a>        ENDIF
+<a id='L458' name='L458'></a>        ENDIF
+<a id='L459' name='L459'></a>        IF      NAMING
+<a id='L460' name='L460'></a>_&amp;Sym   Definition
+<a id='L461' name='L461'></a>Sym&amp;@   equ     _&amp;Sym
+<a id='L462' name='L462'></a>        ELSE
+<a id='L463' name='L463'></a>Sym     Definition
+<a id='L464' name='L464'></a>Sym&amp;@   equ     Sym
+<a id='L465' name='L465'></a>        ENDIF
+<a id='L466' name='L466'></a>        ENDM
+<a id='L467' name='L467'></a>
+<a id='L468' name='L468'></a>        PAGE
+<a id='L469' name='L469'></a>;[]------------------------------------------------------------[]
+<a id='L470' name='L470'></a>;|                                                              |
+<a id='L471' name='L471'></a>;|      Macros which are Data Size Dependent                    |
+<a id='L472' name='L472'></a>;|                                                              |
+<a id='L473' name='L473'></a>;[]------------------------------------------------------------[]
+<a id='L474' name='L474'></a>
+<a id='L475' name='L475'></a>IF      LDATA
+<a id='L476' name='L476'></a>DPTR_           equ     DWORD PTR
+<a id='L477' name='L477'></a>dPtrSize        equ     4
+<a id='L478' name='L478'></a>LES_            equ     LES
+<a id='L479' name='L479'></a>ES_             equ     ES:
+<a id='L480' name='L480'></a>SS_             equ     SS:
+<a id='L481' name='L481'></a>LDS_            equ     LDS
+<a id='L482' name='L482'></a>
+<a id='L483' name='L483'></a>pushDS_         MACRO
+<a id='L484' name='L484'></a>                PUSH    DS
+<a id='L485' name='L485'></a>                ENDM
+<a id='L486' name='L486'></a>
+<a id='L487' name='L487'></a>popDS_          MACRO
+<a id='L488' name='L488'></a>                POP    DS
+<a id='L489' name='L489'></a>                ENDM
+<a id='L490' name='L490'></a>
+<a id='L491' name='L491'></a>PushPtr         MACRO   dPtrOff, dPtrSeg
+<a id='L492' name='L492'></a>                PUSH    dPtrSeg
+<a id='L493' name='L493'></a>                PUSH    dPtrOff
+<a id='L494' name='L494'></a>                ENDM
+<a id='L495' name='L495'></a>
+<a id='L496' name='L496'></a>
+<a id='L497' name='L497'></a>dPtr@           MACRO   Sym, VALUE, sName       ;; Static Data pointer
+<a id='L498' name='L498'></a>Static@         Sym, &lt;DD        VALUE&gt;, sName
+<a id='L499' name='L499'></a>                ENDM
+<a id='L500' name='L500'></a>
+<a id='L501' name='L501'></a>dPtrPub@        MACRO   Sym, VALUE, sName       ;; Global Data Pointer
+<a id='L502' name='L502'></a>PubSym@         Sym, &lt;DD        VALUE&gt;, sName
+<a id='L503' name='L503'></a>                ENDM
+<a id='L504' name='L504'></a>
+<a id='L505' name='L505'></a>dPtrExt@        MACRO   Sym, sName      ;; External Data Pointer
+<a id='L506' name='L506'></a>ExtSym@         Sym, DWORD, sName
+<a id='L507' name='L507'></a>                ENDM
+<a id='L508' name='L508'></a>ELSE
+<a id='L509' name='L509'></a>DPTR_           equ     WORD PTR
+<a id='L510' name='L510'></a>dPtrSize        equ     2
+<a id='L511' name='L511'></a>LES_            equ     MOV
+<a id='L512' name='L512'></a>ES_             equ     DS:
+<a id='L513' name='L513'></a>SS_             equ     DS:
+<a id='L514' name='L514'></a>LDS_            equ     MOV
+<a id='L515' name='L515'></a>
+<a id='L516' name='L516'></a>pushDS_         MACRO
+<a id='L517' name='L517'></a>                ENDM
+<a id='L518' name='L518'></a>
+<a id='L519' name='L519'></a>popDS_          MACRO
+<a id='L520' name='L520'></a>                ENDM
+<a id='L521' name='L521'></a>
+<a id='L522' name='L522'></a>PushPtr         MACRO   dPtrOff, dPtrSeg
+<a id='L523' name='L523'></a>                PUSH    dPtrOff
+<a id='L524' name='L524'></a>                ENDM
+<a id='L525' name='L525'></a>
+<a id='L526' name='L526'></a>dPtr@           MACRO   Sym, VALUE, sName       ;; Static Data pointer
+<a id='L527' name='L527'></a>Static@         Sym, &lt;DW        VALUE&gt;, sName
+<a id='L528' name='L528'></a>                ENDM
+<a id='L529' name='L529'></a>
+<a id='L530' name='L530'></a>dPtrPub@        MACRO   Sym, VALUE, sName       ;; Global Data Pointer
+<a id='L531' name='L531'></a>PubSym@         Sym, &lt;DW        VALUE&gt;, sName
+<a id='L532' name='L532'></a>                ENDM
+<a id='L533' name='L533'></a>
+<a id='L534' name='L534'></a>dPtrExt@        MACRO   Sym, sName      ;; External Data Pointer
+<a id='L535' name='L535'></a>ExtSym@         Sym, WORD, sName
+<a id='L536' name='L536'></a>                ENDM
+<a id='L537' name='L537'></a>ENDIF
+<a id='L538' name='L538'></a>        PAGE
+<a id='L539' name='L539'></a>;[]------------------------------------------------------------[]
+<a id='L540' name='L540'></a>;|                                                              |
+<a id='L541' name='L541'></a>;|      Macros which are Code Size Dependent                    |
+<a id='L542' name='L542'></a>;|                                                              |
+<a id='L543' name='L543'></a>;[]------------------------------------------------------------[]
+<a id='L544' name='L544'></a>
+<a id='L545' name='L545'></a>IF      LPROG
+<a id='L546' name='L546'></a>CPTR_           equ     DWORD PTR
+<a id='L547' name='L547'></a>cPtrSize        equ     4
+<a id='L548' name='L548'></a>
+<a id='L549' name='L549'></a>Proc@           MACRO   Sym, sName      ;; Open a Static function
+<a id='L550' name='L550'></a>Static@         Sym, &lt;PROC      FAR&gt;, sName
+<a id='L551' name='L551'></a>                ENDM
+<a id='L552' name='L552'></a>
+<a id='L553' name='L553'></a>PubProc@        MACRO   Sym, sName      ;; Open a Public function
+<a id='L554' name='L554'></a>PubSym@         Sym, &lt;PROC      FAR&gt;, sName
+<a id='L555' name='L555'></a>                ENDM
+<a id='L556' name='L556'></a>
+<a id='L557' name='L557'></a>ExtProc@        MACRO   Sym, sName      ;; External Function
+<a id='L558' name='L558'></a>ExtSym@         Sym, FAR, sName
+<a id='L559' name='L559'></a>                ENDM
+<a id='L560' name='L560'></a>
+<a id='L561' name='L561'></a>cPtr@           MACRO   Sym, VALUE, sName       ;; Static Function pointer
+<a id='L562' name='L562'></a>Static@         Sym, &lt;DD        VALUE&gt;, sName
+<a id='L563' name='L563'></a>                ENDM
+<a id='L564' name='L564'></a>
+<a id='L565' name='L565'></a>cPtrPub@        MACRO   Sym, VALUE, sName;; Global Function Pointer
+<a id='L566' name='L566'></a>PubSym@         Sym, &lt;DD        VALUE&gt;, sName
+<a id='L567' name='L567'></a>                ENDM
+<a id='L568' name='L568'></a>
+<a id='L569' name='L569'></a>cPtrExt@        MACRO   Sym, sName      ;; External Function Pointer
+<a id='L570' name='L570'></a>ExtSym@         Sym, DWORD, sName
+<a id='L571' name='L571'></a>                ENDM
+<a id='L572' name='L572'></a>ELSE
+<a id='L573' name='L573'></a>CPTR_           equ     WORD PTR
+<a id='L574' name='L574'></a>cPtrSize        equ     2
+<a id='L575' name='L575'></a>
+<a id='L576' name='L576'></a>Proc@           MACRO   Sym, sName      ;; Open a Static function
+<a id='L577' name='L577'></a>Static@         Sym, &lt;PROC      NEAR&gt;, sName
+<a id='L578' name='L578'></a>                ENDM
+<a id='L579' name='L579'></a>
+<a id='L580' name='L580'></a>PubProc@        MACRO   Sym, sName      ;; Open a Public function
+<a id='L581' name='L581'></a>PubSym@         Sym, &lt;PROC      NEAR&gt;, sName
+<a id='L582' name='L582'></a>                ENDM
+<a id='L583' name='L583'></a>
+<a id='L584' name='L584'></a>ExtProc@        MACRO   Sym, sName      ;; External Function
+<a id='L585' name='L585'></a>ExtSym@         Sym, NEAR, sName
+<a id='L586' name='L586'></a>                ENDM
+<a id='L587' name='L587'></a>
+<a id='L588' name='L588'></a>cPtr@           MACRO   Sym, VALUE, sName       ;; Static Function pointer
+<a id='L589' name='L589'></a>Static@         Sym, &lt;DW        VALUE&gt;, sName
+<a id='L590' name='L590'></a>                ENDM
+<a id='L591' name='L591'></a>
+<a id='L592' name='L592'></a>cPtrPub@        MACRO   Sym, VALUE, sName       ;; Global Function Pointer
+<a id='L593' name='L593'></a>PubSym@         Sym, &lt;DW        VALUE&gt;, sName
+<a id='L594' name='L594'></a>                ENDM
+<a id='L595' name='L595'></a>
+<a id='L596' name='L596'></a>cPtrExt@        MACRO   Sym, sName      ;; External Function Pointer
+<a id='L597' name='L597'></a>ExtSym@         Sym, WORD, sName
+<a id='L598' name='L598'></a>                ENDM
+<a id='L599' name='L599'></a>ENDIF
+<a id='L600' name='L600'></a>
+<a id='L601' name='L601'></a>EndProc@        MACRO   Sym, sName      ;; Close a function
+<a id='L602' name='L602'></a>Static@         Sym, ENDP, sName
+<a id='L603' name='L603'></a>                ENDM
+<a id='L604' name='L604'></a>
+<a id='L605' name='L605'></a>        PAGE
+<a id='L606' name='L606'></a>;[]------------------------------------------------------------[]
+<a id='L607' name='L607'></a>;|                                                              |
+<a id='L608' name='L608'></a>;|      Miscellaneous Definitions                               |
+<a id='L609' name='L609'></a>;|                                                              |
+<a id='L610' name='L610'></a>;[]------------------------------------------------------------[]
+<a id='L611' name='L611'></a>
+<a id='L612' name='L612'></a>;*** Set up some macros for procedure parameters and export/import
+<a id='L613' name='L613'></a>
+<a id='L614' name='L614'></a>nearCall        STRUC
+<a id='L615' name='L615'></a>nearBP          dw      ?
+<a id='L616' name='L616'></a>nearIP          dw      ?
+<a id='L617' name='L617'></a>nearParam       dw      ?
+<a id='L618' name='L618'></a>nearCall        ENDS
+<a id='L619' name='L619'></a>
+<a id='L620' name='L620'></a>farCall         STRUC
+<a id='L621' name='L621'></a>farBP           dw      ?
+<a id='L622' name='L622'></a>farCSIP         dd      ?
+<a id='L623' name='L623'></a>aParam          dw      ?
+<a id='L624' name='L624'></a>farCall         ENDS
+<a id='L625' name='L625'></a>
+<a id='L626' name='L626'></a>;*** Next, we define some convenient structures to access the parts
+<a id='L627' name='L627'></a>;       of larger objects.
+<a id='L628' name='L628'></a>
+<a id='L629' name='L629'></a>_twoBytes       STRUC
+<a id='L630' name='L630'></a>BY0     db      ?
+<a id='L631' name='L631'></a>BY1     db      ?
+<a id='L632' name='L632'></a>_twoBytes       ENDS
+<a id='L633' name='L633'></a>
+<a id='L634' name='L634'></a>_fourWords      STRUC
+<a id='L635' name='L635'></a>W0      dw      ?
+<a id='L636' name='L636'></a>W1      dw      ?
+<a id='L637' name='L637'></a>W2      dw      ?
+<a id='L638' name='L638'></a>W3      dw      ?
+<a id='L639' name='L639'></a>_fourWords      ENDS
+<a id='L640' name='L640'></a>
+<a id='L641' name='L641'></a>_twoDwords      STRUC
+<a id='L642' name='L642'></a>DD0     dd      ?
+<a id='L643' name='L643'></a>DD1     dd      ?
+<a id='L644' name='L644'></a>_twoDwords      ENDS
+<a id='L645' name='L645'></a>
+<a id='L646' name='L646'></a>_aFloat         STRUC
+<a id='L647' name='L647'></a>double          dq      ?
+<a id='L648' name='L648'></a>_aFloat         ENDS
+<a id='L649' name='L649'></a>
+<a id='L650' name='L650'></a>; How to invoke MSDOS.
+<a id='L651' name='L651'></a>
+<a id='L652' name='L652'></a>MSDOS@  MACRO
+<a id='L653' name='L653'></a>        int     21h
+<a id='L654' name='L654'></a>        ENDM
+<a id='L655' name='L655'></a>        PAGE
+<a id='L656' name='L656'></a>
+<a id='L657' name='L657'></a>; The next section concerns the use of registers.  SI and DI are used
+<a id='L658' name='L658'></a>;       for register variables, and must be conserved.
+<a id='L659' name='L659'></a>
+<a id='L660' name='L660'></a>; Registers AX, BX, CX, DX will not be preserved across function calls.
+<a id='L661' name='L661'></a>
+<a id='L662' name='L662'></a>; Firstly, the registers to be conserved through function calls, including
+<a id='L663' name='L663'></a>;       the setup of local variables.
+<a id='L664' name='L664'></a>
+<a id='L665' name='L665'></a>link@   MACRO   _si,_di,_ES,locals
+<a id='L666' name='L666'></a>        push    bp
+<a id='L667' name='L667'></a>        mov     bp, sp
+<a id='L668' name='L668'></a>        IFNB    &lt;locals&gt;
+<a id='L669' name='L669'></a>                lea     sp, locals
+<a id='L670' name='L670'></a>        ENDIF
+<a id='L671' name='L671'></a>        IFNB    &lt;_si&gt;
+<a id='L672' name='L672'></a>                push    si
+<a id='L673' name='L673'></a>        ENDIF
+<a id='L674' name='L674'></a>        IFNB    &lt;_di&gt;
+<a id='L675' name='L675'></a>                push    di
+<a id='L676' name='L676'></a>        ENDIF
+<a id='L677' name='L677'></a>ENDM
+<a id='L678' name='L678'></a>
+<a id='L679' name='L679'></a>unLink@ MACRO   _si,_di,_ES,locals
+<a id='L680' name='L680'></a>        IFNB    &lt;_di&gt;
+<a id='L681' name='L681'></a>                pop     di
+<a id='L682' name='L682'></a>        ENDIF
+<a id='L683' name='L683'></a>        IFNB    &lt;_si&gt;
+<a id='L684' name='L684'></a>                pop     si
+<a id='L685' name='L685'></a>        ENDIF
+<a id='L686' name='L686'></a>        IFNB    &lt;locals&gt;
+<a id='L687' name='L687'></a>                mov     sp, bp
+<a id='L688' name='L688'></a>        ENDIF
+<a id='L689' name='L689'></a>        pop     bp
+<a id='L690' name='L690'></a>ENDM
+<a id='L691' name='L691'></a>
+<a id='L692' name='L692'></a>.LIST
+</pre>
+<hr />
+<a id='BOTTOM' name='BOTTOM'></a>
+<em class='comment'>/* <img class='icon' src='../icons/n_left.png' alt='[previous]' /><img class='icon' src='../icons/n_right.png' alt='[next]' /><img class='icon' src='../icons/n_first.png' alt='[first]' /><img class='icon' src='../icons/n_last.png' alt='[last]' /><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><img class='icon' src='../icons/n_bottom.png' alt='[bottom]' /><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+</body>
+</html>

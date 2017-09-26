@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<title>WOLFSRC/ID_HEADS.H</title>
+<meta name='robots' content='noindex,nofollow' />
+<meta name='generator' content='GLOBAL-6.5.7' />
+<meta http-equiv='Content-Style-Type' content='text/css' />
+<link rel='stylesheet' type='text/css' href='../style.css' />
+</head>
+<body>
+<a id='TOP' name='TOP'></a><h2 class='header'><a href='../mains.html'>root</a>/<a href='../files/100.html'>WOLFSRC</a>/ID_HEADS.H</h2>
+<em class='comment'>/* <img class='icon' src='../icons/n_left.png' alt='[previous]' /><img class='icon' src='../icons/n_right.png' alt='[next]' /><img class='icon' src='../icons/n_first.png' alt='[first]' /><img class='icon' src='../icons/n_last.png' alt='[last]' /><img class='icon' src='../icons/n_top.png' alt='[top]' /><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<hr />
+<h2 class='header'><a href='../J/35.html' title='Multiple included from 8 places.'>INCLUDED FROM</a></h2>
+<hr />
+<pre>
+<a id='L1' name='L1'></a><em class='comment'>// ID_GLOB.H</em>
+<a id='L2' name='L2'></a>
+<a id='L3' name='L3'></a>
+<a id='L4' name='L4'></a><em class='sharp'>#include</em> &lt;ALLOC.H&gt;
+<a id='L5' name='L5'></a><em class='sharp'>#include</em> &lt;CTYPE.H&gt;
+<a id='L6' name='L6'></a><em class='sharp'>#include</em> &lt;DOS.H&gt;
+<a id='L7' name='L7'></a><em class='sharp'>#include</em> &lt;ERRNO.H&gt;
+<a id='L8' name='L8'></a><em class='sharp'>#include</em> &lt;FCNTL.H&gt;
+<a id='L9' name='L9'></a><em class='sharp'>#include</em> &lt;IO.H&gt;
+<a id='L10' name='L10'></a><em class='sharp'>#include</em> &lt;MEM.H&gt;
+<a id='L11' name='L11'></a><em class='sharp'>#include</em> &lt;PROCESS.H&gt;
+<a id='L12' name='L12'></a><em class='sharp'>#include</em> &lt;STDIO.H&gt;
+<a id='L13' name='L13'></a><em class='sharp'>#include</em> &lt;STDLIB.H&gt;
+<a id='L14' name='L14'></a><em class='sharp'>#include</em> &lt;STRING.H&gt;
+<a id='L15' name='L15'></a><em class='sharp'>#include</em> &lt;SYS\STAT.H&gt;
+<a id='L16' name='L16'></a><em class='sharp'>#include</em> &lt;VALUES.H&gt;
+<a id='L17' name='L17'></a><em class='sharp'>#include</em> &lt;DIR.H&gt;
+<a id='L18' name='L18'></a><em class='sharp'>#define</em> __ID_GLOB__
+<a id='L19' name='L19'></a><em class='sharp'>#include</em> "<a href='35.html'>VERSION.H</a>"
+<a id='L20' name='L20'></a>
+<a id='L21' name='L21'></a><em class='comment'>//--------------------------------------------------------------------------</em>
+<a id='L22' name='L22'></a>
+<a id='L23' name='L23'></a><strong class='reserved'>extern</strong>  <strong class='reserved'>char</strong>            <a href='../cgi-bin/global.cgi?pattern=far&amp;type=symbol' title='Multiple used in 394 places.'>far</a> <a href='../cgi-bin/global.cgi?pattern=signon&amp;type=symbol' title='Multiple used in 2 places.'>signon</a>;
+<a id='L24' name='L24'></a>
+<a id='L25' name='L25'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=introscn&amp;type=reference' title='Multiple referred from 4 places.'>introscn</a>        <a href='../cgi-bin/global.cgi?pattern=signon&amp;type=symbol' title='Multiple used in 2 places.'>signon</a>
+<a id='L26' name='L26'></a>
+<a id='L27' name='L27'></a><em class='sharp'>#ifdef</em> <a href='../cgi-bin/global.cgi?pattern=JAPAN&amp;type=definitions' title='Multiple defined in 2 places.'>JAPAN</a>
+<a id='L28' name='L28'></a><em class='sharp'>#ifdef</em> <a href='../S/89.html#L3' title='Defined at 3 in WOLFSRC/WLFJ1VER.H.'>JAPDEMO</a>
+<a id='L29' name='L29'></a><em class='sharp'>#include</em> "FOREIGN\JAPAN\GFXV_WJ1.H"
+<a id='L30' name='L30'></a><em class='sharp'>#else</em>
+<a id='L31' name='L31'></a><em class='sharp'>#include</em> "FOREIGN\JAPAN\GFXV_WJ6.H"
+<a id='L32' name='L32'></a><em class='sharp'>#endif</em>
+<a id='L33' name='L33'></a><em class='sharp'>#include</em> "<a href='19.html'>AUDIOWL6.H</a>"
+<a id='L34' name='L34'></a><em class='sharp'>#include</em> "<a href='17.html'>MAPSWL6.H</a>"
+<a id='L35' name='L35'></a><em class='sharp'>#else</em>
+<a id='L36' name='L36'></a>
+<a id='L37' name='L37'></a><em class='sharp'>#ifndef</em> <a href='../cgi-bin/global.cgi?pattern=SPEAR&amp;type=definitions' title='Multiple defined in 2 places.'>SPEAR</a>
+<a id='L38' name='L38'></a>
+<a id='L39' name='L39'></a><em class='sharp'>#include</em> "<a href='96.html'>GFXV_WL6.H</a>"
+<a id='L40' name='L40'></a><em class='sharp'>#include</em> "<a href='19.html'>AUDIOWL6.H</a>"
+<a id='L41' name='L41'></a><em class='sharp'>#include</em> "<a href='17.html'>MAPSWL6.H</a>"
+<a id='L42' name='L42'></a>
+<a id='L43' name='L43'></a><em class='sharp'>#else</em>
+<a id='L44' name='L44'></a>
+<a id='L45' name='L45'></a><em class='sharp'>#ifndef</em> <a href='../S/33.html#L2' title='Defined at 2 in WOLFSRC/SDMVER.H.'>SPEARDEMO</a>
+<a id='L46' name='L46'></a><em class='sharp'>#include</em> "<a href='22.html'>GFXV_SOD.H</a>"
+<a id='L47' name='L47'></a><em class='sharp'>#include</em> "<a href='69.html'>AUDIOSOD.H</a>"
+<a id='L48' name='L48'></a><em class='sharp'>#include</em> "<a href='53.html'>MAPSSOD.H</a>"
+<a id='L49' name='L49'></a><em class='sharp'>#else</em>
+<a id='L50' name='L50'></a><em class='sharp'>#include</em> "<a href='12.html'>GFXV_SDM.H</a>"
+<a id='L51' name='L51'></a><em class='sharp'>#include</em> "<a href='38.html'>AUDIOSDM.H</a>"
+<a id='L52' name='L52'></a><em class='sharp'>#include</em> "<a href='21.html'>MAPSSDM.H</a>"
+<a id='L53' name='L53'></a><em class='sharp'>#endif</em>
+<a id='L54' name='L54'></a>
+<a id='L55' name='L55'></a><em class='sharp'>#endif</em>
+<a id='L56' name='L56'></a><em class='sharp'>#endif</em>
+<a id='L57' name='L57'></a><em class='comment'>//-----------------</em>
+<a id='L58' name='L58'></a>
+<a id='L59' name='L59'></a>
+<a id='L60' name='L60'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=GREXT&amp;type=reference' title='Multiple referred from 3 places.'>GREXT</a>   "VGA"
+<a id='L61' name='L61'></a>
+<a id='L62' name='L62'></a><em class='comment'>//</em>
+<a id='L63' name='L63'></a><em class='comment'>//      ID Engine</em>
+<a id='L64' name='L64'></a><em class='comment'>//      Types.h - Generic types, #defines, etc.</em>
+<a id='L65' name='L65'></a><em class='comment'>//      v1.0d1</em>
+<a id='L66' name='L66'></a><em class='comment'>//</em>
+<a id='L67' name='L67'></a>
+<a id='L68' name='L68'></a><strong class='reserved'>typedef</strong> <strong class='reserved'>enum</strong>    <em class='brace'>{</em><strong class='reserved'>false</strong>,<strong class='reserved'>true</strong><em class='brace'>}</em>    <a href='../cgi-bin/global.cgi?pattern=boolean&amp;type=reference' title='Multiple referred from 212 places.'>boolean</a>;
+<a id='L69' name='L69'></a><strong class='reserved'>typedef</strong> <strong class='reserved'>unsigned</strong>        <strong class='reserved'>char</strong>            <a href='../cgi-bin/global.cgi?pattern=byte&amp;type=reference' title='Multiple referred from 262 places.'>byte</a>;
+<a id='L70' name='L70'></a><strong class='reserved'>typedef</strong> <strong class='reserved'>unsigned</strong>        <strong class='reserved'>int</strong>                     <a href='../cgi-bin/global.cgi?pattern=word&amp;type=reference' title='Multiple referred from 143 places.'>word</a>;
+<a id='L71' name='L71'></a><strong class='reserved'>typedef</strong> <strong class='reserved'>unsigned</strong>        <strong class='reserved'>long</strong>            <a href='../cgi-bin/global.cgi?pattern=longword&amp;type=reference' title='Multiple referred from 43 places.'>longword</a>;
+<a id='L72' name='L72'></a><strong class='reserved'>typedef</strong> <a href='../cgi-bin/global.cgi?pattern=byte&amp;type=definitions' title='Multiple defined in 2 places.'>byte</a> *                                  Ptr;
+<a id='L73' name='L73'></a>
+<a id='L74' name='L74'></a><strong class='reserved'>typedef</strong> <strong class='reserved'>struct</strong>
+<a id='L75' name='L75'></a>                <em class='brace'>{</em>
+<a id='L76' name='L76'></a>                        <strong class='reserved'>int</strong>     <a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a>,<a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a>;
+<a id='L77' name='L77'></a>                <em class='brace'>}</em> <a href='../cgi-bin/global.cgi?pattern=Point&amp;type=reference' title='Multiple referred from 2 places.'>Point</a>;
+<a id='L78' name='L78'></a><strong class='reserved'>typedef</strong> <strong class='reserved'>struct</strong>
+<a id='L79' name='L79'></a>                <em class='brace'>{</em>
+<a id='L80' name='L80'></a>                        <a href='../cgi-bin/global.cgi?pattern=Point&amp;type=definitions' title='Multiple defined in 2 places.'>Point</a>   <a href='../cgi-bin/global.cgi?pattern=ul&amp;type=symbol' title='Multiple used in 10 places.'>ul</a>,<a href='../cgi-bin/global.cgi?pattern=lr&amp;type=symbol' title='Multiple used in 6 places.'>lr</a>;
+<a id='L81' name='L81'></a>                <em class='brace'>}</em> <a href='../cgi-bin/global.cgi?pattern=Rect&amp;type=reference' title='Multiple referred from 3 places.'>Rect</a>;
+<a id='L82' name='L82'></a>
+<a id='L83' name='L83'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=nil&amp;type=reference' title='Multiple referred from 20 places.'>nil</a>     ((<strong class='reserved'>void</strong> *)0)
+<a id='L84' name='L84'></a>
+<a id='L85' name='L85'></a>
+<a id='L86' name='L86'></a><em class='sharp'>#include</em> "<a href='39.html'>ID_MM.H</a>"
+<a id='L87' name='L87'></a><em class='sharp'>#include</em> "<a href='68.html'>ID_PM.H</a>"
+<a id='L88' name='L88'></a><em class='sharp'>#include</em> "<a href='36.html'>ID_CA.H</a>"
+<a id='L89' name='L89'></a><em class='sharp'>#include</em> "<a href='15.html'>ID_VL.H</a>"
+<a id='L90' name='L90'></a><em class='sharp'>#include</em> "<a href='61.html'>ID_VH.H</a>"
+<a id='L91' name='L91'></a><em class='sharp'>#include</em> "<a href='91.html'>ID_IN.H</a>"
+<a id='L92' name='L92'></a><em class='sharp'>#include</em> "<a href='83.html'>ID_SD.H</a>"
+<a id='L93' name='L93'></a><em class='sharp'>#include</em> "<a href='97.html'>ID_US.H</a>"
+<a id='L94' name='L94'></a>
+<a id='L95' name='L95'></a>
+<a id='L96' name='L96'></a><strong class='reserved'>void</strong>    <a href='../S/32.html#L1346' title='Defined at 1346 in WOLFSRC/WL_MAIN.C.'>Quit</a> (<strong class='reserved'>char</strong> *<a href='../cgi-bin/global.cgi?pattern=error&amp;type=symbol' title='Multiple used in 27 places.'>error</a>);             <em class='comment'>// defined in user program</em>
+<a id='L97' name='L97'></a>
+<a id='L98' name='L98'></a><em class='comment'>//</em>
+<a id='L99' name='L99'></a><em class='comment'>// replacing refresh manager with custom routines</em>
+<a id='L100' name='L100'></a><em class='comment'>//</em>
+<a id='L101' name='L101'></a>
+<a id='L102' name='L102'></a><em class='sharp'>#define</em> <a href='../S/20.html#L105' title='Referred from 105 in WOLFSRC/ID_HEADS.H.'>PORTTILESWIDE</a>           20      <em class='comment'>// all drawing takes place inside a</em>
+<a id='L103' name='L103'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=PORTTILESHIGH&amp;type=reference' title='Multiple referred from 2 places.'>PORTTILESHIGH</a>           13              <em class='comment'>// non displayed port of this size</em>
+<a id='L104' name='L104'></a>
+<a id='L105' name='L105'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=UPDATEWIDE&amp;type=reference' title='Multiple referred from 10 places.'>UPDATEWIDE</a>                      <a href='../S/20.html#L102' title='Defined at 102 in WOLFSRC/ID_HEADS.H.'>PORTTILESWIDE</a>
+<a id='L106' name='L106'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=UPDATEHIGH&amp;type=reference' title='Multiple referred from 10 places.'>UPDATEHIGH</a>                      <a href='../S/20.html#L103' title='Defined at 103 in WOLFSRC/ID_HEADS.H.'>PORTTILESHIGH</a>
+<a id='L107' name='L107'></a>
+<a id='L108' name='L108'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=MAXTICS&amp;type=reference' title='Multiple referred from 3 places.'>MAXTICS</a>                         10
+<a id='L109' name='L109'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=DEMOTICS&amp;type=reference' title='Multiple referred from 8 places.'>DEMOTICS</a>                        4
+<a id='L110' name='L110'></a>
+<a id='L111' name='L111'></a><em class='sharp'>#define</em> UPDATETERMINATE 0x0301
+<a id='L112' name='L112'></a>
+<a id='L113' name='L113'></a><strong class='reserved'>extern</strong>  <strong class='reserved'>unsigned</strong>        <a href='../cgi-bin/global.cgi?pattern=mapwidth&amp;type=symbol' title='Multiple used in 23 places.'>mapwidth</a>,<a href='../cgi-bin/global.cgi?pattern=mapheight&amp;type=symbol' title='Multiple used in 10 places.'>mapheight</a>,<a href='../cgi-bin/global.cgi?pattern=tics&amp;type=symbol' title='Multiple used in 76 places.'>tics</a>;
+<a id='L114' name='L114'></a><strong class='reserved'>extern</strong>  <a href='../cgi-bin/global.cgi?pattern=boolean&amp;type=definitions' title='Multiple defined in 2 places.'>boolean</a>         <a href='../cgi-bin/global.cgi?pattern=compatability&amp;type=symbol' title='Multiple used in 4 places.'>compatability</a>;
+<a id='L115' name='L115'></a>
+<a id='L116' name='L116'></a><strong class='reserved'>extern</strong>  <a href='../cgi-bin/global.cgi?pattern=byte&amp;type=definitions' title='Multiple defined in 2 places.'>byte</a>            *<a href='../cgi-bin/global.cgi?pattern=updateptr&amp;type=symbol' title='Multiple used in 4 places.'>updateptr</a>;
+<a id='L117' name='L117'></a><strong class='reserved'>extern</strong>  <strong class='reserved'>unsigned</strong>        <a href='../cgi-bin/global.cgi?pattern=uwidthtable&amp;type=symbol' title='Multiple used in 4 places.'>uwidthtable</a>[<a href='../S/20.html#L106' title='Defined at 106 in WOLFSRC/ID_HEADS.H.'>UPDATEHIGH</a>];
+<a id='L118' name='L118'></a><strong class='reserved'>extern</strong>  <strong class='reserved'>unsigned</strong>        <a href='../cgi-bin/global.cgi?pattern=blockstarts&amp;type=symbol' title='Multiple used in 3 places.'>blockstarts</a>[<a href='../S/20.html#L105' title='Defined at 105 in WOLFSRC/ID_HEADS.H.'>UPDATEWIDE</a>*<a href='../S/20.html#L106' title='Defined at 106 in WOLFSRC/ID_HEADS.H.'>UPDATEHIGH</a>];
+<a id='L119' name='L119'></a>
+<a id='L120' name='L120'></a><strong class='reserved'>extern</strong>  <a href='../cgi-bin/global.cgi?pattern=byte&amp;type=definitions' title='Multiple defined in 2 places.'>byte</a>            <a href='../cgi-bin/global.cgi?pattern=fontcolor&amp;type=symbol' title='Multiple used in 29 places.'>fontcolor</a>,<a href='../cgi-bin/global.cgi?pattern=backcolor&amp;type=symbol' title='Multiple used in 11 places.'>backcolor</a>;
+<a id='L121' name='L121'></a>
+<a id='L122' name='L122'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=SETFONTCOLOR&amp;type=reference' title='Multiple referred from 65 places.'>SETFONTCOLOR</a>(<a href='../cgi-bin/global.cgi?pattern=f&amp;type=symbol' title='Multiple used in 14 places.'>f</a>,<a href='../cgi-bin/global.cgi?pattern=b&amp;type=symbol' title='Multiple used in 12 places.'>b</a>) <a href='../cgi-bin/global.cgi?pattern=fontcolor&amp;type=symbol' title='Multiple used in 29 places.'>fontcolor</a>=<a href='../cgi-bin/global.cgi?pattern=f&amp;type=symbol' title='Multiple used in 14 places.'>f</a>;<a href='../cgi-bin/global.cgi?pattern=backcolor&amp;type=symbol' title='Multiple used in 11 places.'>backcolor</a>=<a href='../cgi-bin/global.cgi?pattern=b&amp;type=symbol' title='Multiple used in 12 places.'>b</a>;
+<a id='L123' name='L123'></a>
+</pre>
+<hr />
+<a id='BOTTOM' name='BOTTOM'></a>
+<em class='comment'>/* <img class='icon' src='../icons/n_left.png' alt='[previous]' /><img class='icon' src='../icons/n_right.png' alt='[next]' /><img class='icon' src='../icons/n_first.png' alt='[first]' /><img class='icon' src='../icons/n_last.png' alt='[last]' /><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><img class='icon' src='../icons/n_bottom.png' alt='[bottom]' /><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+</body>
+</html>

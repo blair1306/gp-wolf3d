@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<title>WOLFSRC/H_LDIV.ASM</title>
+<meta name='robots' content='noindex,nofollow' />
+<meta name='generator' content='GLOBAL-6.5.7' />
+<meta http-equiv='Content-Style-Type' content='text/css' />
+<link rel='stylesheet' type='text/css' href='../style.css' />
+</head>
+<body>
+<a id='TOP' name='TOP'></a><h2 class='header'><a href='../mains.html'>root</a>/<a href='../files/100.html'>WOLFSRC</a>/H_LDIV.ASM</h2>
+<em class='comment'>/* <img class='icon' src='../icons/n_left.png' alt='[previous]' /><img class='icon' src='../icons/n_right.png' alt='[next]' /><img class='icon' src='../icons/n_first.png' alt='[first]' /><img class='icon' src='../icons/n_last.png' alt='[last]' /><img class='icon' src='../icons/n_top.png' alt='[top]' /><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<hr />
+<pre>
+<a id='L1' name='L1'></a>;[]-----------------------------------------------------------------[]
+<a id='L2' name='L2'></a>;|      H_LDIV.ASM -- long division routine                          |
+<a id='L3' name='L3'></a>;|                                                                   |
+<a id='L4' name='L4'></a>;|      C/C++ Run Time Library        Version 4.0                    |
+<a id='L5' name='L5'></a>;|                                                                   |
+<a id='L6' name='L6'></a>;|      Copyright (c) 1987, 1991 by Borland International Inc.       |
+<a id='L7' name='L7'></a>;|      All Rights Reserved.                                         |
+<a id='L8' name='L8'></a>;[]-----------------------------------------------------------------[]
+<a id='L9' name='L9'></a>.model medium
+<a id='L10' name='L10'></a>        INCLUDE RULES.ASI
+<a id='L11' name='L11'></a>.386C   ;JAB - we use 386 instructions
+<a id='L12' name='L12'></a>
+<a id='L13' name='L13'></a>_TEXT   segment public byte 'CODE'
+<a id='L14' name='L14'></a>        assume  cs:_TEXT
+<a id='L15' name='L15'></a>        public  LDIV@
+<a id='L16' name='L16'></a>        public  F_LDIV@
+<a id='L17' name='L17'></a>        public  N_LDIV@
+<a id='L18' name='L18'></a>        public  LUDIV@
+<a id='L19' name='L19'></a>        public  F_LUDIV@
+<a id='L20' name='L20'></a>                public  N_LUDIV@
+<a id='L21' name='L21'></a>        public  LMOD@
+<a id='L22' name='L22'></a>        public  F_LMOD@
+<a id='L23' name='L23'></a>                public  N_LMOD@
+<a id='L24' name='L24'></a>        public  LUMOD@
+<a id='L25' name='L25'></a>        public  F_LUMOD@
+<a id='L26' name='L26'></a>                public  N_LUMOD@
+<a id='L27' name='L27'></a>
+<a id='L28' name='L28'></a>N_LDIV@:
+<a id='L29' name='L29'></a>                pop     cx                      ;fix up far return
+<a id='L30' name='L30'></a>                push    cs
+<a id='L31' name='L31'></a>                push    cx
+<a id='L32' name='L32'></a>LDIV@:
+<a id='L33' name='L33'></a>F_LDIV@:
+<a id='L34' name='L34'></a>        xor     cx,cx                   ; signed divide
+<a id='L35' name='L35'></a>        jmp     short common
+<a id='L36' name='L36'></a>
+<a id='L37' name='L37'></a>;       JAB
+<a id='L38' name='L38'></a>;
+<a id='L39' name='L39'></a>;       If we're using a 386 or better, the two instructions above get patched
+<a id='L40' name='L40'></a>;               to be NOP's (4 of them). So, instead of using the looping code,
+<a id='L41' name='L41'></a>;               we use the 386's long divide instruction.
+<a id='L42' name='L42'></a>;
+<a id='L43' name='L43'></a>;       The stack after setting up the stack frame:
+<a id='L44' name='L44'></a>;               12[bp]: divisor (high word)
+<a id='L45' name='L45'></a>;               10[bp]: divisor (low word)
+<a id='L46' name='L46'></a>;                8[bp]: dividend (high word)
+<a id='L47' name='L47'></a>;                6[bp]: dividend (low word)
+<a id='L48' name='L48'></a>;                4[bp]: return CS
+<a id='L49' name='L49'></a>;                2[bp]: return IP
+<a id='L50' name='L50'></a>;                0[bp]: previous BP
+<a id='L51' name='L51'></a>;
+<a id='L52' name='L52'></a>        IDEAL
+<a id='L53' name='L53'></a>
+<a id='L54' name='L54'></a>        push bp
+<a id='L55' name='L55'></a>        mov     bp,sp   ;Save BP, and set it equal to stack
+<a id='L56' name='L56'></a>
+<a id='L57' name='L57'></a>        mov     eax,[DWORD PTR bp+6]
+<a id='L58' name='L58'></a>        cdq
+<a id='L59' name='L59'></a>        idiv [DWORD PTR bp+10]
+<a id='L60' name='L60'></a>        mov     edx,eax
+<a id='L61' name='L61'></a>        shr     edx,16
+<a id='L62' name='L62'></a>
+<a id='L63' name='L63'></a>        pop     bp              ;Restore BP
+<a id='L64' name='L64'></a>        retf    8       ;Return to original caller
+<a id='L65' name='L65'></a>
+<a id='L66' name='L66'></a>        MASM
+<a id='L67' name='L67'></a>
+<a id='L68' name='L68'></a>N_LUDIV@:
+<a id='L69' name='L69'></a>                pop     cx                      ;fix up far return
+<a id='L70' name='L70'></a>                push    cs
+<a id='L71' name='L71'></a>                push    cx
+<a id='L72' name='L72'></a>LUDIV@:
+<a id='L73' name='L73'></a>F_LUDIV@:
+<a id='L74' name='L74'></a>        mov     cx,1                    ; unsigned divide
+<a id='L75' name='L75'></a>        jmp     short common
+<a id='L76' name='L76'></a>
+<a id='L77' name='L77'></a>N_LMOD@:
+<a id='L78' name='L78'></a>                pop     cx                      ;fix up far return
+<a id='L79' name='L79'></a>                push    cs
+<a id='L80' name='L80'></a>                push    cx
+<a id='L81' name='L81'></a>LMOD@:
+<a id='L82' name='L82'></a>F_LMOD@:
+<a id='L83' name='L83'></a>        mov     cx,2                    ; signed remainder
+<a id='L84' name='L84'></a>        jmp     short   common
+<a id='L85' name='L85'></a>
+<a id='L86' name='L86'></a>N_LUMOD@:
+<a id='L87' name='L87'></a>                pop     cx                      ;fix up far return
+<a id='L88' name='L88'></a>                push    cs
+<a id='L89' name='L89'></a>                push    cx
+<a id='L90' name='L90'></a>LUMOD@:
+<a id='L91' name='L91'></a>F_LUMOD@:
+<a id='L92' name='L92'></a>        mov     cx,3                    ; unsigned remainder
+<a id='L93' name='L93'></a>
+<a id='L94' name='L94'></a>;
+<a id='L95' name='L95'></a>;       di now contains a two bit control value.  The low order
+<a id='L96' name='L96'></a>;       bit (test mask of 1) is on if the operation is unsigned,
+<a id='L97' name='L97'></a>;       signed otherwise.  The next bit (test mask of 2) is on if
+<a id='L98' name='L98'></a>;       the operation returns the remainder, quotient otherwise.
+<a id='L99' name='L99'></a>;
+<a id='L100' name='L100'></a>common:
+<a id='L101' name='L101'></a>        push    bp
+<a id='L102' name='L102'></a>        push    si
+<a id='L103' name='L103'></a>        push    di
+<a id='L104' name='L104'></a>        mov     bp,sp                   ; set up frame
+<a id='L105' name='L105'></a>        mov     di,cx
+<a id='L106' name='L106'></a>;
+<a id='L107' name='L107'></a>;       dividend is pushed last, therefore the first in the args
+<a id='L108' name='L108'></a>;       divisor next.
+<a id='L109' name='L109'></a>;
+<a id='L110' name='L110'></a>        mov     ax,10[bp]               ; get the first low word
+<a id='L111' name='L111'></a>        mov     dx,12[bp]               ; get the first high word
+<a id='L112' name='L112'></a>        mov     bx,14[bp]               ; get the second low word
+<a id='L113' name='L113'></a>        mov     cx,16[bp]               ; get the second high word
+<a id='L114' name='L114'></a>
+<a id='L115' name='L115'></a>        or      cx,cx
+<a id='L116' name='L116'></a>        jnz     slow@ldiv               ; both high words are zero
+<a id='L117' name='L117'></a>
+<a id='L118' name='L118'></a>        or      dx,dx
+<a id='L119' name='L119'></a>        jz      quick@ldiv
+<a id='L120' name='L120'></a>
+<a id='L121' name='L121'></a>        or      bx,bx
+<a id='L122' name='L122'></a>        jz      quick@ldiv              ; if cx:bx == 0 force a zero divide
+<a id='L123' name='L123'></a>                                        ; we don't expect this to actually
+<a id='L124' name='L124'></a>                                        ; work
+<a id='L125' name='L125'></a>
+<a id='L126' name='L126'></a>slow@ldiv:
+<a id='L127' name='L127'></a>
+<a id='L128' name='L128'></a>        test    di,1                    ; signed divide?
+<a id='L129' name='L129'></a>        jnz     positive                ; no: skip
+<a id='L130' name='L130'></a>;
+<a id='L131' name='L131'></a>;               Signed division should be done.  Convert negative
+<a id='L132' name='L132'></a>;               values to positive and do an unsigned division.
+<a id='L133' name='L133'></a>;               Store the sign value in the next higher bit of
+<a id='L134' name='L134'></a>;               di (test mask of 4).  Thus when we are done, testing
+<a id='L135' name='L135'></a>;               that bit will determine the sign of the result.
+<a id='L136' name='L136'></a>;
+<a id='L137' name='L137'></a>        or      dx,dx                   ; test sign of dividend
+<a id='L138' name='L138'></a>        jns     onepos
+<a id='L139' name='L139'></a>        neg     dx
+<a id='L140' name='L140'></a>        neg     ax
+<a id='L141' name='L141'></a>        sbb     dx,0                    ; negate dividend
+<a id='L142' name='L142'></a>        or      di,0Ch
+<a id='L143' name='L143'></a>onepos:
+<a id='L144' name='L144'></a>        or      cx,cx                   ; test sign of divisor
+<a id='L145' name='L145'></a>        jns     positive
+<a id='L146' name='L146'></a>        neg     cx
+<a id='L147' name='L147'></a>        neg     bx
+<a id='L148' name='L148'></a>        sbb     cx,0                    ; negate divisor
+<a id='L149' name='L149'></a>        xor     di,4
+<a id='L150' name='L150'></a>positive:
+<a id='L151' name='L151'></a>        mov     bp,cx
+<a id='L152' name='L152'></a>        mov     cx,32                   ; shift counter
+<a id='L153' name='L153'></a>        push    di                      ; save the flags
+<a id='L154' name='L154'></a>;
+<a id='L155' name='L155'></a>;       Now the stack looks something like this:
+<a id='L156' name='L156'></a>;
+<a id='L157' name='L157'></a>;               16[bp]: divisor (high word)
+<a id='L158' name='L158'></a>;               14[bp]: divisor (low word)
+<a id='L159' name='L159'></a>;               12[bp]: dividend (high word)
+<a id='L160' name='L160'></a>;               10[bp]: dividend (low word)
+<a id='L161' name='L161'></a>;                8[bp]: return CS
+<a id='L162' name='L162'></a>;                6[bp]: return IP
+<a id='L163' name='L163'></a>;                4[bp]: previous BP
+<a id='L164' name='L164'></a>;                2[bp]: previous SI
+<a id='L165' name='L165'></a>;                 [bp]: previous DI
+<a id='L166' name='L166'></a>;               -2[bp]: control bits
+<a id='L167' name='L167'></a>;                       01 - Unsigned divide
+<a id='L168' name='L168'></a>;                       02 - Remainder wanted
+<a id='L169' name='L169'></a>;                       04 - Negative quotient
+<a id='L170' name='L170'></a>;                       08 - Negative remainder
+<a id='L171' name='L171'></a>;
+<a id='L172' name='L172'></a>        xor     di,di                   ; fake a 64 bit dividend
+<a id='L173' name='L173'></a>        xor     si,si                   ;
+<a id='L174' name='L174'></a>xloop:
+<a id='L175' name='L175'></a>        shl     ax,1                    ; shift dividend left one bit
+<a id='L176' name='L176'></a>        rcl     dx,1
+<a id='L177' name='L177'></a>        rcl     si,1
+<a id='L178' name='L178'></a>        rcl     di,1
+<a id='L179' name='L179'></a>        cmp     di,bp                   ; dividend larger?
+<a id='L180' name='L180'></a>        jb      nosub
+<a id='L181' name='L181'></a>        ja      subtract
+<a id='L182' name='L182'></a>        cmp     si,bx                   ; maybe
+<a id='L183' name='L183'></a>        jb      nosub
+<a id='L184' name='L184'></a>subtract:
+<a id='L185' name='L185'></a>        sub     si,bx
+<a id='L186' name='L186'></a>        sbb     di,bp                   ; subtract the divisor
+<a id='L187' name='L187'></a>        inc     ax                      ; build quotient
+<a id='L188' name='L188'></a>nosub:
+<a id='L189' name='L189'></a>        loop    xloop
+<a id='L190' name='L190'></a>;
+<a id='L191' name='L191'></a>;       When done with the loop the four register value look like:
+<a id='L192' name='L192'></a>;
+<a id='L193' name='L193'></a>;       |     di     |     si     |     dx     |     ax     |
+<a id='L194' name='L194'></a>;       |        remainder        |         quotient        |
+<a id='L195' name='L195'></a>;
+<a id='L196' name='L196'></a>        pop     bx                      ; get control bits
+<a id='L197' name='L197'></a>        test    bx,2                    ; remainder?
+<a id='L198' name='L198'></a>        jz      usequo
+<a id='L199' name='L199'></a>        mov     ax,si
+<a id='L200' name='L200'></a>        mov     dx,di                   ; use remainder
+<a id='L201' name='L201'></a>        shr     bx,1                    ; shift in the remainder sign bit
+<a id='L202' name='L202'></a>usequo:
+<a id='L203' name='L203'></a>        test    bx,4                    ; needs negative
+<a id='L204' name='L204'></a>        jz      finish
+<a id='L205' name='L205'></a>        neg     dx
+<a id='L206' name='L206'></a>        neg     ax
+<a id='L207' name='L207'></a>        sbb     dx,0                    ; negate
+<a id='L208' name='L208'></a>finish:
+<a id='L209' name='L209'></a>        pop     di
+<a id='L210' name='L210'></a>        pop     si
+<a id='L211' name='L211'></a>        pop     bp
+<a id='L212' name='L212'></a>        retf    8
+<a id='L213' name='L213'></a>
+<a id='L214' name='L214'></a>quick@ldiv:
+<a id='L215' name='L215'></a>        div     bx                      ; unsigned divide
+<a id='L216' name='L216'></a>                                        ; DX = remainder AX = quotient
+<a id='L217' name='L217'></a>        test    di,2                    ; want remainder?
+<a id='L218' name='L218'></a>        jz      quick@quo
+<a id='L219' name='L219'></a>                xchg    ax,dx
+<a id='L220' name='L220'></a>
+<a id='L221' name='L221'></a>quick@quo:
+<a id='L222' name='L222'></a>
+<a id='L223' name='L223'></a>        xor     dx,dx
+<a id='L224' name='L224'></a>                jmp     short finish
+<a id='L225' name='L225'></a>
+<a id='L226' name='L226'></a>_TEXT   ends
+<a id='L227' name='L227'></a>        end
+</pre>
+<hr />
+<a id='BOTTOM' name='BOTTOM'></a>
+<em class='comment'>/* <img class='icon' src='../icons/n_left.png' alt='[previous]' /><img class='icon' src='../icons/n_right.png' alt='[next]' /><img class='icon' src='../icons/n_first.png' alt='[first]' /><img class='icon' src='../icons/n_last.png' alt='[last]' /><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><img class='icon' src='../icons/n_bottom.png' alt='[bottom]' /><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+</body>
+</html>

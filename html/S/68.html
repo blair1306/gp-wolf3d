@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<title>WOLFSRC/ID_PM.H</title>
+<meta name='robots' content='noindex,nofollow' />
+<meta name='generator' content='GLOBAL-6.5.7' />
+<meta http-equiv='Content-Style-Type' content='text/css' />
+<link rel='stylesheet' type='text/css' href='../style.css' />
+</head>
+<body>
+<a id='TOP' name='TOP'></a><h2 class='header'><a href='../mains.html'>root</a>/<a href='../files/100.html'>WOLFSRC</a>/ID_PM.H</h2>
+<em class='comment'>/* <img class='icon' src='../icons/n_left.png' alt='[previous]' /><img class='icon' src='../icons/n_right.png' alt='[next]' /><img class='icon' src='../icons/n_first.png' alt='[first]' /><img class='icon' src='../icons/n_last.png' alt='[last]' /><img class='icon' src='../icons/n_top.png' alt='[top]' /><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<hr />
+<h2 class='header'><a href='20.html#L87' title='Included from 87 in WOLFSRC/ID_HEADS.H.'>INCLUDED FROM</a></h2>
+<hr />
+<pre>
+<a id='L1' name='L1'></a><em class='comment'>//</em>
+<a id='L2' name='L2'></a><em class='comment'>//      ID_PM.H</em>
+<a id='L3' name='L3'></a><em class='comment'>//      Header file for Id Engine's Page Manager</em>
+<a id='L4' name='L4'></a><em class='comment'>//</em>
+<a id='L5' name='L5'></a>
+<a id='L6' name='L6'></a><em class='comment'>//      NOTE! PMPageSize must be an even divisor of EMSPageSize, and &gt;= 1024</em>
+<a id='L7' name='L7'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=EMSPageSize&amp;type=reference' title='Multiple referred from 8 places.'>EMSPageSize</a>             16384
+<a id='L8' name='L8'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=EMSPageSizeSeg&amp;type=reference' title='Multiple referred from 2 places.'>EMSPageSizeSeg</a>  (<a href='../S/68.html#L7' title='Defined at 7 in WOLFSRC/ID_PM.H.'>EMSPageSize</a> &gt;&gt; 4)
+<a id='L9' name='L9'></a><em class='sharp'>#define</em> <a href='../S/65.html#L1121' title='Referred from 1121 in WOLFSRC/ID_PM.C.'>EMSPageSizeKB</a>   (<a href='../S/68.html#L7' title='Defined at 7 in WOLFSRC/ID_PM.H.'>EMSPageSize</a> &gt;&gt; 10)
+<a id='L10' name='L10'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=EMSFrameCount&amp;type=reference' title='Multiple referred from 4 places.'>EMSFrameCount</a>   4
+<a id='L11' name='L11'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=PMPageSize&amp;type=reference' title='Multiple referred from 18 places.'>PMPageSize</a>              4096
+<a id='L12' name='L12'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=PMPageSizeSeg&amp;type=reference' title='Multiple referred from 2 places.'>PMPageSizeSeg</a>   (<a href='../S/68.html#L11' title='Defined at 11 in WOLFSRC/ID_PM.H.'>PMPageSize</a> &gt;&gt; 4)
+<a id='L13' name='L13'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=PMPageSizeKB&amp;type=reference' title='Multiple referred from 4 places.'>PMPageSizeKB</a>    (<a href='../S/68.html#L11' title='Defined at 11 in WOLFSRC/ID_PM.H.'>PMPageSize</a> &gt;&gt; 10)
+<a id='L14' name='L14'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=PMEMSSubPage&amp;type=reference' title='Multiple referred from 4 places.'>PMEMSSubPage</a>    (<a href='../S/68.html#L7' title='Defined at 7 in WOLFSRC/ID_PM.H.'>EMSPageSize</a> / <a href='../S/68.html#L11' title='Defined at 11 in WOLFSRC/ID_PM.H.'>PMPageSize</a>)
+<a id='L15' name='L15'></a>
+<a id='L16' name='L16'></a><em class='sharp'>#define</em> <a href='../S/65.html#L438' title='Referred from 438 in WOLFSRC/ID_PM.C.'>PMMinMainMem</a>    10                      <em class='comment'>// Min acceptable # of pages from main</em>
+<a id='L17' name='L17'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=PMMaxMainMem&amp;type=reference' title='Multiple referred from 7 places.'>PMMaxMainMem</a>    100                     <em class='comment'>// Max number of pages in main memory</em>
+<a id='L18' name='L18'></a>
+<a id='L19' name='L19'></a><em class='sharp'>#define</em> <a href='../S/65.html#L1105' title='Referred from 1105 in WOLFSRC/ID_PM.C.'>PMThrashThreshold</a>       1       <em class='comment'>// Number of page thrashes before panic mode</em>
+<a id='L20' name='L20'></a><em class='sharp'>#define</em> <a href='../S/65.html#L1106' title='Referred from 1106 in WOLFSRC/ID_PM.C.'>PMUnThrashThreshold</a>     5       <em class='comment'>// Number of non-thrashing frames before leaving panic mode</em>
+<a id='L21' name='L21'></a>
+<a id='L22' name='L22'></a><strong class='reserved'>typedef</strong> <strong class='reserved'>enum</strong>
+<a id='L23' name='L23'></a>                <em class='brace'>{</em>
+<a id='L24' name='L24'></a>                        <a href='../cgi-bin/global.cgi?pattern=pml_Unlocked&amp;type=reference' title='Multiple referred from 4 places.'>pml_Unlocked</a>,
+<a id='L25' name='L25'></a>                        <a href='../S/34.html#L1010' title='Referred from 1010 in WOLFSRC/ID_SD.C.'>pml_Locked</a>
+<a id='L26' name='L26'></a>                <em class='brace'>}</em> <a href='../cgi-bin/global.cgi?pattern=PMLockType&amp;type=reference' title='Multiple referred from 5 places.'>PMLockType</a>;
+<a id='L27' name='L27'></a>
+<a id='L28' name='L28'></a><strong class='reserved'>typedef</strong> <strong class='reserved'>enum</strong>
+<a id='L29' name='L29'></a>                <em class='brace'>{</em>
+<a id='L30' name='L30'></a>                        pmba_Unused = 0,
+<a id='L31' name='L31'></a>                        <a href='../cgi-bin/global.cgi?pattern=pmba_Used&amp;type=reference' title='Multiple referred from 4 places.'>pmba_Used</a> = 1,
+<a id='L32' name='L32'></a>                        <a href='../cgi-bin/global.cgi?pattern=pmba_Allocated&amp;type=reference' title='Multiple referred from 5 places.'>pmba_Allocated</a> = 2
+<a id='L33' name='L33'></a>                <em class='brace'>}</em> <a href='../cgi-bin/global.cgi?pattern=PMBlockAttr&amp;type=reference' title='Multiple referred from 3 places.'>PMBlockAttr</a>;
+<a id='L34' name='L34'></a>
+<a id='L35' name='L35'></a><strong class='reserved'>typedef</strong> <strong class='reserved'>struct</strong>
+<a id='L36' name='L36'></a>                <em class='brace'>{</em>
+<a id='L37' name='L37'></a>                        <a href='../cgi-bin/global.cgi?pattern=longword&amp;type=definitions' title='Multiple defined in 2 places.'>longword</a>        <a href='../cgi-bin/global.cgi?pattern=offset&amp;type=symbol' title='Multiple used in 40 places.'>offset</a>;         <em class='comment'>// Offset of chunk into file</em>
+<a id='L38' name='L38'></a>                        <a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a>            <a href='../cgi-bin/global.cgi?pattern=length&amp;type=symbol' title='Multiple used in 120 places.'>length</a>;         <em class='comment'>// Length of the chunk</em>
+<a id='L39' name='L39'></a>
+<a id='L40' name='L40'></a>                        <strong class='reserved'>int</strong>                     <a href='../cgi-bin/global.cgi?pattern=xmsPage&amp;type=symbol' title='Multiple used in 16 places.'>xmsPage</a>;        <em class='comment'>// If in XMS, (xmsPage * PMPageSize) gives offset into XMS handle</em>
+<a id='L41' name='L41'></a>
+<a id='L42' name='L42'></a>                        <a href='../S/68.html#L26' title='Defined at 26 in WOLFSRC/ID_PM.H.'>PMLockType</a>      <a href='../cgi-bin/global.cgi?pattern=locked&amp;type=symbol' title='Multiple used in 12 places.'>locked</a>;         <em class='comment'>// If set, this page can't be purged</em>
+<a id='L43' name='L43'></a>                        <strong class='reserved'>int</strong>                     <a href='../cgi-bin/global.cgi?pattern=emsPage&amp;type=symbol' title='Multiple used in 14 places.'>emsPage</a>;        <em class='comment'>// If in EMS, logical page/offset into page</em>
+<a id='L44' name='L44'></a>                        <strong class='reserved'>int</strong>                     <a href='../cgi-bin/global.cgi?pattern=mainPage&amp;type=symbol' title='Multiple used in 17 places.'>mainPage</a>;       <em class='comment'>// If in Main, index into handle array</em>
+<a id='L45' name='L45'></a>
+<a id='L46' name='L46'></a>                        <a href='../cgi-bin/global.cgi?pattern=longword&amp;type=definitions' title='Multiple defined in 2 places.'>longword</a>        <a href='../cgi-bin/global.cgi?pattern=lastHit&amp;type=symbol' title='Multiple used in 13 places.'>lastHit</a>;        <em class='comment'>// Last frame number of hit</em>
+<a id='L47' name='L47'></a>                <em class='brace'>}</em> <a href='../cgi-bin/global.cgi?pattern=PageListStruct&amp;type=reference' title='Multiple referred from 18 places.'>PageListStruct</a>;
+<a id='L48' name='L48'></a>
+<a id='L49' name='L49'></a><strong class='reserved'>typedef</strong> <strong class='reserved'>struct</strong>
+<a id='L50' name='L50'></a>                <em class='brace'>{</em>
+<a id='L51' name='L51'></a>                        <strong class='reserved'>int</strong>                     <a href='../cgi-bin/global.cgi?pattern=baseEMSPage&amp;type=symbol' title='Multiple used in 4 places.'>baseEMSPage</a>;    <em class='comment'>// Base EMS page for this phys frame</em>
+<a id='L52' name='L52'></a>                        <a href='../cgi-bin/global.cgi?pattern=longword&amp;type=definitions' title='Multiple defined in 2 places.'>longword</a>        <a href='../cgi-bin/global.cgi?pattern=lastHit&amp;type=symbol' title='Multiple used in 13 places.'>lastHit</a>;                <em class='comment'>// Last frame number of hit</em>
+<a id='L53' name='L53'></a>                <em class='brace'>}</em> <a href='../S/65.html#L20' title='Referred from 20 in WOLFSRC/ID_PM.C.'>EMSListStruct</a>;
+<a id='L54' name='L54'></a>
+<a id='L55' name='L55'></a><strong class='reserved'>extern</strong>  <a href='../cgi-bin/global.cgi?pattern=boolean&amp;type=definitions' title='Multiple defined in 2 places.'>boolean</a>                 <a href='../cgi-bin/global.cgi?pattern=XMSPresent&amp;type=symbol' title='Multiple used in 9 places.'>XMSPresent</a>,<a href='../cgi-bin/global.cgi?pattern=EMSPresent&amp;type=symbol' title='Multiple used in 8 places.'>EMSPresent</a>;
+<a id='L56' name='L56'></a><strong class='reserved'>extern</strong>  <a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a>                    <a href='../cgi-bin/global.cgi?pattern=XMSPagesAvail&amp;type=symbol' title='Multiple used in 7 places.'>XMSPagesAvail</a>,<a href='../cgi-bin/global.cgi?pattern=EMSPagesAvail&amp;type=symbol' title='Multiple used in 6 places.'>EMSPagesAvail</a>;
+<a id='L57' name='L57'></a>
+<a id='L58' name='L58'></a><strong class='reserved'>extern</strong>  <a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a>                    <a href='../cgi-bin/global.cgi?pattern=ChunksInFile&amp;type=symbol' title='Multiple used in 24 places.'>ChunksInFile</a>,
+<a id='L59' name='L59'></a>                                                <a href='../cgi-bin/global.cgi?pattern=PMSpriteStart&amp;type=symbol' title='Multiple used in 9 places.'>PMSpriteStart</a>,<a href='../cgi-bin/global.cgi?pattern=PMSoundStart&amp;type=symbol' title='Multiple used in 16 places.'>PMSoundStart</a>;
+<a id='L60' name='L60'></a><strong class='reserved'>extern</strong>  <a href='../S/68.html#L47' title='Defined at 47 in WOLFSRC/ID_PM.H.'>PageListStruct</a>  <a href='../cgi-bin/global.cgi?pattern=far&amp;type=symbol' title='Multiple used in 394 places.'>far</a> *<a href='../cgi-bin/global.cgi?pattern=PMPages&amp;type=symbol' title='Multiple used in 35 places.'>PMPages</a>;
+<a id='L61' name='L61'></a>
+<a id='L62' name='L62'></a><em class='sharp'>#define</em> <a href='../S/34.html#L1009' title='Referred from 1009 in WOLFSRC/ID_SD.C.'>PM_GetSoundPage</a>(<a href='../cgi-bin/global.cgi?pattern=v&amp;type=symbol' title='Multiple used in 14 places.'>v</a>)      <a href='../S/65.html#L877' title='Defined at 877 in WOLFSRC/ID_PM.C.'>PM_GetPage</a>(<a href='../cgi-bin/global.cgi?pattern=PMSoundStart&amp;type=symbol' title='Multiple used in 16 places.'>PMSoundStart</a> + (<a href='../cgi-bin/global.cgi?pattern=v&amp;type=symbol' title='Multiple used in 14 places.'>v</a>))
+<a id='L63' name='L63'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=PM_GetSpritePage&amp;type=reference' title='Multiple referred from 6 places.'>PM_GetSpritePage</a>(<a href='../cgi-bin/global.cgi?pattern=v&amp;type=symbol' title='Multiple used in 14 places.'>v</a>)     <a href='../S/65.html#L877' title='Defined at 877 in WOLFSRC/ID_PM.C.'>PM_GetPage</a>(<a href='../cgi-bin/global.cgi?pattern=PMSpriteStart&amp;type=symbol' title='Multiple used in 9 places.'>PMSpriteStart</a> + (<a href='../cgi-bin/global.cgi?pattern=v&amp;type=symbol' title='Multiple used in 14 places.'>v</a>))
+<a id='L64' name='L64'></a>
+<a id='L65' name='L65'></a><em class='sharp'>#define</em> <a href='../S/65.html#L375' title='Referred from 375 in WOLFSRC/ID_PM.C.'>PM_LockMainMem</a>()        <a href='../S/65.html#L327' title='Defined at 327 in WOLFSRC/ID_PM.C.'>PM_SetMainMemPurge</a>(0)
+<a id='L66' name='L66'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=PM_UnlockMainMem&amp;type=reference' title='Multiple referred from 5 places.'>PM_UnlockMainMem</a>()      <a href='../S/65.html#L327' title='Defined at 327 in WOLFSRC/ID_PM.C.'>PM_SetMainMemPurge</a>(3)
+<a id='L67' name='L67'></a>
+<a id='L68' name='L68'></a>
+<a id='L69' name='L69'></a><strong class='reserved'>extern</strong>  <strong class='reserved'>char</strong>    <a href='../cgi-bin/global.cgi?pattern=PageFileName&amp;type=symbol' title='Multiple used in 5 places.'>PageFileName</a>[13];
+<a id='L70' name='L70'></a>
+<a id='L71' name='L71'></a>
+<a id='L72' name='L72'></a><strong class='reserved'>extern</strong>  <strong class='reserved'>void</strong>    <a href='../S/65.html#L1142' title='Defined at 1142 in WOLFSRC/ID_PM.C.'>PM_Startup</a>(<strong class='reserved'>void</strong>),
+<a id='L73' name='L73'></a>                                <a href='../S/65.html#L1188' title='Defined at 1188 in WOLFSRC/ID_PM.C.'>PM_Shutdown</a>(<strong class='reserved'>void</strong>),
+<a id='L74' name='L74'></a>                                <a href='../S/65.html#L1114' title='Defined at 1114 in WOLFSRC/ID_PM.C.'>PM_Reset</a>(<strong class='reserved'>void</strong>),
+<a id='L75' name='L75'></a>                                <a href='../S/65.html#L948' title='Defined at 948 in WOLFSRC/ID_PM.C.'>PM_Preload</a>(<a href='../cgi-bin/global.cgi?pattern=boolean&amp;type=definitions' title='Multiple defined in 2 places.'>boolean</a> (*<a href='../cgi-bin/global.cgi?pattern=update&amp;type=symbol' title='Multiple used in 10 places.'>update</a>)(<a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a> <a href='../cgi-bin/global.cgi?pattern=current&amp;type=symbol' title='Multiple used in 10 places.'>current</a>,<a href='../cgi-bin/global.cgi?pattern=word&amp;type=definitions' title='Multiple defined in 2 places.'>word</a> <a href='../cgi-bin/global.cgi?pattern=total&amp;type=symbol' title='Multiple used in 14 places.'>total</a>)),
+<a id='L76' name='L76'></a>                                <a href='../S/65.html#L1073' title='Defined at 1073 in WOLFSRC/ID_PM.C.'>PM_NextFrame</a>(<strong class='reserved'>void</strong>),
+<a id='L77' name='L77'></a>                                <a href='../S/65.html#L934' title='Defined at 934 in WOLFSRC/ID_PM.C.'>PM_SetPageLock</a>(<strong class='reserved'>int</strong> <a href='../cgi-bin/global.cgi?pattern=pagenum&amp;type=symbol' title='Multiple used in 44 places.'>pagenum</a>,<a href='../S/68.html#L26' title='Defined at 26 in WOLFSRC/ID_PM.H.'>PMLockType</a> <a href='../cgi-bin/global.cgi?pattern=lock&amp;type=symbol' title='Multiple used in 20 places.'>lock</a>),
+<a id='L78' name='L78'></a>                                PM_SetMainPurge(<strong class='reserved'>int</strong> <a href='../cgi-bin/global.cgi?pattern=level&amp;type=symbol' title='Multiple used in 29 places.'>level</a>),
+<a id='L79' name='L79'></a>                                <a href='../S/65.html#L350' title='Defined at 350 in WOLFSRC/ID_PM.C.'>PM_CheckMainMem</a>(<strong class='reserved'>void</strong>);
+<a id='L80' name='L80'></a><strong class='reserved'>extern</strong>  <a href='../S/39.html#L58' title='Defined at 58 in WOLFSRC/ID_MM.H.'>memptr</a>  <a href='../S/65.html#L628' title='Defined at 628 in WOLFSRC/ID_PM.C.'>PM_GetPageAddress</a>(<strong class='reserved'>int</strong> <a href='../cgi-bin/global.cgi?pattern=pagenum&amp;type=symbol' title='Multiple used in 44 places.'>pagenum</a>),
+<a id='L81' name='L81'></a>                                <a href='../S/65.html#L877' title='Defined at 877 in WOLFSRC/ID_PM.C.'>PM_GetPage</a>(<strong class='reserved'>int</strong> <a href='../cgi-bin/global.cgi?pattern=pagenum&amp;type=symbol' title='Multiple used in 44 places.'>pagenum</a>);                <em class='comment'>// Use this one to cache page</em>
+<a id='L82' name='L82'></a>
+<a id='L83' name='L83'></a><strong class='reserved'>void</strong> <a href='../S/65.html#L327' title='Defined at 327 in WOLFSRC/ID_PM.C.'>PM_SetMainMemPurge</a>(<strong class='reserved'>int</strong> <a href='../cgi-bin/global.cgi?pattern=level&amp;type=symbol' title='Multiple used in 29 places.'>level</a>);
+</pre>
+<hr />
+<a id='BOTTOM' name='BOTTOM'></a>
+<em class='comment'>/* <img class='icon' src='../icons/n_left.png' alt='[previous]' /><img class='icon' src='../icons/n_right.png' alt='[next]' /><img class='icon' src='../icons/n_first.png' alt='[first]' /><img class='icon' src='../icons/n_last.png' alt='[last]' /><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><img class='icon' src='../icons/n_bottom.png' alt='[bottom]' /><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+</body>
+</html>

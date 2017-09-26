@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<title>WOLFSRC/BUDIOWL6.H</title>
+<meta name='robots' content='noindex,nofollow' />
+<meta name='generator' content='GLOBAL-6.5.7' />
+<meta http-equiv='Content-Style-Type' content='text/css' />
+<link rel='stylesheet' type='text/css' href='../style.css' />
+</head>
+<body>
+<a id='TOP' name='TOP'></a><h2 class='header'><a href='../mains.html'>root</a>/<a href='../files/100.html'>WOLFSRC</a>/BUDIOWL6.H</h2>
+<em class='comment'>/* <img class='icon' src='../icons/n_left.png' alt='[previous]' /><img class='icon' src='../icons/n_right.png' alt='[next]' /><img class='icon' src='../icons/n_first.png' alt='[first]' /><img class='icon' src='../icons/n_last.png' alt='[last]' /><img class='icon' src='../icons/n_top.png' alt='[top]' /><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<hr />
+<pre>
+<a id='L1' name='L1'></a><em class='comment'>/////////////////////////////////////////////////</em>
+<a id='L2' name='L2'></a><em class='comment'>//</em>
+<a id='L3' name='L3'></a><em class='comment'>// MUSE Header for .WL6</em>
+<a id='L4' name='L4'></a><em class='comment'>// Created Sat May 30 18:41:31 1992</em>
+<a id='L5' name='L5'></a><em class='comment'>//</em>
+<a id='L6' name='L6'></a><em class='comment'>/////////////////////////////////////////////////</em>
+<a id='L7' name='L7'></a>
+<a id='L8' name='L8'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=NUMSOUNDS&amp;type=reference' title='Multiple referred from 4 places.'>NUMSOUNDS</a>               87
+<a id='L9' name='L9'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=NUMSNDCHUNKS&amp;type=reference' title='Multiple referred from 3 places.'>NUMSNDCHUNKS</a>            288
+<a id='L10' name='L10'></a>
+<a id='L11' name='L11'></a><em class='comment'>//</em>
+<a id='L12' name='L12'></a><em class='comment'>// Sound names &amp; indexes</em>
+<a id='L13' name='L13'></a><em class='comment'>//</em>
+<a id='L14' name='L14'></a><strong class='reserved'>typedef</strong> <strong class='reserved'>enum</strong> <em class='brace'>{</em>
+<a id='L15' name='L15'></a>                <a href='../cgi-bin/global.cgi?pattern=HITWALLSND&amp;type=reference' title='Multiple referred from 4 places.'>HITWALLSND</a>,              <em class='comment'>// 0</em>
+<a id='L16' name='L16'></a>                SELECTWPNSND,            <em class='comment'>// 1</em>
+<a id='L17' name='L17'></a>                SELECTITEMSND,           <em class='comment'>// 2</em>
+<a id='L18' name='L18'></a>                HEARTBEATSND,            <em class='comment'>// 3</em>
+<a id='L19' name='L19'></a>                <a href='../S/77.html#L3397' title='Referred from 3397 in WOLFSRC/WL_MENU.C.'>MOVEGUN2SND</a>,             <em class='comment'>// 4</em>
+<a id='L20' name='L20'></a>                <a href='../cgi-bin/global.cgi?pattern=MOVEGUN1SND&amp;type=reference' title='Multiple referred from 5 places.'>MOVEGUN1SND</a>,             <em class='comment'>// 5</em>
+<a id='L21' name='L21'></a>                <a href='../cgi-bin/global.cgi?pattern=NOWAYSND&amp;type=reference' title='Multiple referred from 7 places.'>NOWAYSND</a>,                <em class='comment'>// 6</em>
+<a id='L22' name='L22'></a>                NAZIHITPLAYERSND,        <em class='comment'>// 7</em>
+<a id='L23' name='L23'></a>                <a href='../cgi-bin/global.cgi?pattern=SCHABBSTHROWSND&amp;type=reference' title='Multiple referred from 2 places.'>SCHABBSTHROWSND</a>,         <em class='comment'>// 8</em>
+<a id='L24' name='L24'></a>                <a href='../S/40.html#L1121' title='Referred from 1121 in WOLFSRC/WL_GAME.C.'>PLAYERDEATHSND</a>,          <em class='comment'>// 9</em>
+<a id='L25' name='L25'></a>                <a href='../cgi-bin/global.cgi?pattern=DOGDEATHSND&amp;type=reference' title='Multiple referred from 3 places.'>DOGDEATHSND</a>,             <em class='comment'>// 10</em>
+<a id='L26' name='L26'></a>                <a href='../cgi-bin/global.cgi?pattern=ATKGATLINGSND&amp;type=reference' title='Multiple referred from 3 places.'>ATKGATLINGSND</a>,           <em class='comment'>// 11</em>
+<a id='L27' name='L27'></a>                <a href='../S/27.html#L684' title='Referred from 684 in WOLFSRC/WL_AGENT.C.'>GETKEYSND</a>,               <em class='comment'>// 12</em>
+<a id='L28' name='L28'></a>                NOITEMSND,               <em class='comment'>// 13</em>
+<a id='L29' name='L29'></a>                WALK1SND,                <em class='comment'>// 14</em>
+<a id='L30' name='L30'></a>                WALK2SND,                <em class='comment'>// 15</em>
+<a id='L31' name='L31'></a>                <a href='../cgi-bin/global.cgi?pattern=TAKEDAMAGESND&amp;type=reference' title='Multiple referred from 2 places.'>TAKEDAMAGESND</a>,           <em class='comment'>// 16</em>
+<a id='L32' name='L32'></a>                GAMEOVERSND,             <em class='comment'>// 17</em>
+<a id='L33' name='L33'></a>                <a href='../cgi-bin/global.cgi?pattern=OPENDOORSND&amp;type=reference' title='Multiple referred from 3 places.'>OPENDOORSND</a>,             <em class='comment'>// 18</em>
+<a id='L34' name='L34'></a>                <a href='../cgi-bin/global.cgi?pattern=CLOSEDOORSND&amp;type=reference' title='Multiple referred from 3 places.'>CLOSEDOORSND</a>,            <em class='comment'>// 19</em>
+<a id='L35' name='L35'></a>                <a href='../S/27.html#L1078' title='Referred from 1078 in WOLFSRC/WL_AGENT.C.'>DONOTHINGSND</a>,            <em class='comment'>// 20</em>
+<a id='L36' name='L36'></a>                <a href='../cgi-bin/global.cgi?pattern=HALTSND&amp;type=reference' title='Multiple referred from 3 places.'>HALTSND</a>,                 <em class='comment'>// 21</em>
+<a id='L37' name='L37'></a>                <a href='../cgi-bin/global.cgi?pattern=DEATHSCREAM2SND&amp;type=reference' title='Multiple referred from 3 places.'>DEATHSCREAM2SND</a>,         <em class='comment'>// 22</em>
+<a id='L38' name='L38'></a>                <a href='../S/27.html#L1138' title='Referred from 1138 in WOLFSRC/WL_AGENT.C.'>ATKKNIFESND</a>,             <em class='comment'>// 23</em>
+<a id='L39' name='L39'></a>                <a href='../cgi-bin/global.cgi?pattern=ATKPISTOLSND&amp;type=reference' title='Multiple referred from 3 places.'>ATKPISTOLSND</a>,            <em class='comment'>// 24</em>
+<a id='L40' name='L40'></a>                <a href='../cgi-bin/global.cgi?pattern=DEATHSCREAM3SND&amp;type=reference' title='Multiple referred from 3 places.'>DEATHSCREAM3SND</a>,         <em class='comment'>// 25</em>
+<a id='L41' name='L41'></a>                <a href='../cgi-bin/global.cgi?pattern=ATKMACHINEGUNSND&amp;type=reference' title='Multiple referred from 3 places.'>ATKMACHINEGUNSND</a>,        <em class='comment'>// 26</em>
+<a id='L42' name='L42'></a>                HITENEMYSND,             <em class='comment'>// 27</em>
+<a id='L43' name='L43'></a>                <a href='../cgi-bin/global.cgi?pattern=SHOOTDOORSND&amp;type=reference' title='Multiple referred from 2 places.'>SHOOTDOORSND</a>,            <em class='comment'>// 28</em>
+<a id='L44' name='L44'></a>                <a href='../cgi-bin/global.cgi?pattern=DEATHSCREAM1SND&amp;type=reference' title='Multiple referred from 3 places.'>DEATHSCREAM1SND</a>,         <em class='comment'>// 29</em>
+<a id='L45' name='L45'></a>                <a href='../S/27.html#L734' title='Referred from 734 in WOLFSRC/WL_AGENT.C.'>GETMACHINESND</a>,           <em class='comment'>// 30</em>
+<a id='L46' name='L46'></a>                <a href='../cgi-bin/global.cgi?pattern=GETAMMOSND&amp;type=reference' title='Multiple referred from 2 places.'>GETAMMOSND</a>,              <em class='comment'>// 31</em>
+<a id='L47' name='L47'></a>                <a href='../cgi-bin/global.cgi?pattern=SHOOTSND&amp;type=reference' title='Multiple referred from 7 places.'>SHOOTSND</a>,                <em class='comment'>// 32</em>
+<a id='L48' name='L48'></a>                <a href='../cgi-bin/global.cgi?pattern=HEALTH1SND&amp;type=reference' title='Multiple referred from 2 places.'>HEALTH1SND</a>,              <em class='comment'>// 33</em>
+<a id='L49' name='L49'></a>                <a href='../S/27.html#L675' title='Referred from 675 in WOLFSRC/WL_AGENT.C.'>HEALTH2SND</a>,              <em class='comment'>// 34</em>
+<a id='L50' name='L50'></a>                <a href='../S/27.html#L688' title='Referred from 688 in WOLFSRC/WL_AGENT.C.'>BONUS1SND</a>,               <em class='comment'>// 35</em>
+<a id='L51' name='L51'></a>                <a href='../S/27.html#L693' title='Referred from 693 in WOLFSRC/WL_AGENT.C.'>BONUS2SND</a>,               <em class='comment'>// 36</em>
+<a id='L52' name='L52'></a>                <a href='../S/27.html#L698' title='Referred from 698 in WOLFSRC/WL_AGENT.C.'>BONUS3SND</a>,               <em class='comment'>// 37</em>
+<a id='L53' name='L53'></a>                <a href='../cgi-bin/global.cgi?pattern=GETGATLINGSND&amp;type=reference' title='Multiple referred from 3 places.'>GETGATLINGSND</a>,           <em class='comment'>// 38</em>
+<a id='L54' name='L54'></a>                <a href='../cgi-bin/global.cgi?pattern=ESCPRESSEDSND&amp;type=reference' title='Multiple referred from 7 places.'>ESCPRESSEDSND</a>,           <em class='comment'>// 39</em>
+<a id='L55' name='L55'></a>                <a href='../cgi-bin/global.cgi?pattern=LEVELDONESND&amp;type=reference' title='Multiple referred from 3 places.'>LEVELDONESND</a>,            <em class='comment'>// 40</em>
+<a id='L56' name='L56'></a>                <a href='../cgi-bin/global.cgi?pattern=DOGBARKSND&amp;type=reference' title='Multiple referred from 3 places.'>DOGBARKSND</a>,              <em class='comment'>// 41</em>
+<a id='L57' name='L57'></a>                <a href='../cgi-bin/global.cgi?pattern=ENDBONUS1SND&amp;type=reference' title='Multiple referred from 4 places.'>ENDBONUS1SND</a>,            <em class='comment'>// 42</em>
+<a id='L58' name='L58'></a>                <a href='../cgi-bin/global.cgi?pattern=ENDBONUS2SND&amp;type=reference' title='Multiple referred from 5 places.'>ENDBONUS2SND</a>,            <em class='comment'>// 43</em>
+<a id='L59' name='L59'></a>                <a href='../cgi-bin/global.cgi?pattern=BONUS1UPSND&amp;type=reference' title='Multiple referred from 5 places.'>BONUS1UPSND</a>,             <em class='comment'>// 44</em>
+<a id='L60' name='L60'></a>                <a href='../S/27.html#L703' title='Referred from 703 in WOLFSRC/WL_AGENT.C.'>BONUS4SND</a>,               <em class='comment'>// 45</em>
+<a id='L61' name='L61'></a>                <a href='../cgi-bin/global.cgi?pattern=PUSHWALLSND&amp;type=reference' title='Multiple referred from 3 places.'>PUSHWALLSND</a>,             <em class='comment'>// 46</em>
+<a id='L62' name='L62'></a>                <a href='../cgi-bin/global.cgi?pattern=NOBONUSSND&amp;type=reference' title='Multiple referred from 4 places.'>NOBONUSSND</a>,              <em class='comment'>// 47</em>
+<a id='L63' name='L63'></a>                <a href='../cgi-bin/global.cgi?pattern=PERCENT100SND&amp;type=reference' title='Multiple referred from 3 places.'>PERCENT100SND</a>,           <em class='comment'>// 48</em>
+<a id='L64' name='L64'></a>                BOSSACTIVESND,           <em class='comment'>// 49</em>
+<a id='L65' name='L65'></a>                <a href='../cgi-bin/global.cgi?pattern=MUTTISND&amp;type=reference' title='Multiple referred from 2 places.'>MUTTISND</a>,                <em class='comment'>// 50</em>
+<a id='L66' name='L66'></a>                <a href='../cgi-bin/global.cgi?pattern=SCHUTZADSND&amp;type=reference' title='Multiple referred from 3 places.'>SCHUTZADSND</a>,             <em class='comment'>// 51</em>
+<a id='L67' name='L67'></a>                <a href='../cgi-bin/global.cgi?pattern=AHHHGSND&amp;type=reference' title='Multiple referred from 3 places.'>AHHHGSND</a>,                <em class='comment'>// 52</em>
+<a id='L68' name='L68'></a>                <a href='../cgi-bin/global.cgi?pattern=DIESND&amp;type=reference' title='Multiple referred from 3 places.'>DIESND</a>,                  <em class='comment'>// 53</em>
+<a id='L69' name='L69'></a>                <a href='../cgi-bin/global.cgi?pattern=EVASND&amp;type=reference' title='Multiple referred from 2 places.'>EVASND</a>,                  <em class='comment'>// 54</em>
+<a id='L70' name='L70'></a>                <a href='../cgi-bin/global.cgi?pattern=GUTENTAGSND&amp;type=reference' title='Multiple referred from 2 places.'>GUTENTAGSND</a>,             <em class='comment'>// 55</em>
+<a id='L71' name='L71'></a>                <a href='../cgi-bin/global.cgi?pattern=LEBENSND&amp;type=reference' title='Multiple referred from 3 places.'>LEBENSND</a>,                <em class='comment'>// 56</em>
+<a id='L72' name='L72'></a>                <a href='../cgi-bin/global.cgi?pattern=SCHEISTSND&amp;type=reference' title='Multiple referred from 2 places.'>SCHEISTSND</a>,              <em class='comment'>// 57</em>
+<a id='L73' name='L73'></a>                <a href='../cgi-bin/global.cgi?pattern=NAZIFIRESND&amp;type=reference' title='Multiple referred from 3 places.'>NAZIFIRESND</a>,             <em class='comment'>// 58</em>
+<a id='L74' name='L74'></a>                <a href='../cgi-bin/global.cgi?pattern=BOSSFIRESND&amp;type=reference' title='Multiple referred from 3 places.'>BOSSFIRESND</a>,             <em class='comment'>// 59</em>
+<a id='L75' name='L75'></a>                <a href='../cgi-bin/global.cgi?pattern=SSFIRESND&amp;type=reference' title='Multiple referred from 3 places.'>SSFIRESND</a>,               <em class='comment'>// 60</em>
+<a id='L76' name='L76'></a>                <a href='../cgi-bin/global.cgi?pattern=SLURPIESND&amp;type=reference' title='Multiple referred from 5 places.'>SLURPIESND</a>,              <em class='comment'>// 61</em>
+<a id='L77' name='L77'></a>                <a href='../cgi-bin/global.cgi?pattern=TOT_HUNDSND&amp;type=reference' title='Multiple referred from 2 places.'>TOT_HUNDSND</a>,             <em class='comment'>// 62</em>
+<a id='L78' name='L78'></a>                <a href='../cgi-bin/global.cgi?pattern=MEINGOTTSND&amp;type=reference' title='Multiple referred from 2 places.'>MEINGOTTSND</a>,             <em class='comment'>// 63</em>
+<a id='L79' name='L79'></a>                <a href='../cgi-bin/global.cgi?pattern=SCHABBSHASND&amp;type=reference' title='Multiple referred from 2 places.'>SCHABBSHASND</a>,            <em class='comment'>// 64</em>
+<a id='L80' name='L80'></a>                <a href='../cgi-bin/global.cgi?pattern=HITLERHASND&amp;type=reference' title='Multiple referred from 2 places.'>HITLERHASND</a>,             <em class='comment'>// 65</em>
+<a id='L81' name='L81'></a>                <a href='../cgi-bin/global.cgi?pattern=SPIONSND&amp;type=reference' title='Multiple referred from 3 places.'>SPIONSND</a>,                <em class='comment'>// 66</em>
+<a id='L82' name='L82'></a>                <a href='../cgi-bin/global.cgi?pattern=NEINSOVASSND&amp;type=reference' title='Multiple referred from 3 places.'>NEINSOVASSND</a>,            <em class='comment'>// 67</em>
+<a id='L83' name='L83'></a>                <a href='../cgi-bin/global.cgi?pattern=DOGATTACKSND&amp;type=reference' title='Multiple referred from 3 places.'>DOGATTACKSND</a>,            <em class='comment'>// 68</em>
+<a id='L84' name='L84'></a>                <a href='../cgi-bin/global.cgi?pattern=FLAMETHROWERSND&amp;type=reference' title='Multiple referred from 2 places.'>FLAMETHROWERSND</a>,         <em class='comment'>// 69</em>
+<a id='L85' name='L85'></a>                <a href='../cgi-bin/global.cgi?pattern=MECHSTEPSND&amp;type=reference' title='Multiple referred from 2 places.'>MECHSTEPSND</a>,             <em class='comment'>// 70</em>
+<a id='L86' name='L86'></a>                GOOBSSND,                <em class='comment'>// 71</em>
+<a id='L87' name='L87'></a>                <a href='../cgi-bin/global.cgi?pattern=YEAHSND&amp;type=reference' title='Multiple referred from 2 places.'>YEAHSND</a>,                 <em class='comment'>// 72</em>
+<a id='L88' name='L88'></a>                <a href='../cgi-bin/global.cgi?pattern=DEATHSCREAM4SND&amp;type=reference' title='Multiple referred from 3 places.'>DEATHSCREAM4SND</a>,         <em class='comment'>// 73</em>
+<a id='L89' name='L89'></a>                <a href='../cgi-bin/global.cgi?pattern=DEATHSCREAM5SND&amp;type=reference' title='Multiple referred from 3 places.'>DEATHSCREAM5SND</a>,         <em class='comment'>// 74</em>
+<a id='L90' name='L90'></a>                <a href='../cgi-bin/global.cgi?pattern=DEATHSCREAM6SND&amp;type=reference' title='Multiple referred from 3 places.'>DEATHSCREAM6SND</a>,         <em class='comment'>// 75</em>
+<a id='L91' name='L91'></a>                <a href='../cgi-bin/global.cgi?pattern=DEATHSCREAM7SND&amp;type=reference' title='Multiple referred from 3 places.'>DEATHSCREAM7SND</a>,         <em class='comment'>// 76</em>
+<a id='L92' name='L92'></a>                <a href='../cgi-bin/global.cgi?pattern=DEATHSCREAM8SND&amp;type=reference' title='Multiple referred from 3 places.'>DEATHSCREAM8SND</a>,         <em class='comment'>// 77</em>
+<a id='L93' name='L93'></a>                <a href='../cgi-bin/global.cgi?pattern=DEATHSCREAM9SND&amp;type=reference' title='Multiple referred from 3 places.'>DEATHSCREAM9SND</a>,         <em class='comment'>// 78</em>
+<a id='L94' name='L94'></a>                <a href='../cgi-bin/global.cgi?pattern=DONNERSND&amp;type=reference' title='Multiple referred from 2 places.'>DONNERSND</a>,               <em class='comment'>// 79</em>
+<a id='L95' name='L95'></a>                <a href='../cgi-bin/global.cgi?pattern=EINESND&amp;type=reference' title='Multiple referred from 2 places.'>EINESND</a>,                 <em class='comment'>// 80</em>
+<a id='L96' name='L96'></a>                <a href='../cgi-bin/global.cgi?pattern=ERLAUBENSND&amp;type=reference' title='Multiple referred from 2 places.'>ERLAUBENSND</a>,             <em class='comment'>// 81</em>
+<a id='L97' name='L97'></a>                <a href='../cgi-bin/global.cgi?pattern=KEINSND&amp;type=reference' title='Multiple referred from 2 places.'>KEINSND</a>,                 <em class='comment'>// 82</em>
+<a id='L98' name='L98'></a>                <a href='../cgi-bin/global.cgi?pattern=MEINSND&amp;type=reference' title='Multiple referred from 2 places.'>MEINSND</a>,                 <em class='comment'>// 83</em>
+<a id='L99' name='L99'></a>                <a href='../cgi-bin/global.cgi?pattern=ROSESND&amp;type=reference' title='Multiple referred from 2 places.'>ROSESND</a>,                 <em class='comment'>// 84</em>
+<a id='L100' name='L100'></a>                <a href='../cgi-bin/global.cgi?pattern=MISSILEFIRESND&amp;type=reference' title='Multiple referred from 3 places.'>MISSILEFIRESND</a>,          <em class='comment'>// 85</em>
+<a id='L101' name='L101'></a>                <a href='../cgi-bin/global.cgi?pattern=MISSILEHITSND&amp;type=reference' title='Multiple referred from 2 places.'>MISSILEHITSND</a>,           <em class='comment'>// 86</em>
+<a id='L102' name='L102'></a>                <a href='../cgi-bin/global.cgi?pattern=LASTSOUND&amp;type=reference' title='Multiple referred from 4 places.'>LASTSOUND</a>
+<a id='L103' name='L103'></a>             <em class='brace'>}</em> <a href='../cgi-bin/global.cgi?pattern=soundnames&amp;type=reference' title='Multiple referred from 3 places.'>soundnames</a>;
+<a id='L104' name='L104'></a>
+<a id='L105' name='L105'></a><em class='comment'>//</em>
+<a id='L106' name='L106'></a><em class='comment'>// Base offsets</em>
+<a id='L107' name='L107'></a><em class='comment'>//</em>
+<a id='L108' name='L108'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=STARTPCSOUNDS&amp;type=reference' title='Multiple referred from 6 places.'>STARTPCSOUNDS</a>           0
+<a id='L109' name='L109'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=STARTADLIBSOUNDS&amp;type=reference' title='Multiple referred from 6 places.'>STARTADLIBSOUNDS</a>        87
+<a id='L110' name='L110'></a><em class='sharp'>#define</em> STARTDIGISOUNDS         174
+<a id='L111' name='L111'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=STARTMUSIC&amp;type=reference' title='Multiple referred from 13 places.'>STARTMUSIC</a>              261
+<a id='L112' name='L112'></a>
+<a id='L113' name='L113'></a><em class='comment'>//</em>
+<a id='L114' name='L114'></a><em class='comment'>// Music names &amp; indexes</em>
+<a id='L115' name='L115'></a><em class='comment'>//</em>
+<a id='L116' name='L116'></a><strong class='reserved'>typedef</strong> <strong class='reserved'>enum</strong> <em class='brace'>{</em>
+<a id='L117' name='L117'></a>                <a href='../cgi-bin/global.cgi?pattern=CORNER_MUS&amp;type=reference' title='Multiple referred from 4 places.'>CORNER_MUS</a>,              <em class='comment'>// 0</em>
+<a id='L118' name='L118'></a>                <a href='../cgi-bin/global.cgi?pattern=DUNGEON_MUS&amp;type=reference' title='Multiple referred from 4 places.'>DUNGEON_MUS</a>,             <em class='comment'>// 1</em>
+<a id='L119' name='L119'></a>                <a href='../cgi-bin/global.cgi?pattern=WARMARCH_MUS&amp;type=reference' title='Multiple referred from 5 places.'>WARMARCH_MUS</a>,            <em class='comment'>// 2</em>
+<a id='L120' name='L120'></a>                <a href='../cgi-bin/global.cgi?pattern=GETTHEM_MUS&amp;type=reference' title='Multiple referred from 6 places.'>GETTHEM_MUS</a>,             <em class='comment'>// 3</em>
+<a id='L121' name='L121'></a>                <a href='../cgi-bin/global.cgi?pattern=HEADACHE_MUS&amp;type=reference' title='Multiple referred from 5 places.'>HEADACHE_MUS</a>,            <em class='comment'>// 4</em>
+<a id='L122' name='L122'></a>                HITLWLTZ_MUS,            <em class='comment'>// 5</em>
+<a id='L123' name='L123'></a>                <a href='../cgi-bin/global.cgi?pattern=INTROCW3_MUS&amp;type=reference' title='Multiple referred from 5 places.'>INTROCW3_MUS</a>,            <em class='comment'>// 6</em>
+<a id='L124' name='L124'></a>                <a href='../S/98.html#L37' title='Referred from 37 in WOLFSRC/WL_MENU.H.'>NAZI_NOR_MUS</a>,            <em class='comment'>// 7</em>
+<a id='L125' name='L125'></a>                <a href='../cgi-bin/global.cgi?pattern=NAZI_OMI_MUS&amp;type=reference' title='Multiple referred from 6 places.'>NAZI_OMI_MUS</a>,            <em class='comment'>// 8</em>
+<a id='L126' name='L126'></a>                <a href='../cgi-bin/global.cgi?pattern=POW_MUS&amp;type=reference' title='Multiple referred from 6 places.'>POW_MUS</a>,                 <em class='comment'>// 9</em>
+<a id='L127' name='L127'></a>                SALUTE_MUS,              <em class='comment'>// 10</em>
+<a id='L128' name='L128'></a>                <a href='../cgi-bin/global.cgi?pattern=SEARCHN_MUS&amp;type=reference' title='Multiple referred from 6 places.'>SEARCHN_MUS</a>,             <em class='comment'>// 11</em>
+<a id='L129' name='L129'></a>                <a href='../cgi-bin/global.cgi?pattern=SUSPENSE_MUS&amp;type=reference' title='Multiple referred from 6 places.'>SUSPENSE_MUS</a>,            <em class='comment'>// 12</em>
+<a id='L130' name='L130'></a>                VICTORS_MUS,             <em class='comment'>// 13</em>
+<a id='L131' name='L131'></a>                <a href='../S/98.html#L34' title='Referred from 34 in WOLFSRC/WL_MENU.H.'>WONDERIN_MUS</a>,            <em class='comment'>// 14</em>
+<a id='L132' name='L132'></a>                <a href='../S/67.html#L198' title='Referred from 198 in WOLFSRC/WL_PLAY.C.'>FUNKYOU_MUS</a>,             <em class='comment'>// 15</em>
+<a id='L133' name='L133'></a>                <a href='../S/75.html#L561' title='Referred from 561 in WOLFSRC/WL_INTER.C.'>ENDLEVEL_MUS</a>,            <em class='comment'>// 16</em>
+<a id='L134' name='L134'></a>                <a href='../cgi-bin/global.cgi?pattern=GOINGAFT_MUS&amp;type=reference' title='Multiple referred from 6 places.'>GOINGAFT_MUS</a>,            <em class='comment'>// 17</em>
+<a id='L135' name='L135'></a>                <a href='../cgi-bin/global.cgi?pattern=PREGNANT_MUS&amp;type=reference' title='Multiple referred from 5 places.'>PREGNANT_MUS</a>,            <em class='comment'>// 18</em>
+<a id='L136' name='L136'></a>                <a href='../cgi-bin/global.cgi?pattern=ULTIMATE_MUS&amp;type=reference' title='Multiple referred from 8 places.'>ULTIMATE_MUS</a>,            <em class='comment'>// 19</em>
+<a id='L137' name='L137'></a>                <a href='../cgi-bin/global.cgi?pattern=NAZI_RAP_MUS&amp;type=reference' title='Multiple referred from 5 places.'>NAZI_RAP_MUS</a>,            <em class='comment'>// 20</em>
+<a id='L138' name='L138'></a>                <a href='../cgi-bin/global.cgi?pattern=ZEROHOUR_MUS&amp;type=reference' title='Multiple referred from 6 places.'>ZEROHOUR_MUS</a>,            <em class='comment'>// 21</em>
+<a id='L139' name='L139'></a>                <a href='../cgi-bin/global.cgi?pattern=TWELFTH_MUS&amp;type=reference' title='Multiple referred from 6 places.'>TWELFTH_MUS</a>,             <em class='comment'>// 22</em>
+<a id='L140' name='L140'></a>                <a href='../cgi-bin/global.cgi?pattern=ROSTER_MUS&amp;type=reference' title='Multiple referred from 2 places.'>ROSTER_MUS</a>,              <em class='comment'>// 23</em>
+<a id='L141' name='L141'></a>                <a href='../S/75.html#L151' title='Referred from 151 in WOLFSRC/WL_INTER.C.'>URAHERO_MUS</a>,             <em class='comment'>// 24</em>
+<a id='L142' name='L142'></a>                VICMARCH_MUS,            <em class='comment'>// 25</em>
+<a id='L143' name='L143'></a>                <a href='../cgi-bin/global.cgi?pattern=PACMAN_MUS&amp;type=reference' title='Multiple referred from 2 places.'>PACMAN_MUS</a>,              <em class='comment'>// 26</em>
+<a id='L144' name='L144'></a>                <a href='../S/67.html#L1004' title='Referred from 1004 in WOLFSRC/WL_PLAY.C.'>LASTMUSIC</a>
+<a id='L145' name='L145'></a>             <em class='brace'>}</em> <a href='../cgi-bin/global.cgi?pattern=musicnames&amp;type=reference' title='Multiple referred from 2 places.'>musicnames</a>;
+<a id='L146' name='L146'></a>
+<a id='L147' name='L147'></a><em class='comment'>/////////////////////////////////////////////////</em>
+<a id='L148' name='L148'></a><em class='comment'>//</em>
+<a id='L149' name='L149'></a><em class='comment'>// Thanks for playing with MUSE!</em>
+<a id='L150' name='L150'></a><em class='comment'>//</em>
+<a id='L151' name='L151'></a><em class='comment'>/////////////////////////////////////////////////</em>
+</pre>
+<hr />
+<a id='BOTTOM' name='BOTTOM'></a>
+<em class='comment'>/* <img class='icon' src='../icons/n_left.png' alt='[previous]' /><img class='icon' src='../icons/n_right.png' alt='[next]' /><img class='icon' src='../icons/n_first.png' alt='[first]' /><img class='icon' src='../icons/n_last.png' alt='[last]' /><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><img class='icon' src='../icons/n_bottom.png' alt='[bottom]' /><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+</body>
+</html>

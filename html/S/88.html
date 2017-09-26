@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<title>WOLFSRC/WHACK_A.ASM</title>
+<meta name='robots' content='noindex,nofollow' />
+<meta name='generator' content='GLOBAL-6.5.7' />
+<meta http-equiv='Content-Style-Type' content='text/css' />
+<link rel='stylesheet' type='text/css' href='../style.css' />
+</head>
+<body>
+<a id='TOP' name='TOP'></a><h2 class='header'><a href='../mains.html'>root</a>/<a href='../files/100.html'>WOLFSRC</a>/WHACK_A.ASM</h2>
+<em class='comment'>/* <img class='icon' src='../icons/n_left.png' alt='[previous]' /><img class='icon' src='../icons/n_right.png' alt='[next]' /><img class='icon' src='../icons/n_first.png' alt='[first]' /><img class='icon' src='../icons/n_last.png' alt='[last]' /><img class='icon' src='../icons/n_top.png' alt='[top]' /><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<hr />
+<pre>
+<a id='L1' name='L1'></a>; WOLFHACK.ASM
+<a id='L2' name='L2'></a>
+<a id='L3' name='L3'></a>.386C
+<a id='L4' name='L4'></a>IDEAL
+<a id='L5' name='L5'></a>MODEL   MEDIUM,C
+<a id='L6' name='L6'></a>
+<a id='L7' name='L7'></a>
+<a id='L8' name='L8'></a>;============================================================================
+<a id='L9' name='L9'></a>
+<a id='L10' name='L10'></a>DATASEG
+<a id='L11' name='L11'></a>
+<a id='L12' name='L12'></a>EXTRN   mr_rowofs:WORD
+<a id='L13' name='L13'></a>EXTRN   mr_count:WORD
+<a id='L14' name='L14'></a>EXTRN   mr_xstep:WORD
+<a id='L15' name='L15'></a>EXTRN   mr_ystep:WORD
+<a id='L16' name='L16'></a>EXTRN   mr_xfrac:WORD
+<a id='L17' name='L17'></a>EXTRN   mr_yfrac:WORD
+<a id='L18' name='L18'></a>EXTRN   mr_dest:WORD
+<a id='L19' name='L19'></a>
+<a id='L20' name='L20'></a>FARDATA
+<a id='L21' name='L21'></a>
+<a id='L22' name='L22'></a>planepics       db      8192 dup(?)     ;       // 4k of ceiling, 4k of floor
+<a id='L23' name='L23'></a>PUBLIC  planepics
+<a id='L24' name='L24'></a>
+<a id='L25' name='L25'></a>
+<a id='L26' name='L26'></a>;============================================================================
+<a id='L27' name='L27'></a>
+<a id='L28' name='L28'></a>CODESEG
+<a id='L29' name='L29'></a>
+<a id='L30' name='L30'></a>;============================
+<a id='L31' name='L31'></a>;
+<a id='L32' name='L32'></a>; MapRow
+<a id='L33' name='L33'></a>;
+<a id='L34' name='L34'></a>;
+<a id='L35' name='L35'></a>;============================
+<a id='L36' name='L36'></a>
+<a id='L37' name='L37'></a>PROC    MapRow
+<a id='L38' name='L38'></a>PUBLIC  MapRow
+<a id='L39' name='L39'></a>        push    esi
+<a id='L40' name='L40'></a>        push    edi
+<a id='L41' name='L41'></a>        push    ebp
+<a id='L42' name='L42'></a>        push    ds
+<a id='L43' name='L43'></a>
+<a id='L44' name='L44'></a>        mov     bp,[mr_rowofs]
+<a id='L45' name='L45'></a>        mov             cx,[mr_count]
+<a id='L46' name='L46'></a>        mov             dx,[mr_ystep]
+<a id='L47' name='L47'></a>        shl             edx,16
+<a id='L48' name='L48'></a>        mov             dx,[mr_xstep]
+<a id='L49' name='L49'></a>        mov             si,[mr_yfrac]
+<a id='L50' name='L50'></a>        shl             esi,16
+<a id='L51' name='L51'></a>        mov             si,[mr_xfrac]
+<a id='L52' name='L52'></a>        mov             di,[mr_dest]
+<a id='L53' name='L53'></a>        mov             ax,SEG planepics
+<a id='L54' name='L54'></a>        mov             ds,ax
+<a id='L55' name='L55'></a>        mov             ax,0a000h
+<a id='L56' name='L56'></a>        mov             es,ax
+<a id='L57' name='L57'></a>        mov             ax,1111111111110b
+<a id='L58' name='L58'></a>
+<a id='L59' name='L59'></a>; eax           color lookup
+<a id='L60' name='L60'></a>; ebx           scratch offset and pixel values
+<a id='L61' name='L61'></a>; ecx           loop counter
+<a id='L62' name='L62'></a>; edx           packed x / y step values
+<a id='L63' name='L63'></a>; esi           packed x / y fractional values
+<a id='L64' name='L64'></a>; edi           write pointer
+<a id='L65' name='L65'></a>; ebp           toprow to bottomrow delta
+<a id='L66' name='L66'></a>; es:           screenseg
+<a id='L67' name='L67'></a>; ds:           pictures
+<a id='L68' name='L68'></a>
+<a id='L69' name='L69'></a>; mov   al,[esi]
+<a id='L70' name='L70'></a>; mov   al,[eax]
+<a id='L71' name='L71'></a>; mov   [edi],al
+<a id='L72' name='L72'></a>
+<a id='L73' name='L73'></a>; mov   ax,[_variable+ebx+2]
+<a id='L74' name='L74'></a>
+<a id='L75' name='L75'></a>
+<a id='L76' name='L76'></a>pixelloop:
+<a id='L77' name='L77'></a>        shld    ebx,esi,22                              ; shift y units in
+<a id='L78' name='L78'></a>        shld    ebx,esi,7                               ; shift x units in and one extra bit
+<a id='L79' name='L79'></a>        and             bx,63*65*2                              ; mask off extra top bits and 0 low bit
+<a id='L80' name='L80'></a>        add             esi,edx                                 ; position += step
+<a id='L81' name='L81'></a>        mov             al,[bx]
+<a id='L82' name='L82'></a>        mov             al,[eax]
+<a id='L83' name='L83'></a>        mov     [es:di],al                      ; write ceiling pixel
+<a id='L84' name='L84'></a>        mov             al,[bx+1]
+<a id='L85' name='L85'></a>        mov             al,[eax]
+<a id='L86' name='L86'></a>        mov     [es:di+bp],al                   ; write floor pixel
+<a id='L87' name='L87'></a>        inc             di
+<a id='L88' name='L88'></a>        loop    pixelloop
+<a id='L89' name='L89'></a>
+<a id='L90' name='L90'></a>        pop             ds
+<a id='L91' name='L91'></a>        pop             ebp
+<a id='L92' name='L92'></a>        pop             edi
+<a id='L93' name='L93'></a>        pop             esi
+<a id='L94' name='L94'></a>
+<a id='L95' name='L95'></a>        retf
+<a id='L96' name='L96'></a>
+<a id='L97' name='L97'></a>ENDP
+<a id='L98' name='L98'></a>
+<a id='L99' name='L99'></a>END
+<a id='L100' name='L100'></a>
+</pre>
+<hr />
+<a id='BOTTOM' name='BOTTOM'></a>
+<em class='comment'>/* <img class='icon' src='../icons/n_left.png' alt='[previous]' /><img class='icon' src='../icons/n_right.png' alt='[next]' /><img class='icon' src='../icons/n_first.png' alt='[first]' /><img class='icon' src='../icons/n_last.png' alt='[last]' /><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><img class='icon' src='../icons/n_bottom.png' alt='[bottom]' /><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<title>WOLFSRC/ID_HEAD.H</title>
+<meta name='robots' content='noindex,nofollow' />
+<meta name='generator' content='GLOBAL-6.5.7' />
+<meta http-equiv='Content-Style-Type' content='text/css' />
+<link rel='stylesheet' type='text/css' href='../style.css' />
+</head>
+<body>
+<a id='TOP' name='TOP'></a><h2 class='header'><a href='../mains.html'>root</a>/<a href='../files/100.html'>WOLFSRC</a>/ID_HEAD.H</h2>
+<em class='comment'>/* <img class='icon' src='../icons/n_left.png' alt='[previous]' /><img class='icon' src='../icons/n_right.png' alt='[next]' /><img class='icon' src='../icons/n_first.png' alt='[first]' /><img class='icon' src='../icons/n_last.png' alt='[last]' /><img class='icon' src='../icons/n_top.png' alt='[top]' /><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<hr />
+<h2 class='header'><a href='31.html#L7' title='Included from 7 in WOLFSRC/ID_VL.C.'>INCLUDED FROM</a></h2>
+<hr />
+<pre>
+<a id='L1' name='L1'></a><em class='comment'>// ID_HEAD.H</em>
+<a id='L2' name='L2'></a>
+<a id='L3' name='L3'></a>
+<a id='L4' name='L4'></a><em class='sharp'>#define</em> <a href='../cgi-bin/global.cgi?pattern=EXTENSION&amp;type=reference' title='Multiple referred from 2 places.'>EXTENSION</a>       "WLF"
+<a id='L5' name='L5'></a><em class='sharp'>#define</em> WOLF
+<a id='L6' name='L6'></a>
+<a id='L7' name='L7'></a><em class='sharp'>#define</em> TEXTGR  0
+<a id='L8' name='L8'></a><em class='sharp'>#define</em> CGAGR   1
+<a id='L9' name='L9'></a><em class='sharp'>#define</em> EGAGR   2
+<a id='L10' name='L10'></a><em class='sharp'>#define</em> <a href='../S/10.html#L12' title='Referred from 12 in WOLFSRC/ID_HEAD.H.'>VGAGR</a>   3
+<a id='L11' name='L11'></a>
+<a id='L12' name='L12'></a><em class='sharp'>#define</em> GRMODE  <a href='../S/10.html#L10' title='Defined at 10 in WOLFSRC/ID_HEAD.H.'>VGAGR</a>
+<a id='L13' name='L13'></a>
+<a id='L14' name='L14'></a><em class='sharp'>#include</em> "<a href='35.html'>VERSION.H</a>"
+<a id='L15' name='L15'></a>
+<a id='L16' name='L16'></a><strong class='reserved'>typedef</strong> <strong class='reserved'>enum</strong>    <em class='brace'>{</em><strong class='reserved'>false</strong>,<strong class='reserved'>true</strong><em class='brace'>}</em>    <a href='../cgi-bin/global.cgi?pattern=boolean&amp;type=reference' title='Multiple referred from 212 places.'>boolean</a>;
+<a id='L17' name='L17'></a><strong class='reserved'>typedef</strong> <strong class='reserved'>unsigned</strong>        <strong class='reserved'>char</strong>            <a href='../cgi-bin/global.cgi?pattern=byte&amp;type=reference' title='Multiple referred from 262 places.'>byte</a>;
+<a id='L18' name='L18'></a><strong class='reserved'>typedef</strong> <strong class='reserved'>unsigned</strong>        <strong class='reserved'>int</strong>                     <a href='../cgi-bin/global.cgi?pattern=word&amp;type=reference' title='Multiple referred from 143 places.'>word</a>;
+<a id='L19' name='L19'></a><strong class='reserved'>typedef</strong> <strong class='reserved'>unsigned</strong>        <strong class='reserved'>long</strong>            <a href='../cgi-bin/global.cgi?pattern=longword&amp;type=reference' title='Multiple referred from 43 places.'>longword</a>;
+<a id='L20' name='L20'></a><strong class='reserved'>typedef</strong> <a href='../cgi-bin/global.cgi?pattern=byte&amp;type=definitions' title='Multiple defined in 2 places.'>byte</a> *                                  Ptr;
+<a id='L21' name='L21'></a>
+<a id='L22' name='L22'></a><strong class='reserved'>typedef</strong> <strong class='reserved'>struct</strong>
+<a id='L23' name='L23'></a>                <em class='brace'>{</em>
+<a id='L24' name='L24'></a>                        <strong class='reserved'>int</strong>     <a href='../cgi-bin/global.cgi?pattern=x&amp;type=symbol' title='Multiple used in 494 places.'>x</a>,<a href='../cgi-bin/global.cgi?pattern=y&amp;type=symbol' title='Multiple used in 453 places.'>y</a>;
+<a id='L25' name='L25'></a>                <em class='brace'>}</em> <a href='../cgi-bin/global.cgi?pattern=Point&amp;type=reference' title='Multiple referred from 2 places.'>Point</a>;
+<a id='L26' name='L26'></a>
+<a id='L27' name='L27'></a><strong class='reserved'>typedef</strong> <strong class='reserved'>struct</strong>
+<a id='L28' name='L28'></a>                <em class='brace'>{</em>
+<a id='L29' name='L29'></a>                        <a href='../cgi-bin/global.cgi?pattern=Point&amp;type=definitions' title='Multiple defined in 2 places.'>Point</a>   <a href='../cgi-bin/global.cgi?pattern=ul&amp;type=symbol' title='Multiple used in 10 places.'>ul</a>,<a href='../cgi-bin/global.cgi?pattern=lr&amp;type=symbol' title='Multiple used in 6 places.'>lr</a>;
+<a id='L30' name='L30'></a>                <em class='brace'>}</em> <a href='../cgi-bin/global.cgi?pattern=Rect&amp;type=reference' title='Multiple referred from 3 places.'>Rect</a>;
+<a id='L31' name='L31'></a>
+<a id='L32' name='L32'></a>
+<a id='L33' name='L33'></a><strong class='reserved'>void</strong>    <a href='../S/32.html#L1346' title='Defined at 1346 in WOLFSRC/WL_MAIN.C.'>Quit</a> (<strong class='reserved'>char</strong> *<a href='../cgi-bin/global.cgi?pattern=error&amp;type=symbol' title='Multiple used in 27 places.'>error</a>);             <em class='comment'>// defined in user program</em>
+<a id='L34' name='L34'></a>
+</pre>
+<hr />
+<a id='BOTTOM' name='BOTTOM'></a>
+<em class='comment'>/* <img class='icon' src='../icons/n_left.png' alt='[previous]' /><img class='icon' src='../icons/n_right.png' alt='[next]' /><img class='icon' src='../icons/n_first.png' alt='[first]' /><img class='icon' src='../icons/n_last.png' alt='[last]' /><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><img class='icon' src='../icons/n_bottom.png' alt='[bottom]' /><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+</body>
+</html>

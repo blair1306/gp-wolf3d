@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<title>WOLFSRC/ID_US_A.ASM</title>
+<meta name='robots' content='noindex,nofollow' />
+<meta name='generator' content='GLOBAL-6.5.7' />
+<meta http-equiv='Content-Style-Type' content='text/css' />
+<link rel='stylesheet' type='text/css' href='../style.css' />
+</head>
+<body>
+<a id='TOP' name='TOP'></a><h2 class='header'><a href='../mains.html'>root</a>/<a href='../files/100.html'>WOLFSRC</a>/ID_US_A.ASM</h2>
+<em class='comment'>/* <img class='icon' src='../icons/n_left.png' alt='[previous]' /><img class='icon' src='../icons/n_right.png' alt='[next]' /><img class='icon' src='../icons/n_first.png' alt='[first]' /><img class='icon' src='../icons/n_last.png' alt='[last]' /><img class='icon' src='../icons/n_top.png' alt='[top]' /><a href='#BOTTOM'><img class='icon' src='../icons/bottom.png' alt='[bottom]' /></a><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+<hr />
+<pre>
+<a id='L1' name='L1'></a>IDEAL
+<a id='L2' name='L2'></a>MODEL   MEDIUM,C
+<a id='L3' name='L3'></a>
+<a id='L4' name='L4'></a>;       Assembly portion of the User Mgr. This is just John Carmack's table
+<a id='L5' name='L5'></a>;               driven pseudo-random number generator, and we put it in the User Mgr
+<a id='L6' name='L6'></a>;               because we couldn't figure out where it should go
+<a id='L7' name='L7'></a>
+<a id='L8' name='L8'></a>
+<a id='L9' name='L9'></a>;============================================================================
+<a id='L10' name='L10'></a>;
+<a id='L11' name='L11'></a>;                           RANDOM ROUTINES
+<a id='L12' name='L12'></a>;
+<a id='L13' name='L13'></a>;============================================================================
+<a id='L14' name='L14'></a>
+<a id='L15' name='L15'></a>        FARDATA
+<a id='L16' name='L16'></a>
+<a id='L17' name='L17'></a>rndindex        dw      ?
+<a id='L18' name='L18'></a>
+<a id='L19' name='L19'></a>rndtable db    0,   8, 109, 220, 222, 241, 149, 107,  75, 248, 254, 140,  16,  66
+<a id='L20' name='L20'></a>        db   74,  21, 211,  47,  80, 242, 154,  27, 205, 128, 161,  89,  77,  36
+<a id='L21' name='L21'></a>        db   95, 110,  85,  48, 212, 140, 211, 249,  22,  79, 200,  50,  28, 188
+<a id='L22' name='L22'></a>        db   52, 140, 202, 120,  68, 145,  62,  70, 184, 190,  91, 197, 152, 224
+<a id='L23' name='L23'></a>        db  149, 104,  25, 178, 252, 182, 202, 182, 141, 197,   4,  81, 181, 242
+<a id='L24' name='L24'></a>        db  145,  42,  39, 227, 156, 198, 225, 193, 219,  93, 122, 175, 249,   0
+<a id='L25' name='L25'></a>        db  175, 143,  70, 239,  46, 246, 163,  53, 163, 109, 168, 135,   2, 235
+<a id='L26' name='L26'></a>        db   25,  92,  20, 145, 138,  77,  69, 166,  78, 176, 173, 212, 166, 113
+<a id='L27' name='L27'></a>        db   94, 161,  41,  50, 239,  49, 111, 164,  70,  60,   2,  37, 171,  75
+<a id='L28' name='L28'></a>        db  136, 156,  11,  56,  42, 146, 138, 229,  73, 146,  77,  61,  98, 196
+<a id='L29' name='L29'></a>        db  135, 106,  63, 197, 195,  86,  96, 203, 113, 101, 170, 247, 181, 113
+<a id='L30' name='L30'></a>        db   80, 250, 108,   7, 255, 237, 129, 226,  79, 107, 112, 166, 103, 241
+<a id='L31' name='L31'></a>        db   24, 223, 239, 120, 198,  58,  60,  82, 128,   3, 184,  66, 143, 224
+<a id='L32' name='L32'></a>        db  145, 224,  81, 206, 163,  45,  63,  90, 168, 114,  59,  33, 159,  95
+<a id='L33' name='L33'></a>        db   28, 139, 123,  98, 125, 196,  15,  70, 194, 253,  54,  14, 109, 226
+<a id='L34' name='L34'></a>        db   71,  17, 161,  93, 186,  87, 244, 138,  20,  52, 123, 251,  26,  36
+<a id='L35' name='L35'></a>        db   17,  46,  52, 231, 232,  76,  31, 221,  84,  37, 216, 165, 212, 106
+<a id='L36' name='L36'></a>        db  197, 242,  98,  43,  39, 175, 254, 145, 190,  84, 118, 222, 187, 136
+<a id='L37' name='L37'></a>        db  120, 163, 236, 249
+<a id='L38' name='L38'></a>
+<a id='L39' name='L39'></a>PUBLIC  rndtable
+<a id='L40' name='L40'></a>
+<a id='L41' name='L41'></a>        CODESEG
+<a id='L42' name='L42'></a>
+<a id='L43' name='L43'></a>LastRnd         dw      ?
+<a id='L44' name='L44'></a>
+<a id='L45' name='L45'></a>;=================================================
+<a id='L46' name='L46'></a>;
+<a id='L47' name='L47'></a>; void US_InitRndT (boolean randomize)
+<a id='L48' name='L48'></a>; Init table based RND generator
+<a id='L49' name='L49'></a>; if randomize is false, the counter is set to 0
+<a id='L50' name='L50'></a>;
+<a id='L51' name='L51'></a>;=================================================
+<a id='L52' name='L52'></a>
+<a id='L53' name='L53'></a>PROC    US_InitRndT randomize:word
+<a id='L54' name='L54'></a>        uses    si,di
+<a id='L55' name='L55'></a>        public  US_InitRndT
+<a id='L56' name='L56'></a>
+<a id='L57' name='L57'></a>        mov     ax,SEG rndtable
+<a id='L58' name='L58'></a>        mov     es,ax
+<a id='L59' name='L59'></a>
+<a id='L60' name='L60'></a>        mov     ax,[randomize]
+<a id='L61' name='L61'></a>        or      ax,ax
+<a id='L62' name='L62'></a>        jne     @@timeit                ;if randomize is true, really random
+<a id='L63' name='L63'></a>
+<a id='L64' name='L64'></a>        mov     dx,0                    ;set to a definite value
+<a id='L65' name='L65'></a>        jmp     @@setit
+<a id='L66' name='L66'></a>
+<a id='L67' name='L67'></a>@@timeit:
+<a id='L68' name='L68'></a>        mov     ah,2ch
+<a id='L69' name='L69'></a>        int     21h                     ;GetSystemTime
+<a id='L70' name='L70'></a>        and     dx,0ffh
+<a id='L71' name='L71'></a>
+<a id='L72' name='L72'></a>@@setit:
+<a id='L73' name='L73'></a>        mov     [es:rndindex],dx
+<a id='L74' name='L74'></a>        ret
+<a id='L75' name='L75'></a>
+<a id='L76' name='L76'></a>ENDP
+<a id='L77' name='L77'></a>
+<a id='L78' name='L78'></a>;=================================================
+<a id='L79' name='L79'></a>;
+<a id='L80' name='L80'></a>; int US_RndT (void)
+<a id='L81' name='L81'></a>; Return a random # between 0-255
+<a id='L82' name='L82'></a>; Exit : AX = value
+<a id='L83' name='L83'></a>;
+<a id='L84' name='L84'></a>;=================================================
+<a id='L85' name='L85'></a>PROC    US_RndT
+<a id='L86' name='L86'></a>        public  US_RndT
+<a id='L87' name='L87'></a>
+<a id='L88' name='L88'></a>        mov     ax,SEG rndtable
+<a id='L89' name='L89'></a>        mov     es,ax
+<a id='L90' name='L90'></a>        mov     bx,[es:rndindex]
+<a id='L91' name='L91'></a>        inc     bx
+<a id='L92' name='L92'></a>        and     bx,0ffh
+<a id='L93' name='L93'></a>        mov     [es:rndindex],bx
+<a id='L94' name='L94'></a>        mov     al,[es:rndtable+BX]
+<a id='L95' name='L95'></a>        xor     ah,ah
+<a id='L96' name='L96'></a>        ret
+<a id='L97' name='L97'></a>
+<a id='L98' name='L98'></a>ENDP
+<a id='L99' name='L99'></a>
+<a id='L100' name='L100'></a>END
+<a id='L101' name='L101'></a>
+</pre>
+<hr />
+<a id='BOTTOM' name='BOTTOM'></a>
+<em class='comment'>/* <img class='icon' src='../icons/n_left.png' alt='[previous]' /><img class='icon' src='../icons/n_right.png' alt='[next]' /><img class='icon' src='../icons/n_first.png' alt='[first]' /><img class='icon' src='../icons/n_last.png' alt='[last]' /><a href='#TOP'><img class='icon' src='../icons/top.png' alt='[top]' /></a><img class='icon' src='../icons/n_bottom.png' alt='[bottom]' /><a href='../mains.html'><img class='icon' src='../icons/index.png' alt='[index]' /></a><a href='../help.html'><img class='icon' src='../icons/help.png' alt='[help]' /></a> */</em>
+</body>
+</html>
